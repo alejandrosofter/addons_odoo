@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_wizard,consultorio.wizard,model_importer_wizard,base.group_user,1,1,1,1
+access_account_account,account.account,model_importer_wizard,base.group_user,1,1,1,1
+access_account_move,account.move,model_importer_wizard,base.group_user,1,1,1,1

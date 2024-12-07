@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- VISTAS ///////////////////////////////////////////// -->
+        <record id="view_turnos_tree" model="ir.ui.view">
+            <field name="name">turnos.tree</field>
+            <field name="model">consultorio.turnos</field>
+            <field name="arch" type="xml">
+                <tree >
+                    <field name="fechaHora"/>
+                    <field name="paciente"/>
+                    <field name="consultorio"/>
+                    <field name="estado"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_turnos_form" model="ir.ui.view">
+            <field name="name">turnos.form</field>
+            <field name="model">consultorio.turnos</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="fechaHora"/>
+                            <field name="paciente"/>
+                            <field name="consultorio"/>
+                            <field name="estado"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista de Búsqueda -->
+        <record id="view_turnos_search" model="ir.ui.view">
+            <field name="name">turnos.search</field>
+            <field name="model">consultorio.turnos</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="fechaHora"/>
+                    <field name="paciente"/>
+                    <field name="consultorio"/>
+                    <field name="estado"/>
+
+
+                </search>
+            </field>
+        </record>
+        <!-- ACCIONES ////////////////////////////////// -->
+        <record model="ir.actions.act_window" id="turnos_action_view_tree">
+            <field name="name">Listado  turnos</field>
+            <field name="res_model">consultorio.turnos</field>
+            <field name="view_mode">tree,kanban,form</field>
+        </record>
+
+        <!-- MENUS ///////////////////////////////////////////////// -->
+
+        <menuitem id="turnos_subMenuturnos" name="Turnos" parent="consultorios_menu_root" />
+        <menuitem id="turnos_menu_root_turnos_list" action="turnos_action_view_tree" name="Listado de Turnos" parent="turnos_subMenuturnos" />
+
+    </data>
+</odoo>
+
+

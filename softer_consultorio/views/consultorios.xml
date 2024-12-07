@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <data noupdate="1">
+            <record id="lunes" model="consultorio.diassemana">
+                <field name="name">Lunes</field>
+            </record>
+            <record id="martes" model="consultorio.diassemana">
+                <field name="name">Martes</field>
+            </record>
+            <record id="miércoles" model="consultorio.diassemana">
+                <field name="name">Miércoles</field>
+            </record>
+            <record id="jueves" model="consultorio.diassemana">
+                <field name="name">Jueves</field>
+            </record>
+            <record id="viernes" model="consultorio.diassemana">
+                <field name="name">Viernes</field>
+            </record>
+            <record id="sábado" model="consultorio.diassemana">
+                <field name="name">Sábado</field>
+            </record>
+            <record id="domingo" model="consultorio.diassemana">
+                <field name="name">Domingo</field>
+            </record>
+        </data>
+        <!-- VISTAS ///////////////////////////////////////////// -->
+        <!-- turnera -->
+        <record id="view_consultorios_turnera_tree" model="ir.ui.view">
+            <field name="name">consultorioturnera.tree</field>
+            <field name="model">consultorio.consultorioturnera</field>
+            <field name="arch" type="xml">
+                <tree>
+
+                    <field name="desdeHora"/>
+                    <field name="hastaHora"/>
+                    <field name="duracionMinutos"/>
+                    <field name="dias"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_consultorios_turnera_form" model="ir.ui.view">
+            <field name="name">consultorioturnera.form</field>
+            <field name="model">consultorio.consultorioturnera</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="desdeHora"/>
+                            <field name="hastaHora"/>
+                            <field name="duracionMinutos"/>
+                            <field name="dias" widget="many2many_tags"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- turnera -->
+        <record id="view_consultorios_tree" model="ir.ui.view">
+            <field name="name">consultorios.tree</field>
+            <field name="model">consultorio.consultorios</field>
+            <field name="arch" type="xml">
+                <tree >
+                    <field name="name"/>
+                    <field name="nameShort"/>
+                    <field name="direccion"/>
+                    <field name="telefono"/>
+                    <field name="email"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_consultorios_form" model="ir.ui.view">
+            <field name="name">consultorios.form</field>
+            <field name="model">consultorio.consultorios</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="nameShort"/>
+                            <field name="direccion"/>
+                            <field name="telefono"/>
+                            <field name="email"/>
+                            <field name="turnera"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista de Búsqueda -->
+        <record id="view_consultorios_search" model="ir.ui.view">
+            <field name="name">consultorios.search</field>
+            <field name="model">consultorio.consultorios</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="nameShort"/>
+                    <field name="direccion"/>
+                    <field name="telefono"/>
+                    <field name="email"/>
+
+                </search>
+            </field>
+        </record>
+
+        <!-- ACCIONES ////////////////////////////////// -->
+        <record model="ir.actions.act_window" id="consultorios_action_view_tree">
+            <field name="name">Listado  consultorios</field>
+            <field name="res_model">consultorio.consultorios</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+
+
+        <!-- MENUS ///////////////////////////////////////////////// -->
+
+        <menuitem id="consultorios_subMenupacientes" name="Consultorios" parent="consultorios_menu_root" />
+        <menuitem id="consultorios_menu_root_pacientes_list" action="consultorios_action_view_tree" name="Consultorios" parent="consultorios_subMenupacientes" />
+    </data>
+</odoo>
+
+

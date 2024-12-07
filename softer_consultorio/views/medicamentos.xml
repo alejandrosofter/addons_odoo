@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- VISTAS ///////////////////////////////////////////// -->
+        <record id="view_medicamentos_tree" model="ir.ui.view">
+            <field name="name">medicamentos.tree</field>
+            <field name="model">consultorio.medicamentos</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" string="Nombre Comercial"/>
+                    <field name="nameGenerico" string="Generico"/>
+                    <field name="presentacion" string="Presentacion"/>
+                    <field name="laboratorio" string="Laboratorio"/>
+                    <field name="posologia_ids"/>
+                    <field name="accionTerapeutica"/>
+
+                </tree>
+            </field>
+        </record>
+        <record id="view_medicamentos_form" model="ir.ui.view">
+            <field name="name">medicamentos.form</field>
+            <field name="model">consultorio.medicamentos</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" string="Nombre Comercial"/>
+                            <field name="nameGenerico" string="Generico"/>
+                            <field name="presentacion" string="Presentacion"/>
+                            <field name="laboratorio" string="Laboratorio"/>
+                            <field name="posologia_ids"/>
+                            <field name="accionTerapeutica"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_medicamentos_search" model="ir.ui.view">
+            <field name="name">medicamentos.search</field>
+            <field name="model">consultorio.medicamentos</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Nombre Comercial"/>
+                    <field name="nameGenerico" string="Generico"/>
+                    <field name="presentacion" string="Presentacion"/>
+                    <field name="laboratorio" string="Laboratorio"/>
+                    <field name="posologia_ids"/>
+                    <field name="accionTerapeutica"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- ACCIONES ////////////////////////////////// -->
+        <record model="ir.actions.act_window" id="medicamentos_view_tree">
+            <field name="name">Listado medicamentos</field>
+            <field name="res_model">consultorio.medicamentos</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- MENUS ///////////////////////////////////////////////// -->
+
+        <menuitem id="medicamentos_submenu" name="Medicamentos" parent="consultorios_menu_root"/>
+        <menuitem id="medicamentos_menu_list" action="medicamentos_view_tree" name="Listado medicamentos" parent="recetas_submenu"/>
+    </data>
+</odoo>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="custom_my_home" inherit_id="portal.portal_my_home" name="Add custom link to my home">
+            <xpath expr="//div[@id='portal_common_category']" position="inside">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/softer_instancias/static/description/apps.png'"/>
+                    <t t-set="title">Mis Apps</t>
+                    <t t-set="text">
+                        Gestiona tus apps! 
+                                                                                                                                                                                                                                                                                                                                                                                                <!-- Muestra la cantidad de apps -->
+                        <t t-esc="instancias_count"/>
+
+                    </t>
+                    <t t-set="url" t-value="'/my/instancias'"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/softer_instancias/static/description/rect366.png'"/>
+                    <t t-set="title">Mis Dominios</t>
+                    <t t-set="text">
+                        Gestiona tus dominios y tus correos !
+                                                                                                                                                                                                                                                                                                                                                                                                <!-- Muestra la cantidad de apps -->
+
+                    </t>
+                    <t t-set="url" t-value="'/my/dominios'"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/softer_instancias/static/description/suscripciones.png'"/>
+                    <t t-set="title">Suscripciones</t>
+                    <t t-set="text">
+                        Gestiona tus suscriciones y servicios asociados!
+                                                                                                                                                                                                                                                                                                                                                                                                <!-- Muestra la cantidad de apps -->
+
+                    </t>
+                    <t t-set="url" t-value="'/my/subscriptions'"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+            </xpath>
+        </template>
+    </data>
+</odoo>

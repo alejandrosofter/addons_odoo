@@ -1,0 +1,54 @@
+<odoo>
+    <data>
+        <template id="instancias_edit" name="Editar Instancia">
+            <t t-call="website.layout">
+                <div class="container">
+                    <div class="oe_structure" id="instancias_structure_1">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="/my/home" aria-label="Inicio" title="Inicio">
+                                        <i class="fa fa-home"></i>
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a href="/my/instancias" aria-label="Instancias" title="Instancias">
+                                       Mis apps
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    <t t-esc="instancia.name"/>
+                                </li>
+                            </ol>
+                        </nav>
+                        <h2>Editar App</h2>
+                        <div class="form-edit-instancia">
+                            <form t-attf-action="/my/instancias/edit/#{instancia.id}" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="form-group">
+                                    <label for="name">Nombre de Instancia</label>
+                                    <input type="text" name="name" t-att-value="instancia.name" class="form-control" required=""/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="dominio">Dominio</label>
+                                    <select name="dominios_id" class="form-control" required="">
+                                        <t t-foreach="dominios" t-as="dominio">
+                                            <option t-att-value="dominio.id" t-att-selected="'selected' if dominio.id == instancia.dominios_id.id else None">
+                                                <t t-esc="dominio.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">Subdominio</label>
+                                    <input type="text" name="subdominio" t-att-value="instancia.subdominio" class="form-control" required=""/>
+                                </div>
+                                <button type="submit" class="btn btn-primary boton-form">Guardar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

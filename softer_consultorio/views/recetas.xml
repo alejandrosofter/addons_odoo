@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- VISTAS ///////////////////////////////////////////// -->
+        <record id="view_recetas_tree" model="ir.ui.view">
+            <field name="name">recetas.tree</field>
+            <field name="model">consultorio.recetas</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="fecha" string="Fecha"/>
+                    <field name="paciente" string="Paciente"/>
+                    <field name="obraSocial" string="Obra Social"/>
+
+                </tree>
+            </field>
+        </record>
+        <record id="view_recetas_form" model="ir.ui.view">
+            <field name="name">recetas.form</field>
+            <field name="model">consultorio.recetas</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="fecha" string="Fecha"/>
+                            <field name="paciente" string="Paciente"/>
+                            <field name="obraSocial" string="Obra Social"/>
+                        </group>
+                        <notebook>
+                            <page string="Medicamentos">
+                                <field name="medicamentos_ids">
+                                    <tree editable="bottom">
+                                        <field name="medicamento_id" string="Medicamento"/>
+                                        <field name="cantidad" string="Cantidad"/>
+                                        <field name="posologia_ids" string="Posología"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Indicaciones">
+                                <field name="indicaciones_ids">
+                                    <tree editable="bottom">
+                                        <field name="indicacion_id"/>
+                                        <field name="detalle" string="Detalle"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Diagnosticos">
+                                <field name="diagnosticos_ids">
+                                    <tree editable="bottom">
+                                        <field name="diagnostico_id"/>
+                                        <field name="detalle" string="Detalle"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Prestaciones">
+                                <field name="prestaciones_ids">
+                                    <tree editable="bottom">
+                                        <field name="cantidad" string="Cantidad"/>
+                                        <field name="prestacion_id"/>
+
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Anteojos">
+                                <field name="anteojos_ids"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_recetas_search" model="ir.ui.view">
+            <field name="name">recetas.search</field>
+            <field name="model">consultorio.recetas</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="paciente"/>
+                    <field name="fecha"/>
+
+                    <field name="obraSocial" string="Obra Social"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- ACCIONES ////////////////////////////////// -->
+        <record model="ir.actions.act_window" id="recetas_view_tree">
+            <field name="name">Listado Recetas</field>
+            <field name="res_model">consultorio.recetas</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- MENUS ///////////////////////////////////////////////// -->
+
+        <menuitem id="recetas_submenu" name="Recetas" parent="consultorios_menu_root"/>
+        <menuitem id="recetas_menu_list" action="recetas_view_tree" name="Listado Recetas" parent="recetas_submenu"/>
+
+    </data>
+</odoo>

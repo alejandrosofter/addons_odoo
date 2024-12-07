@@ -1,0 +1,110 @@
+<odoo>
+    <data>
+        <template id="subscriptions_user_web">
+
+            <t t-call="website.layout">
+                <div class="oe_structure" id="dominios_structure_1">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/my/home" aria-label="Inicio" title="Inicio">
+                                    <i class="fa fa-home"></i>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Suscripciones</li>
+                        </ol>
+                    </nav>
+                    <div class="pageModulo">
+                        <h2>Mis Suscripciones</h2>
+                        <ul class="itemsModulo">
+                            <t t-foreach="subscriptions" t-as="subscription">
+                                <div class="itemsModulo-contenedor">
+
+                                    <h5>
+                                        <t t-esc="subscription.name"/>
+                                    </h5>
+
+                                    <!-- <span t-field="subscription.start_date" t-field-options='{"date_format": "%d/%m/%Y"}'/> -->
+                                    Proxima factura 
+                                    <span t-field="subscription.next_invoice_date" t-field-options='{"date_format": "%d/%m/%Y"}'/>
+                                    <ul>
+                                        <t t-foreach="subscription.product_line_ids" t-as="line">
+                                            <li>
+                                                <span>
+                                                    <t t-esc="line.product_id.name"/>
+                                                    <b>
+                                                        <t t-esc="line.total_amount" t-options='{"widget": "monetary", "display_currency": line.currency_id}'/>
+                                                    </b>
+                                                </span>
+                                            </li>
+                                        </t>
+                                    </ul>
+                                </div>
+                            </t>
+                        </ul>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="subscription_edit">
+            <t t-call="website.layout">
+                <div class="oe_structure" id="dominios_structure_1">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/my/home" aria-label="Inicio" title="Inicio">
+                                    <i class="fa fa-home"></i>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Suscripciones</li>
+                        </ol>
+                    </nav>
+                    <h1>Editar Suscripción</h1>
+                    <form action="#" method="post">
+                        <label>Nombre</label>
+                        <input type="text" name="name" t-att-value="subscription.name"/>
+                        <label>Fecha de Inicio</label>
+                        <input type="date" name="start_date" t-att-value="subscription.start_date"/>
+                        <label>Fecha de Fin</label>
+                        <input type="date" name="end_date" t-att-value="subscription.end_date"/>
+                        <label>Estado</label>
+                        <select name="status">
+                            <option value="active">Activa</option>
+                            <option value="inactive">Inactiva</option>
+                        </select>
+                        <button type="submit">Guardar</button>
+                    </form>
+                </div>
+            </t>
+        </template>
+
+        <template id="subscription_details">
+            <t t-call="website.layout">
+
+                <div class="itemsModulo">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/my/home" aria-label="Inicio" title="Inicio">
+                                    <i class="fa fa-home"></i>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Suscripciones</li>
+                        </ol>
+                    </nav>
+                    <h2>Detalles de Suscripción</h2>
+                    <p>Nombre: <t t-esc="subscription.name"/>
+                    </p>
+                    <p>Fecha de Inicio: <t t-esc="subscription.date_started"/>
+                    </p>
+
+
+                    <p>Estado: <t t-esc="subscription.activity_state"/>
+                    </p>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

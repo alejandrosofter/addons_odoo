@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- VISTAS ///////////////////////////////////////////// -->
+        <record id="view_pacientes_tree" model="ir.ui.view">
+            <field name="name">pacientes.tree</field>
+            <field name="model">consultorio.pacientes</field>
+            <field name="arch" type="xml">
+                <tree >
+                    <field name="name"/>
+                    <field name="apellido"/>
+                    <field name="obrasSociales"/>
+                    <field name="fechaNacimiento"/>
+                    <field name="nroTelefono"/>
+                    <field name="email"/>
+                    <field name="dni"/>
+                    <field name="esParticular"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_pacientess_form" model="ir.ui.view">
+            <field name="name">pacientes.form</field>
+            <field name="model">consultorio.pacientes</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="apellido"/>
+                            <field name="obrasSociales"/>
+                            <field name="fechaNacimiento"/>
+                            <field name="nroTelefono"/>
+                            <field name="email"/>
+                            <field name="dni"/>
+                            <field name="esParticular"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista de Búsqueda -->
+        <record id="view_pacientes_search" model="ir.ui.view">
+            <field name="name">pacientes.search</field>
+            <field name="model">consultorio.pacientes</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="apellido"/>
+                    <field name="obrasSociales"/>
+                    <field name="fechaNacimiento"/>
+                    <field name="nroTelefono"/>
+                    <field name="email"/>
+                    <field name="dni"/>
+
+
+                </search>
+            </field>
+        </record>
+        <!-- ACCIONES ////////////////////////////////// -->
+        <record model="ir.actions.act_window" id="pacientes_action_view_tree">
+            <field name="name">Listado  pacientes</field>
+            <field name="res_model">consultorio.pacientes</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+
+        <!-- MENUS ///////////////////////////////////////////////// -->
+        <menuitem id="consultorios_menu_root" name="Consultorio" web_icon="softer_consultorio,static/description/icon.png"/>
+        <menuitem id="pacientes_subMenupacientes" name="Pacientes" parent="consultorios_menu_root" />
+        <menuitem id="pacientes_menu_root_pacientes_list" action="pacientes_action_view_tree" name="Pacientes" parent="pacientes_subMenupacientes" />
+
+    </data>
+</odoo>
+
+

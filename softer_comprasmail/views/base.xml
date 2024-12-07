@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="assets_backend" inherit_id="web.assets_backend" name="Custom Warning for Unpaid Subscriptions">
+            <xpath expr="//header" position="inside">
+                <t t-if="request.env.user.has_unpaid_subscriptions">
+                    <div class="alert alert-warning" role="alert">
+                ¡Atención! Usted tiene mensualidades impagas. Por favor, regularice su situación.
+                    </div>
+                </t>
+            </xpath>
+        </template>
+    </data>
+</odoo>
+
+

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- VISTAS ///////////////////////////////////////////// -->
+        <record id="view_pacientesOs_tree" model="ir.ui.view">
+            <field name="name">pacientesobrasociales.tree</field>
+            <field name="model">consultorio.pacientesobrasociales</field>
+            <field name="arch" type="xml">
+                <tree>
+
+                    <field name="sequence" string="" widget="handle"/>
+                    <field name="obrasocial" string="Obra Social" />
+                    <field name="nroAfiliado" string="Nro Afiliado"/>
+                    <field name="esDefault"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_pacientesOs_form" model="ir.ui.view">
+            <field name="name">pacientesobrasociales.form</field>
+            <field name="model">consultorio.pacientesobrasociales</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="obrasocial"/>
+                            <field name="nroAfiliado"/>
+                            <field name="esDefault"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista de Búsqueda -->
+        <!-- <record id="view_pacientes_search" model="ir.ui.view">
+            <field name="name">pacientes.search</field>
+            <field name="model">consultorio.pacientes</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="contacto"/>
+                    <field name="fechaNacimiento"/>
+                </search>
+            </field>
+        </record> -->
+        <!-- ACCIONES ////////////////////////////////// -->
+
+        <!-- MENUS ///////////////////////////////////////////////// -->
+
+
+    </data>
+</odoo>

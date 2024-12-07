@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- VISTAS ///////////////////////////////////////////// -->
+        <record id="view_obrasociales_tree" model="ir.ui.view">
+            <field name="name">obrasociales.tree</field>
+            <field name="model">consultorio.obrasociales</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- ACCIONES ////////////////////////////////// -->
+        <record model="ir.actions.act_window" id="obrasociales_action_view_tree">
+            <field name="name">Listado  Obras Sociales</field>
+            <field name="res_model">consultorio.obrasociales</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- MENUS ///////////////////////////////////////////////// -->
+
+        <menuitem id="obrasociales_subMenu" name="Obras Sociales" parent="consultorios_menu_root" />
+        <menuitem id="obrasociales_menu_root_pacientes_list" action="obrasociales_action_view_tree" name="Listado Obras sociales" parent="obrasociales_subMenu" />
+
+    </data>
+</odoo>

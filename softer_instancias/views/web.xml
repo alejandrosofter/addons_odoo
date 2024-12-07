@@ -1,0 +1,150 @@
+<odoo>
+    <data>
+        <template id="eliminarInstancia" name="Eliminar app">
+            <t t-call="website.layout">
+                <div class="container">
+                    <div class="oe_structure">
+                        <div class="">
+                            <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+
+                        </div>
+                        <form id="deleteForm" action="/my/instancias/delete/#{instancia.id}" method="post">
+                            <div class="modal-body">
+                                <p>Por favor, escriba <strong>"borrar"</strong> para confirmar la eliminación de la aplicación.</p>
+                                <input type="text" id="confirmationInput" class="form-control" placeholder="Escriba 'borrar' para confirmar"/>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-danger" id="deleteButton" disabled="true">Eliminar</button>
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+            </t>
+            <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        var deleteButton = document.getElementById('deleteButton');
+        var confirmationInput = document.getElementById('confirmationInput');
+
+        confirmationInput.addEventListener('input', function() {
+            if (confirmationInput.value.toLowerCase() === 'borrar') {
+                deleteButton.removeAttribute('disabled');
+            } else {
+                deleteButton.setAttribute('disabled', 'true');
+            }
+        });
+
+    
+    });
+            </script>
+        </template>
+
+
+        <template id="instancias_user_web" name="Instancias">
+            <t t-call="website.layout">
+                <div class="container">
+                    <div class="oe_structure" id="instancias_structure_1">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="/my/home" aria-label="Inicio" title="Inicio">
+                                        <i class="fa fa-home"></i>
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Mis apps</li>
+                            </ol>
+                        </nav>
+                        <t t-if="instancias">
+                            <div>
+
+
+                                <ul class="instancias-list">
+                                    <t t-foreach="instancias" t-as="instancia">
+                                        <div class="instancia-container">
+                                            <span t-att-class="'instancia-estado ' +instancia.estado ">
+                                                <t t-call="softer_instancias.lottie_animation">
+                                                    <t t-set="animation_file" t-value="'/softer_instancias/static/lottie/' + instancia.estado + '.json'"/>
+                                                    <t t-set="kwargs" t-value="{'animation_id':instancia.id, 'lottie_path': animation_file, 'width': '20px', 'height': '20px'}"/>
+                                                </t>
+                                                <t t-esc="instancia.estado"/>
+                                                <div class="instancias-acciones">
+                                                    <t t-if="instancia.estado == 'stop'">
+                                                        <a onclick="disableButton(this)" title="Iniciar app" t-attf-href="/my/instancias/start/#{instancia.id}" class="action-item">
+                                                            <span class="fa fa-play"/>
+                                                        </a>
+                                                    </t>
+                                                    <t t-if="instancia.estado == 'running'">
+                                                        <a onclick="disableButton(this)" title="Detener app" t-attf-href="/my/instancias/stop/#{instancia.id}" class="action-item">
+                                                            <span class="fa fa-stop"/>
+                                                        </a>
+                                                    </t>
+                                                    <script type="text/javascript">
+    function disableButton(element) {
+        element.style.pointerEvents = 'none';
+        element.style.opacity = '0.5'; // Opcional: para visualmente deshabilitar el enlace
+    }
+                                                    </script>
+                                                </div>
+                                            </span>
+
+                                            <div class="instancia-item">
+
+                                                <div class="instancia-name">
+
+                                                    <a t-attf-href="/my/instancias/edit/#{instancia.id}" class="action-item">
+                                                        <t t-esc="instancia.name" />
+                                                    </a>
+                                                    <!-- <a onclick="disableButton(this)" title="Eliminar app" t-attf-href="/my/instancias/eliminarInstancia/#{instancia.id}" class="instancia-delete-icon">
+                                                        <span class="fa fa-trash"/>
+                                                    </a> -->
+
+                                                </div>
+                                                <!-- <t t-esc="instancia.dominio" class="instancia-dominio"/> -->
+                                                <!-- <div class="instancia-actions">
+                                                    <div class="action-menu-content">
+                                                        <span class="instancia-actions-title">Acciones</span>
+                                                        <a t-attf-href="/my/instancias/edit/#{instancia.id}" class="action-item">Editar</a>
+
+                                                        <a t-attf-href="/my/instancias/delete/#{instancia.id}" class="action-item">Eliminar</a>
+                                                    </div>
+                                                </div> -->
+                                            </div>
+                                        </div>
+                                    </t>
+                                </ul>
+
+
+                                <p>Ya tienes apps instaladas!! Si quieres agregar un dominio u otro servicio lo puedes hacer <a href="/shop">desde aca!</a>
+                                </p>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="no-instancias">
+                                <p>No tienes apps en este momento! Si quieres una agrega una desde <a href="/shop">aca!</a>
+                                </p>
+                                <div id="lottie-animation" style="width: 450px; height: 450px; margin: auto;"></div>
+                            </div>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.6/lottie.min.js"></script>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    var animation = lottie.loadAnimation({
+                                        container: document.getElementById('lottie-animation'),
+                                        renderer: 'svg',
+                                        loop: true,
+                                        autoplay: true,
+                                        path: '/softer_instancias/static/lottie/notFind.json' // Ruta a tu archivo Lottie
+                                    });
+                                });
+                            </script>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+
+    </data>
+</odoo>

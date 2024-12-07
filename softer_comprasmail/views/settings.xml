@@ -1,0 +1,24 @@
+<!-- views/res_config_settings_views.xml -->
+<odoo>
+    <data>
+        <record id="settings_softer_comprasmail" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <!-- Ubica el formulario y añade los campos -->
+                <xpath expr="//form" position="inside">
+                    <div class="app" string="Compras Email" name="compras_email">
+                        <block title="Compras email">
+                            <setting id="chatgpt_token" help="Enter your ChatGPT token">
+                                <field name="chatgpt_token"/>
+                            </setting>
+                          
+                        </block>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

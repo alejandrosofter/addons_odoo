@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista de formulario para Anteojos Opciones -->
+    <record id="view_form_anteojos_opciones" model="ir.ui.view">
+        <field name="name">consultorio.anteojos_opciones.form</field>
+        <field name="model">consultorio.anteojos_opciones</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista de árbol para Anteojos Opciones -->
+    <record id="view_tree_anteojos_opciones" model="ir.ui.view">
+        <field name="name">consultorio.anteojos_opciones.tree</field>
+        <field name="model">consultorio.anteojos_opciones</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista de formulario para Anteojos Recetas Opciones -->
+    <record id="view_form_recetas_opciones" model="ir.ui.view">
+        <field name="name">consultorio.recetas.opciones.form</field>
+        <field name="model">consultorio.recetas.opciones</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="opcion" />
+                        <field name="anteojo_id" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista de árbol para Anteojos Recetas Opciones -->
+    <record id="view_tree_recetas_opciones" model="ir.ui.view">
+        <field name="name">consultorio.recetas.opciones.tree</field>
+        <field name="model">consultorio.recetas.opciones</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="opcion" />
+                <field name="anteojo_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_form_anteojos_graduaciones" model="ir.ui.view">
+        <field name="name">consultorio.anteojos_graduaciones.form</field>
+        <field name="model">consultorio.anteojos_graduaciones</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="tipoAnteojo" />
+                    </group>
+                    <group>
+                        <group string="Ojo Izquierdo" colspan="1">
+                            <field name="izquierdo_esNeutro" />
+                            <field name="izquierdo_sinCambio" />
+                            <field name="izquierdo_adicionar" />
+                            <field name="izquierdo_adicion" />
+                            <field name="izquierdo_adicionEsferico" />
+                            <field name="izquierdo_esfera" />
+                            <field name="izquierdo_cilindro" />
+                            <field name="izquierdo_eje" />
+                            <field name="izquierdo_piso" />
+                        </group>
+                        <group string="Ojo Derecho" colspan="1">
+                            <field name="derecho_esNeutro" />
+                            <field name="derecho_sinCambio" />
+                            <field name="derecho_adicionar" />
+                            <field name="derecho_adicion" />
+                            <field name="derecho_adicionEsferico" />
+                            <field name="derecho_esfera" />
+                            <field name="derecho_cilindro" />
+                            <field name="derecho_eje" />
+                            <field name="derecho_piso" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista de árbol para Anteojos Graduaciones -->
+    <record id="view_tree_anteojos_graduaciones" model="ir.ui.view">
+        <field name="name">consultorio.anteojos_graduaciones.tree</field>
+        <field name="model">consultorio.anteojos_graduaciones</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="anteojo_id" />
+                <field name="tipoAnteojo" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista de formulario para Anteojos -->
+    <record id="view_form_anteojos" model="ir.ui.view">
+        <field name="name">consultorio.anteojos.form</field>
+        <field name="model">consultorio.anteojos</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="graduaciones">
+                            <tree >
+                                <field name="tipoAnteojo" />
+                            </tree>
+                        </field>
+                        <field name="opciones">
+                            <tree editable="bottom">
+                                <field name="opcion" />
+                            </tree>
+                        </field>
+                    </group>
+                    <group>
+                        <field name="observaciones" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista de árbol para Anteojos -->
+    <record id="view_tree_anteojos" model="ir.ui.view">
+        <field name="name">consultorio.anteojos.tree</field>
+        <field name="model">consultorio.anteojos</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="receta_id" />
+                <field name="observaciones" />
+            </tree>
+        </field>
+    </record>
+</odoo>
