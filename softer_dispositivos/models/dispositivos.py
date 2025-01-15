@@ -18,7 +18,7 @@ class Dispositivos(models.Model):
     is_https = fields.Boolean(string="HTTPS", default=False, help="HTTPS")
     conexion = fields.Selection(
         [
-            ("cloudflare", "Cloudflare"),
+            ("cloudflare", "Cloudflare api"),
             ("api", "API"),
         ],
         string="Conexion",

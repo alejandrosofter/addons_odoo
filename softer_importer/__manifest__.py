@@ -14,11 +14,8 @@
     # any module necessary for this one to work correctly
     "depends": ["base", "queue_job"],
     # always loaded
-    "data": [
-        "security/ir.model.access.csv",
-        "views/importer.xml",
-    ],
+    "data": ["security/ir.model.access.csv", "views/importer.xml"],
     "images": ["static/description/icon.png"],
-    "post_init_hook": "check_installation_code",
+    "pre_init_hook": "pre_init_hook",
     # only loaded in demonstration mode
 }

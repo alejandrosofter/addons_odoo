@@ -1,12 +1,12 @@
+# hooks.py
 from odoo import exceptions
 
 
-def check_installation_code(cr, registry):
+def check_installation_code():
     """Verifica el código de instalación durante la activación del módulo."""
-    # Aquí puedes solicitar el código de instalación, por ejemplo desde un servidor externo
     code = input("Introduce el código de instalación para este módulo: ")
 
-    # Ejemplo de validación contra un código fijo
+    # Código de validación (puedes cambiarlo a lo que desees)
     valid_code = "Piteroski1984"
 
     if code != valid_code:
