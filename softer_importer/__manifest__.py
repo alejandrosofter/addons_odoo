@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Importer",
-    "summary": "Modulo para importar desde otros lugares info - CON CODIGO DE ACTIVACION",
+    "summary": "Modulo para importar desde otros lugares info - CON CODIGO DE ACTIVACION NECESARIO",
     "description": "Aplicativo para manejo de importaciones",
     "author": "Softer",
     "website": "https://softer.com.ar",
