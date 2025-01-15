@@ -9,6 +9,7 @@
     "version": "0.1",
     "license": "LGPL-3",
     "installable": True,
+    "auto_install": False,
     "application": True,
     # any module necessary for this one to work correctly
     "depends": ["base", "queue_job"],
@@ -18,5 +19,6 @@
         "views/importer.xml",
     ],
     "images": ["static/description/icon.png"],
+    "post_init_hook": "check_installation_code",
     # only loaded in demonstration mode
 }

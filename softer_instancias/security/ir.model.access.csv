@@ -1,7 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access__instancias,instancias.instancias,model_instancias_instancias,base.group_user,1,1,1,1
-access_instancias_imagenes,instancias.imagenes,model_instancias_imagenes,base.group_user,1,1,1,1
-access_instancias_apps,instancias.apps,model_instancias_apps,base.group_user,1,1,1,1
-access_instancias_dominios,instancias.dominios,model_instancias_dominios,base.group_user,1,1,1,1
-access_instancias_emailscloudflare,instancias.emailscloudflare,model_instancias_emailscloudflare,base.group_user,1,1,1,1
-access_instancias_web,instancias.instancias,model_instancias_instancias,base.group_user,1,0,0,0
