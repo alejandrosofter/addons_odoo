@@ -10,7 +10,7 @@
 
                     <field name="name" string="Nombre"/>
                     <field name="user" string="Usuario asociado"/>
-                    <field name="instancia" string="Instancia asociada"/>
+                    <!-- <field name="instancia" string="Instancia asociada"/> -->
                     <field name="estado" string="Estado"/>
 
                 </tree>
@@ -25,7 +25,7 @@
                         <group>
                             <field name="name" string="Nombre"/>
                             <field name="user" string="Usuario asociado"/>
-                            <field name="instancia" string="Instancia asociada"/>
+                            <!-- <field name="instancia" string="Instancia asociada"/> -->
                             <field name="estado" string="Estado"/>
                         </group>
                     </sheet>
@@ -41,7 +41,7 @@
                 <search>
                     <field name="name" string="Nombre"/>
                     <field name="user" string="Usuario asociado"/>
-                    <field name="instancia" string="Instancia asociada"/>
+                    <!-- <field name="instancia" string="Instancia asociada"/> -->
                     <field name="estado" string="Estado"/>
                 </search>
             </field>

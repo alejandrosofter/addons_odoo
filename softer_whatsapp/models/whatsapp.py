@@ -7,7 +7,7 @@ class Whatsapp(models.Model):
     _description = "Whatsapp"
     name = fields.Char(string="Nombre")
     user = fields.Many2one("res.users", string="User")
-    instancia = fields.Many2one("instancias.instancias", string="Instancia")
+    # instancia = fields.Many2one("instancias.instancias", string="Instancia")
     # lista estado
     estado = fields.Selection(
         [

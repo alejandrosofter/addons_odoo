@@ -12,11 +12,11 @@
     "application": True,
     # any module necessary for this one to work correctlyv
     "depends": [
-        "softer_instancias",
+        # "softer_instancias",
     ],
     "assets": {
         "web.assets_frontend": [
-            "softer_instancias/static/css/instancias.css",
+            # "softer_instancias/static/css/instancias.css",
         ],
     },
     "data": [
