@@ -1,0 +1,124 @@
+.instancias-list {
+    list-style-type: none;
+    padding: 20px;
+    margin: 0;
+}
+.itemsModulo {
+    list-style-type: none;
+    padding: 20px;
+    margin: 0;
+}
+.itemsModulo-contenedor {
+    border: 1px solid #ddd;
+    margin: 10px 0;
+    padding: 10px;
+    position: relative;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+.pageModulo{
+    padding-left: 40px;
+    padding-right: 40px;
+    margin: 0;
+}
+.instancia-delete-icon{
+    margin-left: 20px;
+    cursor: pointer;
+    font-size: 20px;
+    color: rgb(207, 9, 9)
+}
+.status-instancia {
+    position: absolute; /* Permite posicionar el elemento en relación con su contenedor */
+    top: 0; /* Alinea al borde superior */
+    right: 0; /* Alinea al borde derecho */
+    width: 20px; /* Establece el ancho */
+    height: 20px; /* Establece la altura */
+}
+
+.boton-form{
+    margin: 10px;
+    font-size: 16px;
+    align-self: center;
+}
+.form-edit-instancia{
+    padding-top: 20px;
+    padding-bottom: 40px;
+}
+.instancia-estado {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    padding-left: 5px;
+}
+.instancia-estado.running{
+    color: green;
+    
+}
+.instancia-estado.stop{
+    color: red;
+}
+.instancia-actions-title{
+    font-weight: bold;
+    font-size: 18px;
+    padding-top:15px;
+    padding-bottom:15px;
+}
+.instancia-container {
+    border: 1px solid #ddd;
+    margin: 10px 0;
+    padding: 10px;
+    position: relative;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+.instancia-item {
+ 
+    padding: 25px;
+}
+.instancias-acciones{
+    padding-left: 20px;
+}
+.instancia-name {
+    font-size: 38px;
+    font-weight: bold;
+}
+.instancia-dominio {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.instancia-actions {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.action-menu-content {
+    display: none;
+    position: absolute;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    right: 0;
+    top: 100%;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.action-menu-content .action-item {
+    display: block;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-decoration: none;
+   
+}
+
+.action-menu-content .action-item:hover {
+    background-color: #cfcfcf;
+
+}
+
+.instancia-item:hover .action-menu-content {
+    display: block;
+}

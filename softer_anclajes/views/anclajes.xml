@@ -1,0 +1,100 @@
+<odoo>
+    <!-- Tree View -->
+    <record id="view_anclajes_tree" model="ir.ui.view">
+        <field name="name">anclajes.tree</field>
+        <field name="model">anclajes.anclajes</field>
+        <field name="arch" type="xml">
+            <tree string="Anclajes">
+                <field name="name"/>
+                <field name="bateria"/>
+                <field name="nroCertificado"/>
+                <field name="equipoEnsayo"/>
+                <field name="fechaEnsayo"/>
+                <field name="fechaConstruccion"/>
+                <field name="horaEnsayo"/>
+                <!-- <field name="zona_id"/> -->
+                <field name="pozo"/>
+                <field name="anclaje_no"/>
+                <field name="anclaje_ne"/>
+                <field name="anclaje_so"/>
+                <field name="anclaje_se"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_anclajes_form" model="ir.ui.view">
+        <field name="name">anclajes.form</field>
+        <field name="model">anclajes.anclajes</field>
+        <field name="arch" type="xml">
+            <form string="Anclajes">
+                <sheet>
+                    <notebook>
+                        <!-- Pestaña: Información General -->
+                        <page string="Información General">
+                            <group string="Información General">
+                                <field name="name"/>
+                                <field name="bateria"/>
+                                <field name="nroCertificado"/>
+                                <field name="equipoEnsayo"/>
+                                <field name="fechaEnsayo"/>
+                                <field name="fechaConstruccion"/>
+                                <field name="horaEnsayo"/>
+                                <!-- <field name="zona_id"/> -->
+                                <field name="pozo"/>
+                            </group>
+                        </page>
+
+                        <!-- Pestaña: Anclajes -->
+                        <page string="Anclajes">
+                            <group string="Anclajes" colspan="4">
+                                <field name="anclaje_no"/>
+                                <field name="anclaje_ne"/>
+                                <field name="anclaje_so"/>
+                                <field name="anclaje_se"/>
+                            </group>
+                        </page>
+
+                        <!-- Pestaña: Observaciones -->
+                        <page string="Observaciones">
+                            <group string="Observaciones">
+                                <field name="observaciones">
+                                    <tree>
+                                        <field name="fecha"/>
+                                        <field name="usuario"/>
+                                        <field name="name"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+
+                        <!-- Pestaña: Certificado -->
+                        <page string="Certificado">
+                            <group>
+                                <field name="certificado"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_anclajes" model="ir.actions.act_window">
+        <field name="name">Anclajes</field>
+        <field name="res_model">anclajes.anclajes</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>
+                Use esta vista para gestionar los anclajes. Puede registrar los detalles relacionados con cada anclaje, como el equipo, la batería, las fechas, y más.
+            </p>
+        </field>
+    </record>
+    <!-- web_icon="softer_anclajes,static/description/icon.png" -->
+    <!-- Menu Item -->
+
+    <menuitem id="anclajes_menu_root" name="Anclajes" web_icon="softer_anclajes,static/description/icon.png"/>
+    <menuitem id="anclajes_menu_root_anclajes" name="Anclajes" parent="anclajes_menu_root" action="action_anclajes" />
+</odoo>

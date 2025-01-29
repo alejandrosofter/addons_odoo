@@ -1,0 +1,35 @@
+<odoo>
+    <!-- Vista tipo árbol para Zonas -->
+    <record id="view_zonas_tree" model="ir.ui.view">
+        <field name="name">zonas.tree</field>
+        <field name="model">anclajes.zonas</field>
+        <field name="arch" type="xml">
+            <tree string="Zonas">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista tipo formulario para Zonas -->
+    <record id="view_zonas_form" model="ir.ui.view">
+        <field name="name">zonas.form</field>
+        <field name="model">anclajes.zonas</field>
+        <field name="arch" type="xml">
+            <form string="Zonas">
+                <sheet>
+                    <field name="name"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción para Zonas -->
+    <record id="action_zonas" model="ir.actions.act_window">
+        <field name="name">Zonas</field>
+        <field name="res_model">anclajes.zonas</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menú para Zonas -->
+    <!-- <menuitem id="menu_zonas" name="Zonas" groups="base.group_system" parent="anclajes_menu_root" action="action_zonas"/> -->
+</odoo>

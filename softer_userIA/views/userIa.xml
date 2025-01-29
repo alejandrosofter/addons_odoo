@@ -1,0 +1,28 @@
+<odoo>
+    <data>
+        <!-- Hereda la vista del formulario de usuario -->
+        <record id="view_users_form_inherit" model="ir.ui.view">
+            <field name="name">res.users.form.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form" />
+            <field name="arch" type="xml">
+                <!-- Inserta los campos después del campo 'login' -->
+                <xpath expr="//field[@name='login']" position="after">
+                    <group string="Usuario IA">
+                        <field name="es_virtual"/>
+                        <field name="chat_channel_id" invisible="not es_virtual" />
+                        <field name="prompt" invisible="not es_virtual"/>
+                        <field name="tiene_wsap"/>
+                        <field name="estado_whatsapp" invisible="not tiene_wsap"/>
+                    </group>
+                    <div class="alert alert-info " invisible="not tiene_wsap">
+
+                   
+                Los personales del asistente (el nro de teléfono y otros datos lo debes cargar desde su "Contacto relacionado").
+                       
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

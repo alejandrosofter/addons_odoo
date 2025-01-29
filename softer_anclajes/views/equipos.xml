@@ -1,0 +1,37 @@
+<odoo>
+    <record id="view_equipos_tree" model="ir.ui.view">
+        <field name="name">equipos.tree</field>
+        <field name="model">anclajes.equipos</field>
+        <field name="arch" type="xml">
+            <tree string="Equipos">
+                <field name="name"/>
+                <field name="ref"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_equipos_form" model="ir.ui.view">
+        <field name="name">equipos.form</field>
+        <field name="model">anclajes.equipos</field>
+        <field name="arch" type="xml">
+            <form string="Equipos">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="ref"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_equipos" model="ir.actions.act_window">
+        <field name="name">Equipos</field>
+        <field name="res_model">anclajes.equipos</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem id="menu_equipos" name="Equipos" groups="base.group_system" parent="anclajes_menu_root" action="action_equipos"/>
+
+
+</odoo>
