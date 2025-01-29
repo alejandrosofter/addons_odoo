@@ -7,7 +7,7 @@ access_zonas_user,access.zonas.user,model_anclajes_zonas,base.group_user,1,0,0,0
 access_zonas_admin,access.zonas.admin,model_anclajes_zonas,base.group_system,1,1,1,1
 access_zonas_manager,access.zonas.manager,model_anclajes_zonas,group_anclajes_admin,1,1,1,1
 
-access_equipos_user,access.equipos.user,model_anclajes_equipos,base.group_user,1,0,0,0
+access_equipos_user,access.equipos.user,model_anclajes_equipos,base.group_user,1,1,1,1
 access_equipos_admin,access.equipos.admin,model_anclajes_equipos,base.group_system,1,1,1,1
 access_equipos_manager,access.equipos.manager,model_anclajes_equipos,group_anclajes_admin,1,1,1,1
 
