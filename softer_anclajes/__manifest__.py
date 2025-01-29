@@ -13,13 +13,14 @@
     "depends": ["base"],
     # always loaded
     "data": [
+        "security/groups.xml",
+        "security/rules.xml",
         "views/anclajes.xml",
         "views/zonas.xml",
         "views/res_config_settings_view.xml",
         "views/user.xml",
         "views/equipos.xml",
         "security/ir.model.access.csv",
-        "security/rules.xml",
     ],
     # "data": ["security/ir.model.access.csv", "views/importer.xml"],
     # "images": ["static/description/icon.png"],
