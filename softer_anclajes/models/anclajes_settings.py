@@ -49,8 +49,15 @@ class AnclajesSettings(models.TransientModel):
 
     @api.model
     def import_anclajes(self, args=None):
-        # self.syncUsers()
         self.syncAnclajes()
+
+    @api.model
+    def import_users(self, args=None):
+        self.syncUsers()
+
+    @api.model
+    def import_equipos(self, args=None):
+        self.syncEquipos()
 
     def syncUsers(self):
         try:

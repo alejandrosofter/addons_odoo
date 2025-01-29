@@ -15,6 +15,8 @@
                                 <field name="desdeRegistro"/>
                                 <field name="hastaRegistro"/>
                                 <button name="import_anclajes" string="Importar Anclajes" type="object" class="btn-primary" icon="fa-download"/>
+                                <button name="import_equipos" string="Importar Equipos" type="object" class="btn-primary" icon="fa-download"/>
+                                <button name="import_users" string="Importar Users" type="object" class="btn-primary" icon="fa-download"/>
                                 <field name="import_status" readonly="1" />
                             </block>
                         </div>
