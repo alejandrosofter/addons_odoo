@@ -8,6 +8,6 @@ class Observation(models.Model):
     name = fields.Char(string="Detalle")
     fecha = fields.Date(string="Fecha", default=fields.Date.today)
     usuario = fields.Many2one(
-        "res.users", string="Usuario", default=lambda self: self.env.user
+        "res.users", string="Usuario", default=lambda self: self.env.user, readonly=True
     )
     anclaje = fields.Many2one("anclajes.anclajes", string="Anclaje")

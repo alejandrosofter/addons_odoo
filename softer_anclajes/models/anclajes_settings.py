@@ -81,6 +81,8 @@ class AnclajesSettings(models.TransientModel):
             raise models.ValidationError(_("Error al importar registros: %s") % str(e))
 
     def getCertificadoApi(self, certificado):
+        if certificado == None:
+            return None
         try:
             response = requests.get(
                 f"https://anclajes.ibero-sa.net/descargaCertificado/{certificado}"
