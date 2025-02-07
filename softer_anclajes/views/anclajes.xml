@@ -12,7 +12,7 @@
                 <field name="fechaEnsayo"/>
                 <field name="fechaConstruccion"/>
                 <field name="horaEnsayo"/>
-                <!-- <field name="zona_id"/> -->
+                <field name="zona_id"/>
                 <field name="pozo"/>
                 <field name="anclaje_no"/>
                 <field name="anclaje_ne"/>
@@ -41,8 +41,9 @@
                                 <field name="fechaEnsayo"/>
                                 <field name="fechaConstruccion"/>
                                 <field name="horaEnsayo"/>
-                                <!-- <field name="zona_id"/> -->
+                                <field name="zona_id"/>
                                 <field name="pozo"/>
+                                <field name="user_id" groups="base.group_system"/>
                             </group>
                         </page>
 

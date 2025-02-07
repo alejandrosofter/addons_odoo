@@ -52,15 +52,15 @@ class Anclajes(models.Model):
         required=False,
     )
     certificado = fields.Binary(string="Certificado", attachment=True)
-    # zona_id = fields.Many2one(
-    #     "anclajes.zonas",
-    #     string="Zona",
-    #     help="Seleccione la zona asociada con el anclaje",
-    # )
+    zona_id = fields.Many2one(
+        "anclajes.zonas",
+        string="Zona",
+        help="Seleccione la zona asociada con el anclaje",
+    )
     pozo = fields.Char(string="Pozo")
     user_id = fields.Many2one(
         "res.users",
-        string="Creado por",
+        string="Usuario",
         default=lambda self: self.env.user,
-        readonly=True,
+        # readonly=True,
     )

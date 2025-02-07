@@ -31,5 +31,5 @@
     </record>
 
     <!-- Menú para Zonas -->
-    <!-- <menuitem id="menu_zonas" name="Zonas" groups="base.group_system" parent="anclajes_menu_root" action="action_zonas"/> -->
+    <menuitem id="menu_zonas" name="Zonas" groups="base.group_system" parent="anclajes_menu_root" action="action_zonas"/>
 </odoo>
