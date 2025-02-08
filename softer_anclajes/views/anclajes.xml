@@ -43,7 +43,8 @@
                                 <field name="horaEnsayo"/>
                                 <field name="zona_id"/>
                                 <field name="pozo"/>
-                                <field name="user_id" groups="base.group_system"/>
+
+                                <field name="user_id" groups="base.group_system,softer_anclajes.group_anclajes_admin"/>
                             </group>
                         </page>
 
