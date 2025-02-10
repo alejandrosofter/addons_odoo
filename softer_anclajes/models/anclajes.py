@@ -57,7 +57,7 @@ class Anclajes(models.Model):
         string="Zona",
         help="Seleccione la zona asociada con el anclaje",
     )
-    pozo = fields.Char(string="Pozo")
+    pozo = fields.Char(string="Pozoo")
     user_id = fields.Many2one(
         "res.users",
         string="Usuario",
