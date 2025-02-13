@@ -1,0 +1,19 @@
+<odoo>
+    <record id="view_resource_calendar_leaves_form_inherit" model="ir.ui.view">
+        <field name="name">resource.calendar.leaves.form.inherit</field>
+        <field name="model">resource.calendar.leaves</field>
+        <field name="inherit_id" ref="resource.resource_calendar_leave_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="tipo"/>
+                <div class="o_block" style="padding: 15px" colspan="2">
+                    <span style="padding-right: 20px"> AJUSTE DE TIPOS: </span>
+                    <span style="color:red;padding-right: 10px"> (**) Injustificado</span>
+                    <span style="color:green"> (*) Justificado</span>
+
+
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

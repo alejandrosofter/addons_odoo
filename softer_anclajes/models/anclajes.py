@@ -1,5 +1,6 @@
-from odoo import models, fields
+from odoo import models, fields, api
 import requests
+from datetime import timedelta
 
 
 class Anclajes(models.Model):
@@ -24,30 +25,30 @@ class Anclajes(models.Model):
     )
 
     equipoIngresante = fields.Char(string="Equipo Ingresante")
-    fechaEnsayo = fields.Date(string="Fecha de Ensayo")
+    fechaEnsayo = fields.Date(string="Fecha Ensayo")
     fechaConstruccion = fields.Date(string="Fecha de Construcción")
-    horaEnsayo = fields.Char(string="Hora de Ensayo")
+    horaEnsayo = fields.Char(string="Hora ")
     anclaje_no = fields.Selection(
-        selection=[("A", "Aprobado"), ("R", "Rechazado"), ("", "Sin definir")],
-        string="Anclaje NO",
+        selection=[("A", "A"), ("R", "R"), ("", "-")],
+        string="NO",
         default="",
         required=False,
     )
     anclaje_ne = fields.Selection(
-        selection=[("A", "Aprobado"), ("R", "Rechazado"), ("", "Sin definir")],
-        string="Anclaje NE",
+        selection=[("A", "A"), ("R", "R"), ("", "-")],
+        string="NE",
         default="",
         required=False,
     )
     anclaje_so = fields.Selection(
-        selection=[("A", "Aprobado"), ("R", "Rechazado"), ("", "Sin definir")],
-        string="Anclaje SO",
+        selection=[("A", "A"), ("R", "R"), ("", "-")],
+        string="SO",
         default="",
         required=False,
     )
     anclaje_se = fields.Selection(
-        selection=[("A", "Aprobado"), ("R", "Rechazado"), ("", "Sin definir")],
-        string="Anclaje SE",
+        selection=[("A", "A"), ("R", "R"), ("", "-")],
+        string="SE",
         default="",
         required=False,
     )
@@ -57,10 +58,23 @@ class Anclajes(models.Model):
         string="Zona",
         help="Seleccione la zona asociada con el anclaje",
     )
-    pozo = fields.Char(string="Pozoo")
+    pozo = fields.Char(string="Pozo")
     user_id = fields.Many2one(
         "res.users",
         string="Usuario",
         default=lambda self: self.env.user,
         # readonly=True,
     )
+    fechaVencimiento = fields.Date(
+        string="Fecha Vto", compute="_compute_fecha_vencimiento", store=True
+    )
+
+    @api.depends("fechaEnsayo")
+    def _compute_fecha_vencimiento(self):
+        for record in self:
+            if record.fechaEnsayo:
+                record.fechaVencimiento = record.fechaEnsayo + timedelta(days=2 * 365)
+            else:
+                record.fechaVencimiento = (
+                    False  # Si no hay fecha de ensayo, el campo queda vacío
+                )

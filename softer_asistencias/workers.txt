@@ -1,0 +1,14 @@
+Dispositivo
+
+RELOJ TALLER
+Hikvision
+
+device
+Hikvision en Workers
+Cloudflare
+host: workers_reloj.yavu.com.ar
+https ok
+user: admin
+clave: diego2024
+port 80
+token Cloudflare eyJhIjoiN2U5OTg2MTYzN2ZjNDUyMTIxYzQ0ZDljZjE1OTgzZjkiLCJ0IjoiNjQxODcwMDctMjQyOC00Yzc5LWE3ZWMtZWVmZmIxZjBmYTA4IiwicyI6IlkyUTROMk13TkdVdE5tUTRNQzAwTlRNMExUZzJZV1l0Tm1Oa1pEQmxOR0prWm1ZMSJ9

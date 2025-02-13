@@ -1,0 +1,30 @@
+<odoo>
+    <data>
+        <!-- Hereda la vista del formulario de usuario -->
+        <record id="view_users_form_inherit" model="ir.ui.view">
+            <field name="name">res.users.form.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form" />
+            <field name="arch" type="xml">
+                <!-- Inserta los campos después del campo 'login' -->
+                <xpath expr="//page[@name='preferences']" position="after">
+                    <page string="Whatsapp" name="wsap">
+
+                        <group name="messaging">
+                            <field name="active_wsap"/>
+                            <field name="nroWhatsapp" invisible="not active_wsap" />
+                            <field name="estado" invisible="not active_wsap"/>
+                        </group>
+                    </page>
+
+
+
+                    <!-- <div class="alert alert-info " invisible="not active_wsap"> -->
+
+
+
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

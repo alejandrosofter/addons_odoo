@@ -5,19 +5,21 @@
         <field name="model">anclajes.anclajes</field>
         <field name="arch" type="xml">
             <tree string="Anclajes">
+                <field name="fechaVencimiento"/>
                 <field name="name"/>
                 <field name="bateria"/>
                 <field name="nroCertificado"/>
                 <field name="equipoEnsayo"/>
                 <field name="fechaEnsayo"/>
-                <field name="fechaConstruccion"/>
                 <field name="horaEnsayo"/>
+                <field name="fechaConstruccion"/>
+
                 <field name="zona_id"/>
                 <field name="pozo"/>
-                <field name="anclaje_no"/>
-                <field name="anclaje_ne"/>
-                <field name="anclaje_so"/>
-                <field name="anclaje_se"/>
+                <field name="anclaje_no" decoration-danger="anclaje_no == 'R'"/>
+                <field name="anclaje_ne" decoration-danger="anclaje_ne == 'R'"/>
+                <field name="anclaje_so" decoration-danger="anclaje_so == 'R'"/>
+                <field name="anclaje_se" decoration-danger="anclaje_se == 'R'"/>
 
             </tree>
         </field>

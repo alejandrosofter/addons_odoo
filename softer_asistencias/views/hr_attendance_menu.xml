@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Acción de ventana para el modelo -->
+    <record id="action_resource_calendar_leaves" model="ir.actions.act_window">
+        <field name="name">Días Festivos y Ausencias</field>
+        <field name="res_model">resource.calendar.leaves</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>Aquí puedes gestionar los feriados, vacaciones y ausencias de los empleados.</p>
+        </field>
+    </record>
+
+
+    <!-- Submenú dentro de Recursos Humanos -->
+    <menuitem id="menu_resource_calendar_leaves" name="Días Festivos y Ausencias" parent="hr_attendance.menu_hr_attendance_root" action="action_resource_calendar_leaves" sequence="20"/>
+</odoo>

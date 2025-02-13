@@ -1,0 +1,16 @@
+.label-info {
+    color: blue;
+    font-weight: bold;
+}
+
+.label-warning {
+    color: orange;
+    font-weight: bold;
+}
+
+.o_container {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    font-style: italic;
+}

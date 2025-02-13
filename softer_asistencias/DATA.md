@@ -1,0 +1,3 @@
+WORKERS TUNER RELOJ
+cloudflared.exe service install eyJhIjoiN2U5OTg2MTYzN2ZjNDUyMTIxYzQ0ZDljZjE1OTgzZjkiLCJ0IjoiNjQxODcwMDctMjQyOC00Yzc5LWE3ZWMtZWVmZmIxZjBmYTA4IiwicyI6IlkyUTROMk13TkdVdE5tUTRNQzAwTlRNMExUZzJZV1l0Tm1Oa1pEQmxOR0prWm1ZMSJ9
+https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.msi

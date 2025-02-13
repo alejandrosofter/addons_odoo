@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--    Defined all menus here -->
+    <menuitem id="dispositivos_mainmenu" name="Dispositivos" web_icon="softer_dispositivos,static/description/icon.png" />
+    <menuitem id="dispositivos_mainmenu_dispositivos" action="action_dispositivos" name="Dispositivos" parent="dispositivos_mainmenu" />
+
+</odoo>
