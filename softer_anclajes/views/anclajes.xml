@@ -20,6 +20,9 @@
                 <field name="anclaje_ne" decoration-danger="anclaje_ne == 'R'"/>
                 <field name="anclaje_so" decoration-danger="anclaje_so == 'R'"/>
                 <field name="anclaje_se" decoration-danger="anclaje_se == 'R'"/>
+                <field name="anclaje_e" decoration-danger="anclaje_e == 'R'"/>
+                <field name="anclaje_o" decoration-danger="anclaje_o == 'R'"/>
+
 
             </tree>
         </field>
@@ -57,6 +60,9 @@
                                 <field name="anclaje_ne"/>
                                 <field name="anclaje_so"/>
                                 <field name="anclaje_se"/>
+                                <field name="anclaje_e"/>
+                                <field name="anclaje_o"/>
+
                             </group>
                         </page>
 

@@ -28,6 +28,18 @@ class Anclajes(models.Model):
     fechaEnsayo = fields.Date(string="Fecha Ensayo")
     fechaConstruccion = fields.Date(string="Fecha de Construcción")
     horaEnsayo = fields.Char(string="Hora ")
+    anclaje_e = fields.Selection(
+        selection=[("A", "A"), ("R", "R"), ("", "-")],
+        string="E",
+        default="",
+        required=False,
+    )
+    anclaje_o = fields.Selection(
+        selection=[("A", "A"), ("R", "R"), ("", "-")],
+        string="O",
+        default="",
+        required=False,
+    )
     anclaje_no = fields.Selection(
         selection=[("A", "A"), ("R", "R"), ("", "-")],
         string="NO",

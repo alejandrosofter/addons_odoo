@@ -12,7 +12,14 @@
                         <div id="softer_wsap_settings_container">
                             <block title="Configuración Whatsapp " name="whatsapp_configuration">
                                 <group>
-                                    <field name="url_whatsapp" placeholder="https://ejemplo.com/api" />
+                                    <field name="active_wsap" />
+
+                                    <field name="url_whatsapp" placeholder="https://ejemplo.com/api" invisible="not active_wsap" />
+
+                                    <field name="token_wsap" placeholder="token de uso de la api" invisible="not active_wsap" />
+                                    <div colspan="2">
+                                        <button name="action_actualizar_bots_wsap" string="Actualizar Bots WhatsApp" type="object" class="btn-primary"/>
+                                    </div>
                                 </group>
                             </block>
                         </div>

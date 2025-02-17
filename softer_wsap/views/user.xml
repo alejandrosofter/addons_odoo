@@ -12,8 +12,7 @@
 
                         <group name="messaging">
                             <field name="active_wsap"/>
-                            <field name="nroWhatsapp" invisible="not active_wsap" />
-                            <field name="estado" invisible="not active_wsap"/>
+                            <field name="idBotWsap" invisible="not active_wsap" />
                         </group>
                     </page>
 

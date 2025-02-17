@@ -13,8 +13,12 @@
     "depends": ["base", "mail"],
     # always loaded
     "data": [
+        "security/ir.model.access.csv",
         "views/user.xml",
         "views/res_config_settings_view.xml",
+        "views/cron.xml",
+        "views/bot.xml",
+        "views/menu.xml",
     ],
     # "data": ["security/ir.model.access.csv", "views/importer.xml"],
     # "images": ["static/description/icon.png"],

@@ -9,6 +9,12 @@ class ResConfigSettingsInherit(models.TransientModel):
     userAdministrador = fields.Many2one("res.users", string="Administrador Asistencias")
     active = fields.Boolean(string="Notificacion activa", default=False)
     quioskoActive = fields.Boolean(string="Quiosko activo", default=False)
+    notificarDiariamente = fields.Boolean(
+        string="Notificar Diariamente Eventualidades", default=False
+    )
+    horaNotificacionDiaria = fields.Char(
+        string="Hora Notificacion Diaria", default=False
+    )
 
     # Guarda la configuración en ir.config_parameter
     def set_values(self):
@@ -25,6 +31,12 @@ class ResConfigSettingsInherit(models.TransientModel):
         )
         ir_config.set_param("asistencias.quioskoActive", self.quioskoActive)
         ir_config.set_param("asistencias.active", self.active)
+        ir_config.set_param(
+            "asistencias.notificarDiariamente", self.notificarDiariamente
+        )
+        ir_config.set_param(
+            "asistencias.horaNotificacionDiaria", self.horaNotificacionDiaria
+        )
 
         # Activar/desactivar menú según `quioskoActive`
         menu = self.env.ref("hr_attendance.menu_hr_attendance_kiosk_no_user_mode")
@@ -59,6 +71,12 @@ class ResConfigSettingsInherit(models.TransientModel):
                     "asistencias.quioskoActive", default=False
                 ),
                 "active": ir_config.get_param("asistencias.active", default=False),
+                "notificarDiariamente": ir_config.get_param(
+                    "asistencias.notificarDiariamente", default=False
+                ),
+                "horaNotificacionDiaria": ir_config.get_param(
+                    "asistencias.horaNotificacionDiaria", default="12:00"
+                ),
             }
         )
         return res

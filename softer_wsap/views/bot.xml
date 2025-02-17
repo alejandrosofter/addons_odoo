@@ -1,0 +1,67 @@
+<odoo>
+    <data>
+        <record id="view_bot_whatsapp_tree" model="ir.ui.view">
+            <field name="name">bot.whatsapp.tree</field>
+            <field name="model">bot.whatsapp</field>
+            <field name="arch" type="xml">
+                <tree string="Bots de WhatsApp" create="true" edit="true">
+                    <field name="name"/>
+                    <!-- <field name="estaConectado"/>
+                    <field name="status_session"/>
+                    <field name="status"/>
+                    <field name="port"/>
+                    <field name="lastUpdate"/>
+                    <field name="external_id"/> -->
+                </tree>
+            </field>
+        </record>
+        <record id="view_bot_whatsapp_form" model="ir.ui.view">
+            <field name="name">bot.whatsapp.form</field>
+            <field name="model">bot.whatsapp</field>
+            <field name="arch" type="xml">
+                <form string="Bot de WhatsApp">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="estaConectado"/>
+                            <field name="status_session"/>
+                            <field name="status"/>
+                            <field name="port"/>
+                            <field name="lastUpdate"/>
+                            <field name="external_id"/>
+                        </group>
+
+                        <group string="Código QR de WhatsApp" invisible="estaConectado">
+                            <div colspan="2">
+                                <button name="action_get_qr" type="object" string="Actualizar QR" class="btn-primary"/>
+                            </div>
+                            <field name="qr_image" widget="image"/>
+                            <div colspan="2">
+                                <i>
+                            (*) Si ya te has vinculado en tu telefono por favor espera a que sincronize el sistema!</i>
+                            </div>
+
+                        </group>
+                        <group string="Estas conectado a whatsapp!" invisible="not estaConectado">
+
+                            <div colspan="2">
+                                <div style="padding:20px">
+                                    <button name="action_logout" type="object" string="Desconectar" class="btn-primary" style="padding:10px"/>
+                                </div>
+                                <div style="padding:20px">
+                                    <button name="action_syncWhatsap" type="object" string="Sync Boots" class="btn-primary" style="padding:10px"/>
+                                </div>
+                            </div>
+                            <div colspan="2">
+                                <i>
+                            (*) Si te has desconectado espera unos minutos para volver a conectar!</i>
+                            </div>
+
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
