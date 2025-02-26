@@ -20,7 +20,7 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="model.get_asistencias_active()"/>
+            <!-- <field name="active" eval="model.get_asistencias_active()"/> -->
             <!-- <field name="nextcall" eval="(datetime.datetime.now().replace(hour=int(env['ir.config_parameter'].sudo().get_param('asistencias.horaNotificacionDiaria', '08:00:00').split(':')[0]), minute=int(env['ir.config_parameter'].sudo().get_param('asistencias.horaNotificacionDiaria', '08:00:00').split(':')[1]), second=int(env['ir.config_parameter'].sudo().get_param('asistencias.horaNotificacionDiaria', '08:00:00').split(':')[2])))"/> -->
 
         </record>
