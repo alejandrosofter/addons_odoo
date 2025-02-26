@@ -25,6 +25,15 @@ class HrAttendance(models.Model):
             leaves.unlink()
         return super(HrAttendance, self).unlink()
 
+    @api.model
+    def get_asistencias_active(self):
+        return (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("asistencias.active", "False")
+            == "True"
+        )
+
     def enviar_reporte_asistencias(self):
         """Genera un reporte de asistencias y lo envía al administrador."""
         admin = self.env["res.users"].search(
