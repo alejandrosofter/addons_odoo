@@ -6,6 +6,7 @@
         <field name="target">current</field>
     </record>
 
-    <menuitem id="menu_whatsapp_root" name="WhatsApp" parent="base.menu_administration" sequence="10"/>
-    <menuitem id="menu_whatsapp_config" name="Configuración" parent="menu_whatsapp_root" action="action_whatsapp_config" sequence="20"/>
+    <menuitem id="wsap_menu_root" name="Whatsapp" web_icon="softer_wsap,static/description/icon.png"/>
+    <menuitem id="wsap_menu_config" name="Whatsapp" parent="wsap_menu_root" action="action_whatsapp_config" sequence="20"/>
+
 </odoo>

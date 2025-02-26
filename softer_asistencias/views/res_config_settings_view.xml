@@ -18,10 +18,17 @@
                             </div>
                             <field name="userAdministrador" invisible="not active"/>
                             <field name="notificarDiariamente" invisible="not active"/>
-                            <field name="horaNotificacionDiaria" invisible="not active or not notificarDiariamente"/>
+                            <!-- <field name="horaNotificacionDiaria" invisible="not active or not notificarDiariamente"/> -->
                             <div invisible="not active" class="o_block" style="padding: 15px" colspan="2">
                                 <i style="padding-right: 10px">
-                                    <b style="color:orange">(*)</b> La hora debe ser en formto <b>24 HRS</b> por ej si quieres que se envia a las 4 de la tarde debes colocar <b>16</b>
+                                    <b style="color:orange">(*)</b>
+                                    <b>Solo caso de haber!</b> se enviara un mensaje diario
+                                </i>
+                            </div>
+                            <field name="notificarAlinputFalta" invisible="not active"/>
+                            <div invisible="not active" class="o_block" style="padding: 15px" colspan="2">
+                                <i style="padding-right: 10px">
+                                  Al activar este campo se enviará un mensaje al usuario cuando se ingrese una falta
                                 </i>
                             </div>
 

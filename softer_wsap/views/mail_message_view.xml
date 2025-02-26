@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_mail_message_form_whatsapp" model="ir.ui.view">
+        <field name="name">mail.message.form.whatsapp</field>
+        <field name="model">mail.message</field>
+        <field name="inherit_id" ref="mail.mail_message_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Agrega el campo después de 'message_type' -->
+            <xpath expr="//field[@name='message_type']" position="after">
+                <field name="idBot" />
+            </xpath>
+            <xpath expr="//field[@name='body']" position="before">
+                <div invisible="not idBot">
+                    <b>AYUDA MENSAJE WHATSAPP</b>  
+Debes encerrar el texto en los siguientes caracteres para darle formato a tu mensaje:<br/>
+
+                <i>_texto_</i>,  
+                <b>*texto*</b>,  
+                <s>~texto~</s>,  
+                <code>```texto```</code>. Ej . Hola *Mundo* _como_ ~estas~ ```hoy``` ---> Hola <b>Mundo</b>
+                <i> como</i>
+                <s> estas</s>
+                <code> hoy</code>
+                <br/>
+                <br/>
+            </div>
+        </xpath>
+    </field>
+</record>
+</odoo>

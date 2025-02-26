@@ -1,0 +1,11 @@
+<t t-name="systray_icon_wsap" owl="1">
+    <t t-if="state.activeWsap">
+        <div class="new_icon">
+            <div class="icon_div">
+                <div class="toggle-icon" role="button">
+                    <i id="status_wsap" t-on-click="_onClick" t-att-style="'color: ' + state.color + '; margin-bottom:5px; padding:15px;'" class="fa fa-whatsapp" role="img" aria-label="Estado Wsap"/>
+                </div>
+            </div>
+        </div>
+    </t>
+</t>

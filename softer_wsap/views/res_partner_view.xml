@@ -1,0 +1,19 @@
+<odoo>
+    <data>
+        <record id="res_partner_form_inherit_whatsapp" model="ir.ui.view">
+            <field name="name">res.partner.form.whatsapp.button</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <!-- Insertar el botón después del campo phone -->
+                <xpath expr="//field[@name='phone']" position="after">
+                    <button name="action_open_whatsapp_modal" type="object" class="btn btn-sm btn-secondary" title="Enviar WhatsApp">
+                        <i class="fa fa-whatsapp text-success"/>
+ WhatsApp
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

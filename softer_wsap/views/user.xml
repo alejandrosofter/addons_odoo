@@ -1,3 +1,4 @@
+<!-- DESHABILITAR INTERFAZ -->
 <odoo>
     <data>
         <!-- Hereda la vista del formulario de usuario -->

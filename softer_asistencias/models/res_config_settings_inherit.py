@@ -15,6 +15,9 @@ class ResConfigSettingsInherit(models.TransientModel):
     horaNotificacionDiaria = fields.Char(
         string="Hora Notificacion Diaria", default=False
     )
+    notificarAlinputFalta = fields.Boolean(
+        string="Notificar al cargar falta", default=False
+    )
 
     # Guarda la configuración en ir.config_parameter
     def set_values(self):
@@ -24,6 +27,9 @@ class ResConfigSettingsInherit(models.TransientModel):
         ir_config.set_param(
             "asistencias.userIdNotificaciones",
             str(self.userIdNotificaciones.id) if self.userIdNotificaciones else "",
+        )
+        ir_config.set_param(
+            "asistencias.notificarAlinputFalta", self.notificarAlinputFalta
         )
         ir_config.set_param(
             "asistencias.userAdministrador",
@@ -71,6 +77,9 @@ class ResConfigSettingsInherit(models.TransientModel):
                     "asistencias.quioskoActive", default=False
                 ),
                 "active": ir_config.get_param("asistencias.active", default=False),
+                "notificarAlinputFalta": ir_config.get_param(
+                    "asistencias.notificarAlinputFalta", default=False
+                ),
                 "notificarDiariamente": ir_config.get_param(
                     "asistencias.notificarDiariamente", default=False
                 ),

@@ -4,14 +4,20 @@
             <field name="name">bot.whatsapp.tree</field>
             <field name="model">bot.whatsapp</field>
             <field name="arch" type="xml">
-                <tree string="Bots de WhatsApp" create="true" edit="true">
+                <tree string="Bots de WhatsApp">
                     <field name="name"/>
-                    <!-- <field name="estaConectado"/>
+                    <field name="user"/>
+                    <field name="nroTelefono"/>
+                    <field name="responderAi"/>
+                    <field name="responderTodos"/>
+                    <field name="responderSoloUsuarios"/>
+                    <field name="estaConectado"/>
                     <field name="status_session"/>
                     <field name="status"/>
                     <field name="port"/>
                     <field name="lastUpdate"/>
-                    <field name="external_id"/> -->
+                    <field name="external_id"/>
+                    <field name="default_system"/>
                 </tree>
             </field>
         </record>
@@ -21,19 +27,55 @@
             <field name="arch" type="xml">
                 <form string="Bot de WhatsApp">
                     <sheet>
-                        <group>
+                        <group string="Configuración de WhatsApp">
                             <field name="name"/>
+                            <field name="user"/>
+                            <field name="nroTelefono"/>
+                            <div colspan="2">
+                                <i>Importante para poder recibir y procesar mensajes</i>
+                            </div>
+
+                            <field name="default_system"/>
+                            <field name="responderAi"/>
+                            <field name="extraPrompt" invisible="not responderAi " />
+                            <field name="telefonosAdmin"/>
+                            <div colspan="2">
+                                <i>** Estos nro seran considerados ADMIN y pueden realizar operacion ADMIN sobre el sistema</i>
+                            </div>
+
+                        </group>
+                        <group string="Configuración de API" invisible="not responderAi ">
+
+                            <field name="hostApi" />
+                            <field name="userApi" />
+                            <field name="claveApi" />
+                            <field name="dbApi" />
+                        </group>
+                        <group string="Configuración de Respuestas" invisible="not responderAi ">
+                            <field name="telefonosResponder" />
+                            <field name="responderTodos" />
+
+
+                            <!-- <field name="responderSoloUsuarios" invisible="not responderAi"/>
+                            <field name="usuariosResponder" invisible="not responderAi or not responderSoloUsuarios"/> -->
+                            <field name="responderContactos" invisible="responderTodos"/>
+
+                            <field name="contactosResponder" invisible="not responderContactos"/>
+                        </group>
+                        <group string="Estado de WhatsApp">
                             <field name="estaConectado"/>
                             <field name="status_session"/>
                             <field name="status"/>
                             <field name="port"/>
                             <field name="lastUpdate"/>
                             <field name="external_id"/>
+
+
                         </group>
 
                         <group string="Código QR de WhatsApp" invisible="estaConectado">
                             <div colspan="2">
-                                <button name="action_get_qr" type="object" string="Actualizar QR" class="btn-primary"/>
+                                <button name="action_get_qr_api" type="object" string="Actualizar QR" class="btn-primary"/>
                             </div>
                             <field name="qr_image" widget="image"/>
                             <div colspan="2">

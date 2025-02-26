@@ -8,10 +8,18 @@ class ResConfigSettingsInherit(models.TransientModel):
     token_wsap = fields.Char(string="Token ")
     # bot_wsap = fields.Char(string="ID Bot Whatsapp")
     active_wsap = fields.Boolean(string="Esta Activo", default=False)
+    idBotWsap = fields.Many2one("bot.whatsapp", string="Default WhatsApp")
 
     # Guarda la configuración en ir.config_parameter
     def set_values(self):
         super(ResConfigSettingsInherit, self).set_values()
+        ir_config = self.env["ir.config_parameter"].sudo()
+
+        ir_config.set_param(
+            "whatsapp.idBotWsap",
+            str(self.idBotWsap.id) if self.idBotWsap else "",
+        )
+
         self.env["ir.config_parameter"].sudo().set_param(
             "whatsapp.url_whatsapp", self.url_whatsapp
         )
@@ -29,8 +37,13 @@ class ResConfigSettingsInherit(models.TransientModel):
     def get_values(self):
         res = super(ResConfigSettingsInherit, self).get_values()
         ir_config = self.env["ir.config_parameter"].sudo()
+        id_bot = ir_config.get_param("whatsapp.idBotWsap", default="")
+        id_bot = int(id_bot) if id_bot.isdigit() else False
         res.update(
             {
+                "idBotWsap": id_bot
+                and self.env["bot.whatsapp"].browse(id_bot).exists()
+                or False,
                 "url_whatsapp": ir_config.get_param(
                     "whatsapp.url_whatsapp", default=""
                 ),
@@ -43,7 +56,7 @@ class ResConfigSettingsInherit(models.TransientModel):
 
     def action_actualizar_bots_wsap(self):
         """Ejecuta manualmente la actualización de bots solo para el usuario actual"""
-        self.env.user.actualizar_bots_wsap()
+        self.env["bot.whatsapp"].actualizar_bots_wsap()
 
         return {
             "type": "ir.actions.client",

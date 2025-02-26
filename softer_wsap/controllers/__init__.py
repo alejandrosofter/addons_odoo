@@ -2,4 +2,4 @@
 
 # from . import controllers
 # from . import dominios
-# from . import subscriptions
+from . import systray
