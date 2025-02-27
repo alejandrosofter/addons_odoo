@@ -4,6 +4,7 @@ import re
 import base64
 import json
 from bs4 import BeautifulSoup
+from odoo.exceptions import UserError
 
 
 class BotWhatsapp(models.Model):
@@ -263,7 +264,10 @@ class BotWhatsapp(models.Model):
         token = self.env["ir.config_parameter"].sudo().get_param("whatsapp.token_wsap")
 
         if not url or not token:
-            raise ValueError("Faltan los parámetros de conexión a la API")
+
+            raise UserError(
+                "No se puede crear el bot. Falta la configuración de WhatsApp en 'Ajustes del sistema'."
+            )
 
         url = url.rstrip("/")  # Elimina cualquier "/" extra al final
         api_url = f"{url}/bots/"
