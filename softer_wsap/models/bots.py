@@ -293,6 +293,23 @@ class BotWhatsapp(models.Model):
             return aux
         return ""
 
+    def updateApi(self):
+        url = self.env["ir.config_parameter"].sudo().get_param("whatsapp.url_whatsapp")
+        token = self.env["ir.config_parameter"].sudo().get_param("whatsapp.token_wsap")
+
+        if not url or not token:
+            raise ValueError("Faltan los parámetros de conexión a la API")
+
+        url = url.rstrip("/")
+        api_url = f"{url}/bots/{self.external_id}"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+        }
+        vals = self.env["bot.whatsapp"].search([("id", "=", self.id)]).read()[0]
+        print(vals)
+        return requests.put(api_url, json=vals, headers=headers, timeout=20)
+
     def updateBotApi(self, vals):
         url = self.env["ir.config_parameter"].sudo().get_param("whatsapp.url_whatsapp")
         token = self.env["ir.config_parameter"].sudo().get_param("whatsapp.token_wsap")
@@ -319,7 +336,7 @@ class BotWhatsapp(models.Model):
     def create(self, vals):
         """Antes de crear en Odoo, valida que la API cree el bot correctamente"""
         try:
-            response = self.createBotApi(vals)
+            response = self.updateApi()
 
             if response.status_code == 201:
                 data = response.json()
@@ -346,7 +363,7 @@ class BotWhatsapp(models.Model):
 
         res = super(BotWhatsapp, self).write(vals)
 
-        self.updateBotApi(vals)
+        self.updateApi()
         if vals.get("default_system"):
             self._update_default_bot(self.id)
         return res

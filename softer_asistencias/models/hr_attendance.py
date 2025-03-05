@@ -249,3 +249,19 @@ class HrAttendance(models.Model):
         }
         print("CREA REGISTRO LEAVE", newData)
         self.env["resource.calendar.leaves"].create(newData)
+
+    @api.model
+    def verificar_horarios_asistencias(self):
+        """
+        Verifica todas las asistencias y actualiza su estado de llegada tarde o salida temprana.
+        Este método está diseñado para ser ejecutado manualmente a través de un cron job.
+        """
+        # Buscar todas las asistencias
+        asistencias = self.search([])
+
+        # Forzar el recálculo de is_late y is_early_exit
+        for asistencia in asistencias:
+            asistencia._compute_late_early()
+            asistencia._handle_late_or_early()
+
+        return True
