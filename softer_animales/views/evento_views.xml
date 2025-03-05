@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista de árbol para eventos -->
+    <record id="view_evento_animal_tree" model="ir.ui.view">
+        <field name="name">softer.evento.animal.tree</field>
+        <field name="model">softer.evento.animal</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="fecha"/>
+                <field name="name"/>
+                <field name="tipo"/>
+                <field name="animal_id"/>
+                <field name="responsable_id"/>
+                <field name="estado"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista de formulario para eventos -->
+    <record id="view_evento_animal_form" model="ir.ui.view">
+        <field name="name">softer.evento.animal.form</field>
+        <field name="model">softer.evento.animal</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="fecha"/>
+                            <field name="tipo"/>
+                            <field name="animal_id"/>
+                        </group>
+                        <group>
+                            <field name="responsable_id"/>
+                            <field name="estado"/>
+                            <field name="costo"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Detalles">
+                            <group>
+                                <field name="descripcion"/>
+                                <field name="resultado"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista de búsqueda para eventos -->
+    <record id="view_evento_animal_search" model="ir.ui.view">
+        <field name="name">softer.evento.animal.search</field>
+        <field name="model">softer.evento.animal</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="animal_id"/>
+                <field name="tipo"/>
+                <field name="estado"/>
+                <filter string="Programados" name="programados" domain="[('estado', '=', 'programado')]"/>
+                <filter string="En Proceso" name="en_proceso" domain="[('estado', '=', 'en_proceso')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Animal" name="animal" context="{'group_by': 'animal_id'}"/>
+                    <filter string="Tipo" name="tipo" context="{'group_by': 'tipo'}"/>
+                    <filter string="Estado" name="estado" context="{'group_by': 'estado'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción de ventana para eventos -->
+    <record id="action_evento_animal" model="ir.actions.act_window">
+        <field name="name">Eventos de Animales</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">softer.evento.animal</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_evento_animal_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Registre su primer evento
+            </p>
+        </field>
+    </record>
+</odoo> 

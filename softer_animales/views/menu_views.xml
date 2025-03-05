@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menú principal -->
+    <menuitem id="menu_ganaderia_root" name="Ganadería" sequence="10"/>
+
+    <!-- Submenú para Animales -->
+    <menuitem id="menu_ganaderia_animales" name="Animales" parent="menu_ganaderia_root" action="action_animal" sequence="10"/>
+
+    <!-- Submenú para Eventos -->
+    <menuitem id="menu_ganaderia_eventos" name="Eventos" parent="menu_ganaderia_root" action="action_evento_animal" sequence="20"/>
+</odoo> 

@@ -1,0 +1,12 @@
+<odoo>
+    <record id="action_whatsapp_config" model="ir.actions.act_window">
+        <field name="name">Bots de WhatsApp</field>
+        <field name="res_model">bot.whatsapp</field>
+        <field name="view_mode">tree,form</field>        <!-- Aquí agregamos "form" -->
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="wsap_menu_root" name="Whatsapp" web_icon="softer_wsap,static/description/icon.png"/>
+    <menuitem id="wsap_menu_config" name="Whatsapp" parent="wsap_menu_root" action="action_whatsapp_config" sequence="20"/>
+
+</odoo>
