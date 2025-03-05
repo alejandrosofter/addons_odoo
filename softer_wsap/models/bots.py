@@ -360,13 +360,15 @@ class BotWhatsapp(models.Model):
 
     def write(self, vals):
         """Al actualizar un bot, si se activa default_system, desactiva los demás y guarda en ir.config_parameter"""
-
-        res = super(BotWhatsapp, self).write(vals)
-
-        self.updateApi()
-        if vals.get("default_system"):
-            self._update_default_bot(self.id)
-        return res
+        try:
+            res = super(BotWhatsapp, self).write(vals)
+            if res:
+                self.updateApi()
+                if vals.get("default_system"):
+                    self._update_default_bot(self.id)
+            return res
+        except Exception as e:
+            raise ValueError(f"Error al actualizar el bot: {str(e)}")
 
     def unlink(self):
         """Antes de eliminar en Odoo, elimina el bot en la API"""
