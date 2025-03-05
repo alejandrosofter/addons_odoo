@@ -431,7 +431,7 @@ class BotWhatsapp(models.Model):
         try:
             res = super(BotWhatsapp, self).write(vals)
             if res:
-                self.updateApi()
+                # self.updateApi()
                 if vals.get("default_system"):
                     self._update_default_bot(self.id)
             return res
