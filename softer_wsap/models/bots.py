@@ -187,25 +187,25 @@ class BotWhatsapp(models.Model):
                     existing_bot = bot_model.search(
                         [("external_id", "=", item["id"])], limit=1
                     )
+                    newData = (
+                        item.copy()
+                    )  # Hacer una copia para no modificar el original
 
-                    # Preparar datos para actualización
-                    update_vals = {
-                        "name": item.get("name"),
-                        "nroTelefono": item.get("nroTelefono"),
-                        "status_session": item.get("status_session"),
-                        "estaConectado": (
-                            True if item.get("status_session") == "open" else False
-                        ),
-                        "external_id": item.get("id"),
-                        "port": item.get("port"),
-                        "owner": item.get("owner"),
-                        "lastUpdate": item.get("lastUpdate"),
-                    }
+                    # Limpiar campos many2many y relacionales
+                    if "contactosResponder" in newData:
+                        newData.pop("contactosResponder")
+                    if "usuariosResponder" in newData:
+                        newData.pop("usuariosResponder")
 
                     if existing_bot:
-                        existing_bot.write(update_vals)
+                        newData["estaConectado"] = (
+                            True if newData["status_session"] == "open" else False
+                        )
+                        print("newData", newData)
+                        existing_bot.write(newData)
                     else:
-                        bot_model.create(update_vals)
+                        # Crear nuevo bot
+                        bot_model.create(newData)
 
                 return True
 
@@ -269,26 +269,29 @@ class BotWhatsapp(models.Model):
         return False
 
     def createBotApi(self, vals):
+        """Crea un nuevo bot en la API externa"""
         url = self.env["ir.config_parameter"].sudo().get_param("whatsapp.url_whatsapp")
         token = self.env["ir.config_parameter"].sudo().get_param("whatsapp.token_wsap")
 
         if not url or not token:
-
             raise UserError(
                 "No se puede crear el bot. Falta la configuración de WhatsApp en 'Ajustes del sistema'."
             )
 
-        url = url.rstrip("/")  # Elimina cualquier "/" extra al final
-        api_url = f"{url}/bots/"
-
+        url = url.rstrip("/")
+        api_url = f"{url}/bots"
         headers = {
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
         }
 
         try:
-            return requests.post(api_url, json=vals, headers=headers, timeout=20)
-
+            response = requests.post(api_url, json=vals, headers=headers, timeout=20)
+            if response.status_code not in [200, 201]:
+                raise ValueError(
+                    f"Error en la API: {response.status_code} - {response.text}"
+                )
+            return response
         except requests.exceptions.RequestException as e:
             raise ValueError(f"Error de conexión con la API: {str(e)}")
 
@@ -303,6 +306,7 @@ class BotWhatsapp(models.Model):
         return ""
 
     def updateApi(self):
+        """Sincroniza los datos del bot con la API externa"""
         url = self.env["ir.config_parameter"].sudo().get_param("whatsapp.url_whatsapp")
         token = self.env["ir.config_parameter"].sudo().get_param("whatsapp.token_wsap")
 
@@ -310,7 +314,25 @@ class BotWhatsapp(models.Model):
             raise ValueError("Faltan los parámetros de conexión a la API")
 
         if not self.external_id:
-            return False
+            # Si no tiene external_id, intentamos crear un nuevo bot en la API
+            return self.createBotApi(
+                {
+                    "name": self.name,
+                    "nroTelefono": self.nroTelefono,
+                    "claveApi": self.claveApi,
+                    "hostApi": self.hostApi,
+                    "userApi": self.userApi,
+                    "dbApi": self.dbApi,
+                    "responderAi": self.responderAi,
+                    "responderContactos": self.responderContactos,
+                    "responderTodos": self.responderTodos,
+                    "responderSoloUsuarios": self.responderSoloUsuarios,
+                    "default_system": self.default_system,
+                    "telefonosResponder": self.telefonosResponder,
+                    "telefonosAdmin": self.telefonosAdmin,
+                    "extraPrompt": self.extraPrompt,
+                }
+            )
 
         url = url.rstrip("/")
         api_url = f"{url}/bots/{self.external_id}"
@@ -319,7 +341,7 @@ class BotWhatsapp(models.Model):
             "Content-Type": "application/json",
         }
 
-        # Preparar datos para la API
+        # Preparar todos los datos relevantes para la API
         vals_clean = {
             "name": self.name,
             "nroTelefono": self.nroTelefono,
@@ -335,10 +357,23 @@ class BotWhatsapp(models.Model):
             "telefonosResponder": self.telefonosResponder,
             "telefonosAdmin": self.telefonosAdmin,
             "extraPrompt": self.extraPrompt,
+            "external_id": self.external_id,
+            "estaConectado": self.estaConectado,
+            "status_session": self.status_session,
+            "port": self.port,
+            "owner": self.owner,
+            "lastUpdate": self.lastUpdate,
         }
 
         try:
-            return requests.put(api_url, json=vals_clean, headers=headers, timeout=20)
+            response = requests.put(
+                api_url, json=vals_clean, headers=headers, timeout=20
+            )
+            if response.status_code not in [200, 201]:
+                raise ValueError(
+                    f"Error en la API: {response.status_code} - {response.text}"
+                )
+            return response
         except requests.exceptions.RequestException as e:
             raise ValueError(f"Error de conexión con la API: {str(e)}")
 
