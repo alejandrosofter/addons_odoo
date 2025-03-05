@@ -345,6 +345,7 @@ class BotWhatsapp(models.Model):
         # Preparar todos los datos relevantes para la API
         vals_clean = {
             "name": self.name,
+            "nombre": self.name,
             "nroTelefono": self.nroTelefono,
             "claveApi": self.claveApi,
             "hostApi": self.hostApi,
