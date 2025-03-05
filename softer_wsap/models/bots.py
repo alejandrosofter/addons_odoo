@@ -318,6 +318,7 @@ class BotWhatsapp(models.Model):
             return self.createBotApi(
                 {
                     "name": self.name,
+                    "nombre": self.name,
                     "nroTelefono": self.nroTelefono,
                     "claveApi": self.claveApi,
                     "hostApi": self.hostApi,
