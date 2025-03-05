@@ -184,11 +184,19 @@ class BotWhatsapp(models.Model):
                 bot_model = self.env["bot.whatsapp"]
                 print(f"ACTUALIZANDO BOTS WSAP: {data}")
                 for item in data:
-
                     existing_bot = bot_model.search(
                         [("external_id", "=", item["id"])], limit=1
                     )
-                    newData = item
+                    newData = (
+                        item.copy()
+                    )  # Hacer una copia para no modificar el original
+
+                    # Limpiar campos many2many y relacionales
+                    if "contactosResponder" in newData:
+                        newData.pop("contactosResponder")
+                    if "usuariosResponder" in newData:
+                        newData.pop("usuariosResponder")
+
                     if existing_bot:
                         newData["estaConectado"] = (
                             True if newData["status_session"] == "open" else False
@@ -317,8 +325,8 @@ class BotWhatsapp(models.Model):
             if isinstance(value, datetime):
                 vals_clean[key] = value.isoformat()
             elif isinstance(value, (list, tuple)):
-                # Para campos many2many/one2many
-                vals_clean[key] = value[0] if value else False
+                # Omitir campos many2many/one2many
+                continue
             else:
                 vals_clean[key] = value
 
@@ -330,6 +338,8 @@ class BotWhatsapp(models.Model):
             "write_uid",
             "write_date",
             "id",
+            "contactosResponder",
+            "usuariosResponder",
         ]
         for field in fields_to_remove:
             vals_clean.pop(field, None)
