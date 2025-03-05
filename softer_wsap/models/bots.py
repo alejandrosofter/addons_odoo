@@ -318,7 +318,6 @@ class BotWhatsapp(models.Model):
             return self.createBotApi(
                 {
                     "name": self.name,
-                    "nombre": self.name,
                     "nroTelefono": self.nroTelefono,
                     "claveApi": self.claveApi,
                     "hostApi": self.hostApi,
@@ -368,7 +367,7 @@ class BotWhatsapp(models.Model):
         }
 
         try:
-            response = requests.put(
+            response = requests.post(
                 api_url, json=vals_clean, headers=headers, timeout=20
             )
             if response.status_code not in [200, 201]:
