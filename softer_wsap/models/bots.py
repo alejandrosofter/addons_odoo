@@ -187,25 +187,25 @@ class BotWhatsapp(models.Model):
                     existing_bot = bot_model.search(
                         [("external_id", "=", item["id"])], limit=1
                     )
-                    newData = (
-                        item.copy()
-                    )  # Hacer una copia para no modificar el original
 
-                    # Limpiar campos many2many y relacionales
-                    if "contactosResponder" in newData:
-                        newData.pop("contactosResponder")
-                    if "usuariosResponder" in newData:
-                        newData.pop("usuariosResponder")
+                    # Preparar datos para actualización
+                    update_vals = {
+                        "name": item.get("name"),
+                        "nroTelefono": item.get("nroTelefono"),
+                        "status_session": item.get("status_session"),
+                        "estaConectado": (
+                            True if item.get("status_session") == "open" else False
+                        ),
+                        "external_id": item.get("id"),
+                        "port": item.get("port"),
+                        "owner": item.get("owner"),
+                        "lastUpdate": item.get("lastUpdate"),
+                    }
 
                     if existing_bot:
-                        newData["estaConectado"] = (
-                            True if newData["status_session"] == "open" else False
-                        )
-                        print("newData", newData)
-                        existing_bot.write(newData)
+                        existing_bot.write(update_vals)
                     else:
-                        # Crear nuevo bot
-                        bot_model.create(newData)
+                        bot_model.create(update_vals)
 
                 return True
 
@@ -309,6 +309,9 @@ class BotWhatsapp(models.Model):
         if not url or not token:
             raise ValueError("Faltan los parámetros de conexión a la API")
 
+        if not self.external_id:
+            return False
+
         url = url.rstrip("/")
         api_url = f"{url}/bots/{self.external_id}"
         headers = {
@@ -316,33 +319,23 @@ class BotWhatsapp(models.Model):
             "Content-Type": "application/json",
         }
 
-        # Obtener los valores del registro actual
-        vals = self.env["bot.whatsapp"].search([("id", "=", self.id)]).read()[0]
-
-        # Limpiar y preparar los datos para JSON
-        vals_clean = {}
-        for key, value in vals.items():
-            if isinstance(value, datetime):
-                vals_clean[key] = value.isoformat()
-            elif isinstance(value, (list, tuple)):
-                # Omitir campos many2many/one2many
-                continue
-            else:
-                vals_clean[key] = value
-
-        # Eliminar campos que no necesitamos enviar a la API
-        fields_to_remove = [
-            "__last_update",
-            "create_uid",
-            "create_date",
-            "write_uid",
-            "write_date",
-            "id",
-            "contactosResponder",
-            "usuariosResponder",
-        ]
-        for field in fields_to_remove:
-            vals_clean.pop(field, None)
+        # Preparar datos para la API
+        vals_clean = {
+            "name": self.name,
+            "nroTelefono": self.nroTelefono,
+            "claveApi": self.claveApi,
+            "hostApi": self.hostApi,
+            "userApi": self.userApi,
+            "dbApi": self.dbApi,
+            "responderAi": self.responderAi,
+            "responderContactos": self.responderContactos,
+            "responderTodos": self.responderTodos,
+            "responderSoloUsuarios": self.responderSoloUsuarios,
+            "default_system": self.default_system,
+            "telefonosResponder": self.telefonosResponder,
+            "telefonosAdmin": self.telefonosAdmin,
+            "extraPrompt": self.extraPrompt,
+        }
 
         try:
             return requests.put(api_url, json=vals_clean, headers=headers, timeout=20)
