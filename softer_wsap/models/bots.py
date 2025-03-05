@@ -5,6 +5,7 @@ import base64
 import json
 from bs4 import BeautifulSoup
 from odoo.exceptions import UserError
+from datetime import datetime
 
 
 class BotWhatsapp(models.Model):
@@ -306,9 +307,37 @@ class BotWhatsapp(models.Model):
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
         }
+
+        # Obtener los valores del registro actual
         vals = self.env["bot.whatsapp"].search([("id", "=", self.id)]).read()[0]
-        print(vals)
-        return requests.put(api_url, json=vals, headers=headers, timeout=20)
+
+        # Limpiar y preparar los datos para JSON
+        vals_clean = {}
+        for key, value in vals.items():
+            if isinstance(value, datetime):
+                vals_clean[key] = value.isoformat()
+            elif isinstance(value, (list, tuple)):
+                # Para campos many2many/one2many
+                vals_clean[key] = value[0] if value else False
+            else:
+                vals_clean[key] = value
+
+        # Eliminar campos que no necesitamos enviar a la API
+        fields_to_remove = [
+            "__last_update",
+            "create_uid",
+            "create_date",
+            "write_uid",
+            "write_date",
+            "id",
+        ]
+        for field in fields_to_remove:
+            vals_clean.pop(field, None)
+
+        try:
+            return requests.put(api_url, json=vals_clean, headers=headers, timeout=20)
+        except requests.exceptions.RequestException as e:
+            raise ValueError(f"Error de conexión con la API: {str(e)}")
 
     def updateBotApi(self, vals):
         url = self.env["ir.config_parameter"].sudo().get_param("whatsapp.url_whatsapp")
