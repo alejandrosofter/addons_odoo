@@ -22,6 +22,7 @@
         "views/suscripciones_inherit.xml",
         "views/asistencias.xml",
         "views/recursos.xml",
+        "security/security.xml",
         # "views/menu.xml",
         # "views/res_partner_view.xml",
     ],
