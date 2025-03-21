@@ -15,6 +15,7 @@
     # "pre_init_hook": "pre_init_hook",
     # always loaded
     "data": [
+        "security/security.xml",
         "security/ir.model.access.csv",
         # "views/res_config_settings_view.xml",
         # "views/cron.xml",
@@ -22,7 +23,6 @@
         "views/suscripciones_inherit.xml",
         "views/asistencias.xml",
         "views/recursos.xml",
-        "security/security.xml",
         # "views/menu.xml",
         # "views/res_partner_view.xml",
     ],
