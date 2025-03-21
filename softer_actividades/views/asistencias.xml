@@ -1,0 +1,46 @@
+<odoo>
+    <data>
+        <record id="view_asistencias_form" model="ir.ui.view">
+            <field name="name">asistencias.form</field>
+            <field name="model">softer.asistencias</field>
+            <field name="arch" type="xml">
+                <form string="Asistencias">
+                    <sheet>
+                        <group>
+                            <field name="actividad_id"/>
+                            <field name="fecha"/>
+                        </group>
+                        <group>
+                            <field name="integrantes_ids">
+                                <tree editable="bottom">
+                                    <field name="cliente_id"/>
+                                    <field name="asistio"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_asistencias_tree" model="ir.ui.view">
+            <field name="name">asistencias.tree</field>
+            <field name="model">softer.asistencias</field>
+            <field name="arch" type="xml">
+                <tree string="Asistencias">
+                    <field name="actividad_id"/>
+                    <field name="fecha"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_asistencias" model="ir.actions.act_window">
+            <field name="name">Asistencias</field>
+            <field name="res_model">softer.asistencias</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_asistencias" parent="menu_softer_actividades_root" name="Asistencias" sequence="10"/>
+        <menuitem id="menu_asistencias_action" name="Asistencias" parent="menu_asistencias" action="action_asistencias" sequence="1"/>
+    </data>
+</odoo> 

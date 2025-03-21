@@ -4,14 +4,14 @@ from odoo import models, fields, api
 class ResConfigSettingsInherit(models.TransientModel):
     _inherit = "res.config.settings"
 
-    diaLiquidacion = fields.Char(string="dias")
+    proximoNroSocio = fields.Integer(string="Proximo Nro socio")
 
     # Guarda la configuración en ir.config_parameter
     def set_values(self):
         super(ResConfigSettingsInherit, self).set_values()
 
         self.env["ir.config_parameter"].sudo().set_param(
-            "socios.diaLiquidacion", self.diaLiquidacion
+            "socios.proximoNroSocio", self.proximoNroSocio
         )
 
     @api.model
@@ -21,8 +21,8 @@ class ResConfigSettingsInherit(models.TransientModel):
 
         res.update(
             {
-                "diaLiquidacion": ir_config.get_param(
-                    "socios.diaLiquidacion", default=""
+                "proximoNroSocio": ir_config.get_param(
+                    "socios.proximoNroSocio", default=1
                 ),
             }
         )

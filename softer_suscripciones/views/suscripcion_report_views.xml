@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_suscripcion_product_report_tree" model="ir.ui.view">
+        <field name="name">softer.suscripcion.product.report.tree</field>
+        <field name="model">softer.suscripcion.product.report</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="product_id"/>
+                <field name="cliente_id"/>
+                <field name="suscripcion_id"/>
+                <field name="estado"/>
+                <field name="fecha_inicio"/>
+                <field name="proxima_factura"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_suscripcion_product_report_search" model="ir.ui.view">
+        <field name="name">softer.suscripcion.product.report.search</field>
+        <field name="model">softer.suscripcion.product.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="product_id"/>
+                <field name="cliente_id"/>
+                <field name="suscripcion_id"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Producto" name="group_by_product" context="{'group_by':'product_id'}"/>
+                    <filter string="Cliente" name="group_by_cliente" context="{'group_by':'cliente_id'}"/>
+                    <filter string="Suscripción" name="group_by_suscripcion" context="{'group_by':'suscripcion_id'}"/>
+                    <filter string="Compañía" name="group_by_company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Graph View -->
+    <record id="view_suscripcion_product_report_graph" model="ir.ui.view">
+        <field name="name">softer.suscripcion.product.report.graph</field>
+        <field name="model">softer.suscripcion.product.report</field>
+        <field name="arch" type="xml">
+            <graph string="Productos Suscritos" type="bar">
+                <field name="product_id"/>
+                <field name="cliente_id" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot View -->
+    <record id="view_suscripcion_product_report_pivot" model="ir.ui.view">
+        <field name="name">softer.suscripcion.product.report.pivot</field>
+        <field name="model">softer.suscripcion.product.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Productos Suscritos" display_quantity="true">
+                <field name="product_id" type="row"/>
+                <field name="cliente_id" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_suscripcion_product_report" model="ir.actions.act_window">
+        <field name="name">Productos Suscritos</field>
+        <field name="res_model">softer.suscripcion.product.report</field>
+        <field name="view_mode">tree,graph,pivot</field>
+        <field name="search_view_id" ref="view_suscripcion_product_report_search"/>
+        <field name="context">{'search_default_group_by_product': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay productos suscritos activos
+            </p>
+        </field>
+    </record>
+</odoo> 

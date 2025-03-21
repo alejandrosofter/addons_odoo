@@ -6,16 +6,9 @@
             <field name="arch" type="xml">
                 <tree string="Bots de WhatsApp">
                     <field name="name"/>
-                    <field name="user"/>
                     <field name="nroTelefono"/>
                     <field name="responderAi"/>
-                    <field name="responderTodos"/>
-                    <field name="responderSoloUsuarios"/>
-                    <field name="estaConectado"/>
-                    <field name="status_session"/>
-                    <field name="status"/>
-                    <field name="port"/>
-                    <field name="lastUpdate"/>
+
                     <field name="external_id"/>
                     <field name="default_system"/>
                 </tree>
@@ -27,79 +20,73 @@
             <field name="arch" type="xml">
                 <form string="Bot de WhatsApp">
                     <sheet>
-                        <group string="Configuración de WhatsApp">
-                            <field name="name"/>
-                            <field name="user"/>
-                            <field name="nroTelefono"/>
-                            <div colspan="2">
-                                <i>Importante para poder recibir y procesar mensajes</i>
-                            </div>
+                        <notebook>
+                            <page string="Información General">
+                                <group>
+                                    <field name="name"/>
+                                    <field name="user"/>
+                                    <field name="nroTelefono"/>
+                                    <div colspan="2">
+                                        <i>Importante para poder recibir y procesar mensajes</i>
+                                    </div>
+                                    <field name="default_system"/>
+                                    <field name="responderAi"/>
 
-                            <field name="default_system"/>
-                            <field name="responderAi"/>
-                            <field name="extraPrompt" invisible="not responderAi " />
-                            <field name="telefonosAdmin"/>
-                            <div colspan="2">
-                                <i>** Estos nro seran considerados ADMIN y pueden realizar operacion ADMIN sobre el sistema</i>
-                            </div>
+                                </group>
+                            </page>
+                            <page string="Responder AI" invisible="not responderAi">
+                                <group>
+                                    <field name="hostApi"/>
+                                    <field name="userApi"/>
+                                    <field name="claveApi"/>
+                                    <field name="dbApi"/>
+                                    <field name="telefonosResponder"/>
+                                    <field name="responderTodos"/>
+                                    <field name="responderContactos" invisible="responderTodos"/>
+                                    <field name="contactosResponder" invisible="not responderContactos"/>
+                                    <field name="extraPrompt" invisible="not responderAi"/>
+                                    <field name="telefonosAdmin"/>
+                                    <div colspan="2">
+                                        <i>** Estos nro seran considerados ADMIN y pueden realizar operacion ADMIN sobre el sistema</i>
+                                    </div>
+                                </group>
+                            </page>
+                            <page string="Código QR">
+                                <group>
+                                    <field name="qr_image" widget="image"/>
+                                    <div colspan="2">
+                                        <button name="action_get_qr_api" type="object" string="Actualizar QR" class="btn-primary"/>
+                                    </div>
+                                    <div colspan="2">
+                                        <i>(*) Si ya te has vinculado en tu telefono por favor espera a que sincronice el sistema!</i>
+                                    </div>
+                                </group>
+                            </page>
+                            <page string="Estado Whatsapp">
+                                <group string="Estado de WhatsApp">
+                                    <field name="estaConectado"/>
+                                    <field name="status_session"/>
+                                    <field name="status"/>
+                                    <field name="port"/>
+                                    <field name="lastUpdate"/>
+                                    <field name="external_id"/>
+                                </group>
+                                <group string="Conexión a WhatsApp" invisible="not estaConectado">
+                                    <div colspan="2">
+                                        <div style="padding:20px">
+                                            <button name="action_logout" type="object" string="Desconectar" class="btn-primary" style="padding:10px"/>
+                                        </div>
+                                        <div style="padding:20px">
+                                            <button name="action_syncWhatsap" type="object" string="Sync Bots" class="btn-primary" style="padding:10px"/>
+                                        </div>
+                                    </div>
+                                    <div colspan="2">
+                                        <i>(*) Si te has desconectado espera unos minutos para volver a conectar!</i>
+                                    </div>
+                                </group>
+                            </page>
+                        </notebook>
 
-                        </group>
-                        <group string="Configuración de API" invisible="not responderAi ">
-
-                            <field name="hostApi" />
-                            <field name="userApi" />
-                            <field name="claveApi" />
-                            <field name="dbApi" />
-                        </group>
-                        <group string="Configuración de Respuestas" invisible="not responderAi ">
-                            <field name="telefonosResponder" />
-                            <field name="responderTodos" />
-
-
-                            <!-- <field name="responderSoloUsuarios" invisible="not responderAi"/>
-                            <field name="usuariosResponder" invisible="not responderAi or not responderSoloUsuarios"/> -->
-                            <field name="responderContactos" invisible="responderTodos"/>
-
-                            <field name="contactosResponder" invisible="not responderContactos"/>
-                        </group>
-                        <group string="Estado de WhatsApp">
-                            <field name="estaConectado"/>
-                            <field name="status_session"/>
-                            <field name="status"/>
-                            <field name="port"/>
-                            <field name="lastUpdate"/>
-                            <field name="external_id"/>
-
-
-                        </group>
-
-                        <group string="Código QR de WhatsApp" invisible="estaConectado">
-                            <div colspan="2">
-                                <button name="action_get_qr_api" type="object" string="Actualizar QR" class="btn-primary"/>
-                            </div>
-                            <field name="qr_image" widget="image"/>
-                            <div colspan="2">
-                                <i>
-                            (*) Si ya te has vinculado en tu telefono por favor espera a que sincronize el sistema!</i>
-                            </div>
-
-                        </group>
-                        <group string="Estas conectado a whatsapp!" invisible="not estaConectado">
-
-                            <div colspan="2">
-                                <div style="padding:20px">
-                                    <button name="action_logout" type="object" string="Desconectar" class="btn-primary" style="padding:10px"/>
-                                </div>
-                                <div style="padding:20px">
-                                    <button name="action_syncWhatsap" type="object" string="Sync Boots" class="btn-primary" style="padding:10px"/>
-                                </div>
-                            </div>
-                            <div colspan="2">
-                                <i>
-                            (*) Si te has desconectado espera unos minutos para volver a conectar!</i>
-                            </div>
-
-                        </group>
 
                     </sheet>
                 </form>

@@ -284,13 +284,18 @@ class BotWhatsapp(models.Model):
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
         }
+        print(vals)
 
         try:
             response = requests.post(api_url, json=vals, headers=headers, timeout=20)
             if response.status_code not in [200, 201]:
-                raise ValueError(
-                    f"Error en la API: {response.status_code} - {response.text}"
+                mensaje_json = response.json().get("mensaje", "No se recibió mensaje")
+                error_msg = (
+                    f"Error al comunicarse con la API de WhatsApp.\n"
+                    f"Código de error: {response.status_code}\n"
+                    f"Mensaje: {mensaje_json}"
                 )
+                raise UserError("Ups, error API: " + error_msg)
             return response
         except requests.exceptions.RequestException as e:
             raise ValueError(f"Error de conexión con la API: {str(e)}")
@@ -305,7 +310,7 @@ class BotWhatsapp(models.Model):
             return aux
         return ""
 
-    def updateApi(self):
+    def updateApi(self, vals, update=False):
         """Sincroniza los datos del bot con la API externa"""
         url = self.env["ir.config_parameter"].sudo().get_param("whatsapp.url_whatsapp")
         token = self.env["ir.config_parameter"].sudo().get_param("whatsapp.token_wsap")
@@ -315,24 +320,7 @@ class BotWhatsapp(models.Model):
 
         if not self.external_id:
             # Si no tiene external_id, intentamos crear un nuevo bot en la API
-            return self.createBotApi(
-                {
-                    "name": self.name,
-                    "nroTelefono": self.nroTelefono,
-                    "claveApi": self.claveApi,
-                    "hostApi": self.hostApi,
-                    "userApi": self.userApi,
-                    "dbApi": self.dbApi,
-                    "responderAi": self.responderAi,
-                    "responderContactos": self.responderContactos,
-                    "responderTodos": self.responderTodos,
-                    "responderSoloUsuarios": self.responderSoloUsuarios,
-                    "default_system": self.default_system,
-                    "telefonosResponder": self.telefonosResponder,
-                    "telefonosAdmin": self.telefonosAdmin,
-                    "extraPrompt": self.extraPrompt,
-                }
-            )
+            return self.createBotApi(vals)
 
         url = url.rstrip("/")
         api_url = f"{url}/bots/{self.external_id}"
@@ -341,35 +329,13 @@ class BotWhatsapp(models.Model):
             "Content-Type": "application/json",
         }
 
-        # Preparar todos los datos relevantes para la API
-        vals_clean = {
-            "name": self.name,
-            "nombre": self.name,
-            "nroTelefono": self.nroTelefono,
-            "claveApi": self.claveApi,
-            "hostApi": self.hostApi,
-            "userApi": self.userApi,
-            "dbApi": self.dbApi,
-            "responderAi": self.responderAi,
-            "responderContactos": self.responderContactos,
-            "responderTodos": self.responderTodos,
-            "responderSoloUsuarios": self.responderSoloUsuarios,
-            "default_system": self.default_system,
-            "telefonosResponder": self.telefonosResponder,
-            "telefonosAdmin": self.telefonosAdmin,
-            "extraPrompt": self.extraPrompt,
-            "external_id": self.external_id,
-            "estaConectado": self.estaConectado,
-            "status_session": self.status_session,
-            "port": self.port,
-            "owner": self.owner,
-            "lastUpdate": self.lastUpdate,
-        }
-
         try:
-            response = requests.post(
-                api_url, json=vals_clean, headers=headers, timeout=20
-            )
+            if update:
+                response = requests.put(api_url, json=vals, headers=headers, timeout=20)
+            else:
+                response = requests.post(
+                    api_url, json=vals, headers=headers, timeout=20
+                )
             if response.status_code not in [200, 201]:
                 raise ValueError(
                     f"Error en la API: {response.status_code} - {response.text}"
@@ -404,7 +370,7 @@ class BotWhatsapp(models.Model):
     def create(self, vals):
         """Antes de crear en Odoo, valida que la API cree el bot correctamente"""
         try:
-            response = self.updateApi()
+            response = self.updateApi(vals)
 
             if response.status_code == 201:
                 data = response.json()
@@ -431,7 +397,7 @@ class BotWhatsapp(models.Model):
         try:
             res = super(BotWhatsapp, self).write(vals)
             if res:
-                # self.updateApi()
+                self.updateApi(vals, True)
                 if vals.get("default_system"):
                     self._update_default_bot(self.id)
             return res
@@ -464,9 +430,13 @@ class BotWhatsapp(models.Model):
                     if response.status_code == 200:
                         print(f"Bot {record.name} eliminado en API")
                     else:
-                        raise ValueError(
-                            f"Error eliminando en API: {response.status_code} - {response.text}"
-                        )
+                        if response.status_code == 502:
+                            # significa que no existe en la api, entonces quito el registro de odoo
+                            return super(BotWhatsapp, self).unlink()
+                        else:
+                            raise ValueError(
+                                f"Error eliminando en API: {response.status_code} - {response.text}"
+                            )
 
                 except requests.exceptions.RequestException as e:
                     raise ValueError(f"Error de conexión con la API: {str(e)}")

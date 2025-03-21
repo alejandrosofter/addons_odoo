@@ -1,0 +1,43 @@
+<odoo>
+    <data>
+        <!-- Vistas de árbol -->
+        <record id="view_recursos_tree" model="ir.ui.view">
+            <field name="name">softer.recursos.tree</field>
+            <field name="model">softer.recursos</field>
+            <field name="arch" type="xml">
+                <tree string="Recursos">
+                    <field name="name"/>
+                    <field name="detalle"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vistas de formulario -->
+        <record id="view_recursos_form" model="ir.ui.view">
+            <field name="name">softer.recursos.form</field>
+            <field name="model">softer.recursos</field>
+            <field name="arch" type="xml">
+                <form string="Recurso">
+                    <sheet>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="detalle"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción para abrir la vista de árbol -->
+        <record id="action_recursos" model="ir.actions.act_window">
+            <field name="name">Recursos</field>
+            <field name="res_model">softer.recursos</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_recursos_tree"/>
+        </record>
+
+        <!-- Menú para acceder a los recursos -->
+        <menuitem id="menu_recursos" parent="menu_softer_actividades_root" name="Recursos" sequence="10"/>
+        <menuitem id="menu_recursos_action" name="Recursos" parent="menu_recursos" action="action_recursos" sequence="1"/>
+    </data>
+</odoo>

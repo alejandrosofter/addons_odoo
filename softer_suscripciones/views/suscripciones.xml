@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_suscripcion_form" model="ir.ui.view">
+        <field name="name">softer.suscripcion.form</field>
+        <field name="model">softer.suscripcion</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activar" string="Activar" type="object" invisible="estado != 'borrador'" class="oe_highlight"/>
+                    <button name="action_suspender" string="Suspender" type="object" invisible="estado != 'activa'" class="oe_highlight"/>
+                    <button name="action_reactivar" string="Reactivar" type="object" invisible="estado != 'suspendida'" class="oe_highlight"/>
+                    <button name="action_baja" string="Dar de Baja" type="object" invisible="estado == 'baja'" class="oe_highlight"/>
+                    <field name="estado" widget="statusbar" statusbar_visible="borrador,activa,suspendida,baja"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_sales" type="object" class="oe_stat_button" icon="fa-usd" invisible="sale_order_count == 0">
+                            <field name="sale_order_count" widget="statinfo" string="Ventas"/>
+                        </button>
+                        <button name="action_archive" type="object" class="oe_stat_button" icon="fa-archive" invisible="not active" string="Archivar"/>
+                        <button name="action_unarchive" type="object" class="oe_stat_button" icon="fa-archive" invisible="active" string="Desarchivar"/>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="cliente_id"/>
+                            <field name="contacto_comunicacion"/>
+
+                            <field name="partner_invoice_id" domain="['|', ('id', '=', cliente_id), ('parent_id', '=', cliente_id)]" context="{'show_address': 1}" options="{'always_reload': True}"/>
+                            <field name="fecha"/>
+                            <field name="fecha_inicio"/>
+                            <field name="fecha_fin"/>
+                            <field name="ultima_factura" readonly="1"/>
+
+
+                        </group>
+                        <group>
+                            <field name="tipo_temporalidad"/>
+                            <field name="cantidad_recurrencia"/>
+                            <field name="proxima_factura"/>
+                            <field name="termino_pago"/>
+                            <field name="fecha_baja" invisible="estado != 'baja'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Productos Suscritos" name="productos">
+                            <field name="line_ids">
+                                <tree editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="cantidad"/>
+                                    <field name="precio_unitario"/>
+                                    <field name="importe" sum="Total"/>
+                                    <field name="anotacion"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="product_id"/>
+                                            <field name="cantidad"/>
+                                            <field name="precio_unitario"/>
+                                            <field name="importe"/>
+                                        </group>
+                                        <group>
+                                            <field name="anotacion"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_suscripcion_tree" model="ir.ui.view">
+        <field name="name">softer.suscripcion.tree</field>
+        <field name="model">softer.suscripcion</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="estado=='baja'" decoration-warning="estado=='suspendida'" decoration-info="estado=='borrador'">
+
+                <field name="cliente_id"/>
+                <field name="fecha_inicio"/>
+                <field name="nombre_temporalidad"/>
+                <field name="proxima_factura"/>
+                <field name="nombres_productos"/>
+                <field name="termino_pago"/>
+                <field name="importeTotal"/>
+
+                <field name="estado"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_suscripcion_search" model="ir.ui.view">
+        <field name="name">softer.suscripcion.search</field>
+        <field name="model">softer.suscripcion</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="cliente_id"/>
+                <field name="estado"/>
+                <field name="tipo_temporalidad"/>
+                <filter string="Borradores" name="borradores" domain="[('estado','=','borrador')]"/>
+                <filter string="Activas" name="activas" domain="[('estado','=','activa')]"/>
+                <filter string="Suspendidas" name="suspendidas" domain="[('estado','=','suspendida')]"/>
+                <filter string="Bajas" name="bajas" domain="[('estado','=','baja')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Cliente" name="cliente" context="{'group_by':'cliente_id'}"/>
+                    <filter string="Estado" name="estado" context="{'group_by':'estado'}"/>
+                    <filter string="Producto" name="nombres_productos" context="{'group_by':'nombres_productos'}"/>
+                    <filter string="Tipo Temporalidad" name="tipo_temporalidad" context="{'group_by':'tipo_temporalidad'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo> 

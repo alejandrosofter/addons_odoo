@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Acción para abrir la vista de lista de mensajes -->
+        <record id="action_wsap_message" model="ir.actions.act_window">
+            <field name="name">Mensajes de WhatsApp</field>
+            <field name="res_model">wsap.message</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p>Desde aquí puedes gestionar los mensajes de WhatsApp.</p>
+            </field>
+        </record>
+
+        <!-- Submenú para acceder a los mensajes -->
+        <menuitem id="menu_wsap_message" name="Mensajes" parent="wsap_menu_root" action="action_wsap_message" sequence="10"/>
+
+    </data>
+</odoo>

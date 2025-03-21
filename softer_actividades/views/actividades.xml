@@ -1,0 +1,73 @@
+<odoo>
+    <record id="view_softer_actividades_form" model="ir.ui.view">
+        <field name="name">softer.actividades.form</field>
+        <field name="model">softer.actividades</field>
+        <field name="arch" type="xml">
+            <form string="Actividades">
+                <sheet>
+                    <notebook>
+                        <!-- Pestaña de Datos Generales -->
+                        <page string="Datos Generales">
+                            <group>
+                                <field name="name"/>
+                                <field name="entrenador"/>
+                                <field name="administrador"/>
+                                <field name="tipoRangos"/>
+                                <field name="fechaDesde"/>
+                                <field name="fechaHasta"/>
+                            </group>
+                        </page>
+                        <!-- Pestaña de Horarios -->
+                        <page string="Horarios">
+                            <field name="horarios">
+                                <tree editable="bottom">
+                                    <field name="dia"/>
+                                    <field name="hora"/>
+                                    <field name="horaSalida"/>
+                                    <field name="recurso"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <!-- Pestaña de Integrantes -->
+                        <page string="Integrantes">
+                            <field name="integrantes">
+                                <tree editable="bottom">
+                                    <field name="cliente_id"/>
+                                    <field name="cliente_contacto"/>
+                                    <field name="suscripcion_id"/>
+
+                                    <field name="fechaNacimiento"/>
+                                    <field name="estado"/>
+                                    <field name="estadoMotivo"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_softer_actividades_tree" model="ir.ui.view">
+        <field name="name">softer.actividades.tree</field>
+        <field name="model">softer.actividades</field>
+        <field name="arch" type="xml">
+            <tree string="Actividades">
+                <field name="name"/>
+                <field name="entrenador"/>
+                <field name="administrador"/>
+                <field name="tipoRangos"/>
+                <field name="fechaDesde"/>
+                <field name="fechaHasta"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_softer_actividades" model="ir.actions.act_window">
+        <field name="name">Actividades</field>
+        <field name="res_model">softer.actividades</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_softer_actividades_root" name="Actividades" web_icon="softer_actividades,static/description/icon.png"/>
+    <menuitem id="menu_softer_actividades" parent="menu_softer_actividades_root" name="Equipos" action="action_softer_actividades" sequence="10"/>
+</odoo>

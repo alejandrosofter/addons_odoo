@@ -1,16 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <record id="view_socios_tree" model="ir.ui.view">
+        <field name="name">res.partner.socios.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Socios">
+                <field name="member_number"/>
+                <field name="name"/>
+                <field name="tipoSocio"/>
+                <field name="fechaAlta"/>
+                <field name="estado"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="estado_suscripcion"/>
+            </tree>
+        </field>
+    </record>
+    <menuitem id="menu_socio_root" name="Socios" sequence="10" web_icon="softer_socios,static/description/icon.png"/>
+    <record id="action_socio_list2" model="ir.actions.act_window">
+        <field name="name">Lista de Socios</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('esSocio', '=', True)]</field>
+        <field name="view_id" ref="view_socios_tree"/>
+    </record>
+    <menuitem id="menu_socio_list" name="Listado de Socios" parent="menu_socio_root" action="action_socio_list2" sequence="1"/>
     <record id="view_partner_form_inherit_club_member" model="ir.ui.view">
         <field name="name">res.partner.form.inherit.club.member</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='category_id']" position="after">
+            <xpath expr="//notebook" position="inside">
+                <page string="Socio">
+                    <group>
+                        <field name="esSocio"/>
+                        <field name="member_number"/>
+                        <span colspan="2">
+                            <i>Dejar en blanco para el autoseteo en nuevos registros</i>
+                        </span>
+                        <field name="estado"/>
 
-                <field name="member_number"/>
-                <field name="fechaNacimiento"/>
-                <field name="tipoSocio"/>
-
+                        <field name="fechaNacimiento"/>
+                        <field name="tipoSocio"/>
+                        <field name="fechaBaja"/>
+                        <field name="fechaAlta"/>
+                        <field name="suscripcion_id"/>
+                    </group>
+                    <xpath expr="//group" position="inside">
+                        <button name="action_get_next_member_number" type="object" string="Obtener Próximo Número" class="btn-primary"/>
+                    </xpath>
+                </page>
             </xpath>
         </field>
     </record>

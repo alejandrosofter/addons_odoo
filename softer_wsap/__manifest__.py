@@ -29,6 +29,7 @@
         "views/res_partner_view.xml",
         "views/message_wizard.xml",
         "views/mail_message_view.xml",
+        "views/messages.xml",
     ],
     # "data": ["security/ir.model.access.csv", "views/importer.xml"],
     # "images": ["static/description/icon.png"],

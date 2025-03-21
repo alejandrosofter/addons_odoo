@@ -11,14 +11,14 @@
     "installable": True,
     "auto_install": False,
     # any module necessary for this one to work correctly
-    "depends": ["base", "mail", "contacts", "subscription_package"],
+    "depends": ["base", "mail", "contacts", "softer_suscripciones"],
+    # "pre_init_hook": "pre_init_hook",
     # always loaded
     "data": [
         "security/ir.model.access.csv",
         "views/res_config_settings_view.xml",
         # "views/cron.xml",
         "views/socios.xml",
-        "views/subscription_package_inherit.xml",
         # "views/menu.xml",
         # "views/res_partner_view.xml",
     ],

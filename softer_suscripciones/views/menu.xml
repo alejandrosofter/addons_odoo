@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Acción de ventana para suscripciones -->
+    <record id="action_suscripcion" model="ir.actions.act_window">
+        <field name="name">Suscripciones</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">softer.suscripcion</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primera suscripción
+            </p>
+        </field>
+    </record>
+
+    <!-- Menú principal -->
+    <menuitem id="menu_suscripcion_root" name="Suscripciones" web_icon="softer_suscripciones,static/description/icon.png" sequence="10"/>
+
+    <!-- Menú de Suscripciones -->
+    <menuitem id="menu_suscripcion_main" name="Suscripciones" parent="menu_suscripcion_root" action="action_suscripcion" sequence="10"/>
+
+    <!-- Menú de Reportes -->
+    <menuitem id="menu_suscripcion_reports" name="Reportes" parent="menu_suscripcion_root" sequence="20"/>
+
+    <!-- Menú del Reporte de Productos -->
+    <!-- <menuitem id="menu_suscripcion_product_report" name="Productos Suscritos" parent="menu_suscripcion_reports" action="action_suscripcion_product_report" sequence="10"/> -->
+</odoo> 

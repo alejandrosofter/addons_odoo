@@ -12,7 +12,7 @@
                         <div id="softer_wsap_settings_container">
                             <block title="Configuración para Socios " name="socios_configuration">
                                 <group>
-
+                                    <field name="proximoNroSocio" />
 
                                 </group>
                             </block>

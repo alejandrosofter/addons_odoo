@@ -1,12 +1,13 @@
 <odoo>
-    <record id="action_whatsapp_config" model="ir.actions.act_window">
-        <field name="name">Bots de WhatsApp</field>
-        <field name="res_model">bot.whatsapp</field>
-        <field name="view_mode">tree,form</field>        <!-- Aquí agregamos "form" -->
+    <record id="action_socios" model="ir.actions.act_window">
+        <field name="name">Socios</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
         <field name="target">current</field>
+        <field name="domain">[('esSocio', '=', True)]</field>
     </record>
 
-    <menuitem id="wsap_menu_root" name="Whatsapp" web_icon="softer_wsap,static/description/icon.png"/>
-    <menuitem id="wsap_menu_config" name="Whatsapp" parent="wsap_menu_root" action="action_whatsapp_config" sequence="20"/>
+    <menuitem id="socios_menu_root" name="Socios" web_icon="softer_socios,static/description/icon.png"/>
+    <menuitem id="socios_list" name="Socios" parent="socios_menu_root" action="action_socios" sequence="20"/>
 
 </odoo>

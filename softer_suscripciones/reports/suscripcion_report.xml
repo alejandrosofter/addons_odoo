@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_suscripcion">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Suscripción <span t-field="doc.name"/>
+                        </h2>
+
+                        <!-- Información del Cliente -->
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Cliente:</strong>
+                                <div t-field="doc.cliente_id" t-options='{"widget": "contact", "fields": ["name", "address", "phone", "email"], "no_marker": True}'/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Dirección de Facturación:</strong>
+                                <div t-field="doc.partner_invoice_id" t-options='{"widget": "contact", "fields": ["address"], "no_marker": True}'/>
+                            </div>
+                        </div>
+
+                        <!-- Información de la Suscripción -->
+                        <div class="row mt32 mb32">
+                            <div class="col-3">
+                                <strong>Fecha de Inicio:</strong>
+                                <p t-field="doc.fecha_inicio"/>
+                            </div>
+                            <div class="col-3">
+                                <strong>Estado:</strong>
+                                <p t-field="doc.estado"/>
+                            </div>
+                            <div class="col-3">
+                                <strong>Tipo de Temporalidad:</strong>
+                                <p t-field="doc.tipo_temporalidad"/>
+                            </div>
+                            <div class="col-3">
+                                <strong>Recurrencia:</strong>
+                                <p t-field="doc.cantidad_recurrencia"/>
+                            </div>
+                        </div>
+
+                        <!-- Productos -->
+                        <h3>Productos Suscritos</h3>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="text-right">Cantidad</th>
+                                    <th class="text-right">Precio Unitario</th>
+                                    <th class="text-right">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.line_ids" t-as="line">
+                                    <td>
+                                        <span t-field="line.product_id.name"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="line.cantidad"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="line.precio_unitario"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="line.cantidad * line.precio_unitario" t-options='{"widget": "monetary", "display_currency": doc.company_id.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-right">
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong t-esc="sum(line.cantidad * line.precio_unitario for line in doc.line_ids)" t-options='{"widget": "monetary", "display_currency": doc.company_id.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <!-- Información Adicional -->
+                        <div class="row mt32 mb32" t-if="doc.proxima_factura">
+                            <div class="col-12">
+                                <strong>Próxima Factura:</strong>
+                                <span t-field="doc.proxima_factura"/>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo> 

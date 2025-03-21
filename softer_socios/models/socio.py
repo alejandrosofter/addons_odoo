@@ -15,6 +15,45 @@ class ClubMember(models.Model):
         string="Tipo de Socio",
         # default="particular",
     )
+    estado = fields.Selection(
+        selection=[
+            ("borrador", "Borrador"),
+            ("activa", "Activa"),
+            ("suspendida", "Suspendida"),
+            ("baja", "Baja"),
+        ],
+        string="Estado",
+        default="activo",
+    )
+    fechaAlta = fields.Date(string="Fecha de Alta")
+    fechaBaja = fields.Date(string="Fecha de Baja")
+    esSocio = fields.Boolean(string="Es Socio", default=False)
+    suscripcion_id = fields.Many2one(
+        "softer.suscripcion",
+        string="Suscripción",
+        # ondelete="set null",
+    )
+    estado_suscripcion = fields.Selection(
+        selection=[
+            ("borrador", "Borrador"),
+            ("activa", "Activa"),
+            ("suspendida", "Suspendida"),
+            ("baja", "Baja"),
+        ],
+        string="Estado de Suscripción",
+        compute="_compute_estado_suscripcion",
+        store=False,
+    )
+
+    @api.model
+    def action_get_next_member_number(self, args):
+        print("obtener prox socio")
+
+        # Lógica para obtener el próximo número disponible
+
+        next_number = self.env["ir.sequence"].next_by_code("member.number.sequence")
+        print(f"next_number: ${next_number}")
+        self.member_number = next_number
 
     @api.constrains("tipoSocio", "member_number")
     def _check_member_number_required(self):
@@ -27,12 +66,28 @@ class ClubMember(models.Model):
     @api.model
     def create(self, vals):
         if vals.get("tipoSocio") and not vals.get("member_number"):
-            last_member = self.search([], order="member_number desc", limit=1)
+            # Obtener el próximo número de socio desde la configuración
             next_number = (
-                str(int(last_member.member_number) + 1)
-                if last_member and last_member.member_number
-                else "1"
+                self.env["ir.config_parameter"]
+                .sudo()
+                .get_param("socios.proximoNroSocio")
             )
             vals["member_number"] = next_number
+
+            # Incrementar el número en 1 y actualizar la configuración
+            new_next_number = int(next_number) + 1
+            self.env["ir.config_parameter"].sudo().set_param(
+                "socios.proximoNroSocio", new_next_number
+            )
         record = super(ClubMember, self).create(vals)
         return record
+
+    @api.depends("suscripcion_id")
+    def _compute_estado_suscripcion(self):
+        for record in self:
+            record.estado_suscripcion = (
+                record.suscripcion_id.estado if record.suscripcion_id else False
+            )
+            record.estado = (
+                record.suscripcion_id.estado if record.suscripcion_id else False
+            )
