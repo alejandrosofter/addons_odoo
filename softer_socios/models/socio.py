@@ -23,7 +23,7 @@ class ClubMember(models.Model):
             ("baja", "Baja"),
         ],
         string="Estado",
-        default="activo",
+        default="activa",
     )
     fechaAlta = fields.Date(string="Fecha de Alta")
     fechaBaja = fields.Date(string="Fecha de Baja")
