@@ -15,6 +15,7 @@
     # "pre_init_hook": "pre_init_hook",
     # always loaded
     "data": [
+        "security/groups.xml",
         "security/rules.xml",
         "security/ir.model.access.csv",
         # "views/res_config_settings_view.xml",

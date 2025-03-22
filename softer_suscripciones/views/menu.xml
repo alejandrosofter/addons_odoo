@@ -14,10 +14,10 @@
     </record>
 
     <!-- Menú principal -->
-    <menuitem id="menu_suscripcion_root" name="Suscripciones" web_icon="softer_suscripciones,static/description/icon.png" sequence="10"/>
+    <menuitem id="menu_suscripcion_root" name="Suscripciones" web_icon="softer_suscripciones,static/description/icon.png" sequence="10" groups="softer_actividades.group_entrenadores"/>
 
     <!-- Menú de Suscripciones -->
-    <menuitem id="menu_suscripcion_main" name="Suscripciones" parent="menu_suscripcion_root" action="action_suscripcion" sequence="10"/>
+    <menuitem id="menu_suscripcion_main" name="Suscripciones" parent="menu_suscripcion_root" action="action_suscripcion" sequence="10" groups="softer_actividades.group_entrenadores"/>
 
     <!-- Menú de Reportes -->
     <menuitem id="menu_suscripcion_reports" name="Reportes" parent="menu_suscripcion_root" sequence="20"/>

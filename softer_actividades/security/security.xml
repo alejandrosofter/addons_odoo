@@ -1,8 +1,0 @@
-<odoo>
-    <data>
-        <record id="group_entrenador" model="res.groups">
-            <field name="name">Entrenadores</field>
-            <field name="category_id" ref="base.module_category_human_resources"/>
-        </record>
-    </data>
-</odoo> 
