@@ -15,10 +15,11 @@
     # "pre_init_hook": "pre_init_hook",
     # always loaded
     "data": [
-        "security/security.xml",
+        "security/rules.xml",
         "security/ir.model.access.csv",
         # "views/res_config_settings_view.xml",
         # "views/cron.xml",
+        # "security/rules.xml",  # Asegúrate de incluir este archivo
         "views/actividades.xml",
         "views/suscripciones_inherit.xml",
         "views/asistencias.xml",

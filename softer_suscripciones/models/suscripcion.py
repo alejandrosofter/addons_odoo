@@ -114,6 +114,14 @@ class Suscripcion(models.Model):
         store=False,  # No es necesario almacenar este campo
     )
 
+    @api.onchange("cliente_id")
+    def _onchange_cliente_id(self):
+        """Actualiza contacto_comunicacion al cambiar cliente_id"""
+        if self.cliente_id:
+            self.contacto_comunicacion = self.cliente_id.id
+        else:
+            self.contacto_comunicacion = False
+
     @api.model
     def create(self, vals):
         # Obtener el cliente y los productos

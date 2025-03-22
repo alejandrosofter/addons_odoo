@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="rule_actividades_entrenador" model="ir.rule">
+        <field name="name">Actividades - Entrenadores</field>
+        <field name="model_id" ref="model_softer_actividades"/>
+        <field name="domain_force">[('entrenador', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('softer.group_entrenador'))]"/>
+    </record>
+
+    <record id="rule_actividades_all" model="ir.rule">
+        <field name="name">Actividades - Todos</field>
+        <field name="model_id" ref="model_softer_actividades"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+</data>
+</odoo>
