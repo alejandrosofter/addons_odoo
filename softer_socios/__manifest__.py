@@ -11,7 +11,7 @@
     "installable": True,
     "auto_install": False,
     # any module necessary for this one to work correctly
-    "depends": ["base", "mail", "contacts", "account"],
+    "depends": ["base", "mail", "contacts", "account", "softer_suscripciones"],
     # "pre_init_hook": "pre_init_hook",
     # always loaded
     "data": [
