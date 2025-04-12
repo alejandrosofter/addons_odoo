@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
-from . import res_config_settings_inherit
 from . import socio
+from . import res_config_settings_inherit

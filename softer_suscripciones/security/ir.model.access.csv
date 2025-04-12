@@ -2,3 +2,6 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_softer_suscripcion_user,softer.suscripcion.user,model_softer_suscripcion,base.group_user,1,1,1,1
 access_softer_sale_order_user,sale.order.user,sale.model_sale_order,base.group_user,1,1,1,1
 access_softer_suscripcion_line_user,softer.suscripcion.line.user,model_softer_suscripcion_line,base.group_user,1,1,1,1
+access_softer_suscripcion_alta_user,softer.suscripcion.alta.user,model_softer_suscripcion_alta,base.group_user,1,1,1,1
+access_softer_suscripcion_alta_product_line_user,softer.suscripcion.alta.product.line.user,model_softer_suscripcion_alta_product_line,base.group_user,1,1,1,1
+access_softer_suscripcion_categoria,softer.suscripcion.categoria,model_softer_suscripcion_categoria,base.group_user,1,1,1,1

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_syncronizer_origen_param_tree" model="ir.ui.view">
+        <field name="name">softer.syncronizer.origen.param.tree</field>
+        <field name="model">softer.syncronizer.origen.param</field>
+        <field name="arch" type="xml">
+            <tree string="Parámetros de Origen">
+                <field name="name"/>
+                <field name="value"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_syncronizer_origen_param_form" model="ir.ui.view">
+        <field name="name">softer.syncronizer.origen.param.form</field>
+        <field name="model">softer.syncronizer.origen.param</field>
+        <field name="arch" type="xml">
+            <form string="Parámetro de Origen">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="value"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                            <field name="origen_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_syncronizer_origen_param" model="ir.actions.act_window">
+        <field name="name">Parámetros de Origen</field>
+        <field name="res_model">softer.syncronizer.origen.param</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo> 

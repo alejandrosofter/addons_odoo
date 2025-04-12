@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, exceptions, fields, api
 import requests
 import re
 import base64
@@ -284,7 +284,6 @@ class BotWhatsapp(models.Model):
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
         }
-        print(vals)
 
         try:
             response = requests.post(api_url, json=vals, headers=headers, timeout=20)
@@ -296,7 +295,9 @@ class BotWhatsapp(models.Model):
                     f"Mensaje: {mensaje_json}"
                 )
                 raise UserError("Ups, error API: " + error_msg)
-            return response
+            else:
+                print(f"BOT CREADO!")
+                return response
         except requests.exceptions.RequestException as e:
             raise ValueError(f"Error de conexión con la API: {str(e)}")
 
@@ -310,13 +311,14 @@ class BotWhatsapp(models.Model):
             return aux
         return ""
 
-    def updateApi(self, vals, update=False):
+    def syncApi(self, vals, update=False):
         """Sincroniza los datos del bot con la API externa"""
         url = self.env["ir.config_parameter"].sudo().get_param("whatsapp.url_whatsapp")
         token = self.env["ir.config_parameter"].sudo().get_param("whatsapp.token_wsap")
+        print(f"self.external_id->{self.external_id}")
 
         if not url or not token:
-            raise ValueError("Faltan los parámetros de conexión a la API")
+            raise exceptions.UserError("Te falta completar la config!")
 
         if not self.external_id:
             # Si no tiene external_id, intentamos crear un nuevo bot en la API
@@ -331,15 +333,18 @@ class BotWhatsapp(models.Model):
 
         try:
             if update:
+                print("actualizo bot")
                 response = requests.put(api_url, json=vals, headers=headers, timeout=20)
             else:
+                print("creo bot")
                 response = requests.post(
                     api_url, json=vals, headers=headers, timeout=20
                 )
             if response.status_code not in [200, 201]:
-                raise ValueError(
-                    f"Error en la API: {response.status_code} - {response.text}"
-                )
+                raise exceptions.UserError(f"{response.text}")
+                # raise ValueError(
+                #     f"Error en la API: {response.status_code} - {response.text}"
+                # )
             return response
         except requests.exceptions.RequestException as e:
             raise ValueError(f"Error de conexión con la API: {str(e)}")
@@ -370,22 +375,17 @@ class BotWhatsapp(models.Model):
     def create(self, vals):
         """Antes de crear en Odoo, valida que la API cree el bot correctamente"""
         try:
-            response = self.updateApi(vals)
+            bot = super(BotWhatsapp, self).create(vals)
+            vals["idExterno"] = bot.id
+            print(vals)
+            response = self.syncApi(vals)
 
             if response.status_code == 201:
                 data = response.json()
-                if "bot" in data and "id" in data["bot"]:
-                    vals["external_id"] = data["bot"]["id"]
-                    bot = super(BotWhatsapp, self).create(vals)
-                    if bot.default_system:
-                        self._update_default_bot(bot.id)
-                    return bot
-                else:
-                    raise ValueError("La API no devolvió un ID válido")
+                print(data)
+                return bot
             else:
-                raise ValueError(
-                    f"Error en la API: {response.status_code} - {response.text}"
-                )
+                raise exceptions.UserError("ups algo con la api")
 
         except requests.exceptions.RequestException as e:
             raise ValueError(f"Error de conexión con la API: {str(e)}")
@@ -396,16 +396,17 @@ class BotWhatsapp(models.Model):
         """Al actualizar un bot, si se activa default_system, desactiva los demás y guarda en ir.config_parameter"""
         try:
             res = super(BotWhatsapp, self).write(vals)
-            if res:
-                self.updateApi(vals, True)
-                if vals.get("default_system"):
-                    self._update_default_bot(self.id)
+            print("WRITE")
+            print(vals)
+            # if res:
+            #     self.updateApi(vals, True)
+            if vals.get("default_system"):
+                self._update_default_bot(self.id)
             return res
         except Exception as e:
             raise ValueError(f"Error al actualizar el bot: {str(e)}")
 
-    def unlink(self):
-        """Antes de eliminar en Odoo, elimina el bot en la API"""
+    def executeApi(self, urlApi, method, data=None):
         url = self.env["ir.config_parameter"].sudo().get_param("whatsapp.url_whatsapp")
         token = self.env["ir.config_parameter"].sudo().get_param("whatsapp.token_wsap")
 
@@ -419,28 +420,42 @@ class BotWhatsapp(models.Model):
             "Content-Type": "application/json",
         }
 
+        api_url = f"{url}/{urlApi}"
+        try:
+            if method == "GET":
+                print(f"GET {api_url}")
+                response = requests.get(api_url, headers=headers, timeout=20)
+            elif method == "POST":
+                print(f"POST {api_url} con datos: {data}")
+                response = requests.post(
+                    api_url, json=data, headers=headers, timeout=20
+                )
+            elif method == "PUT":
+                print(f"PUT {api_url} con datos: {data}")
+                response = requests.put(api_url, json=data, headers=headers, timeout=20)
+            elif method == "DELETE":
+                print(f"DELETE {api_url}")
+                response = requests.delete(api_url, headers=headers, timeout=20)
+            else:
+                raise ValueError("Método HTTP no soportado")
+
+            if response.status_code in [200, 201]:
+                return response.json()  # Devuelve la respuesta en formato JSON
+            else:
+                raise exceptions.UserError(
+                    f"Error en la API: {response.status_code} - {response.text}"
+                )
+
+        except requests.exceptions.RequestException as e:
+            raise exceptions.UserError(f"Error de conexión con la API: {str(e)}")
+
+    def unlink(self):
+
         for record in self:
-            if record.external_id:
-
-                api_url = f"{url}/bots/{record.external_id}"
-                print(api_url)
-                try:
-                    response = requests.delete(api_url, headers=headers, timeout=20)
-
-                    if response.status_code == 200:
-                        print(f"Bot {record.name} eliminado en API")
-                    else:
-                        if response.status_code == 502:
-                            # significa que no existe en la api, entonces quito el registro de odoo
-                            return super(BotWhatsapp, self).unlink()
-                        else:
-                            raise ValueError(
-                                f"Error eliminando en API: {response.status_code} - {response.text}"
-                            )
-
-                except requests.exceptions.RequestException as e:
-                    raise ValueError(f"Error de conexión con la API: {str(e)}")
-
+            api_url = f"bots/{record.id}"  # Asegúrate de usar el ID externo
+            self.executeApi(
+                api_url, "DELETE"
+            )  # Llama a executeApi para eliminar el bot
         return super(BotWhatsapp, self).unlink()
 
     def action_syncWhatsap(self):

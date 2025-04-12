@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_evolution_api_numbers_user,evolution.api.numbers.user,model_evolution_api_numbers,base.group_user,1,1,1,1
+access_evolution_api_message_user,evolution.api.message.user,model_evolution_api_message,base.group_user,1,1,1,1
+access_evolution_api_numbers,evolution.api.numbers,model_evolution_api_numbers,base.group_user,1,1,1,1
+access_evolution_api_webhook,evolution.api.webhook,model_evolution_api_webhook,base.group_user,1,1,1,1

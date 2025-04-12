@@ -91,4 +91,129 @@
             </t>
         </t>
     </template>
+
+    <!-- Template para el formulario de adhesión -->
+    <template id="report_suscripcion_adhesion">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="text-center">Formulario de Adhesión a Suscripción</h2>
+
+                        <!-- Información del Cliente -->
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Cliente:</strong>
+                                <div t-field="doc.cliente_id" t-options='{"widget": "contact", "fields": ["name", "address", "phone", "email"], "no_marker": True}'/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Dirección de Facturación:</strong>
+                                <div t-field="doc.partner_invoice_id" t-options='{"widget": "contact", "fields": ["address"], "no_marker": True}'/>
+                            </div>
+                        </div>
+
+                        <!-- Información de la Suscripción -->
+                        <div class="row mt32 mb32">
+                            <div class="col-12">
+                                <h3>Detalles de la Suscripción</h3>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td>
+                                            <strong>Referencia:</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Fecha de Inicio:</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.fecha_inicio"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Productos Suscritos:</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.nombres_productos"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Importe Total:</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.importeTotal"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Frecuencia de Facturación:</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.nombre_temporalidad"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Sección de Débito Automático -->
+                        <div class="row mt32 mb32">
+                            <div class="col-12">
+                                <h3>Débito Automático</h3>
+                                <div t-if="doc.paga_debito_automatico">
+                                    <p>El cliente ha optado por el pago mediante débito automático.</p>
+                                </div>
+                                <div t-else="">
+                                    <p>El cliente ha optado por el pago manual.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sección de Firma -->
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <div class="border-top border-dark" style="margin-top: 100px;">
+                                    <p class="text-center">Firma del Cliente</p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="border-top border-dark" style="margin-top: 100px;">
+                                    <p class="text-center">Firma del Representante</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notas -->
+                        <div class="row mt32">
+                            <div class="col-12">
+                                <p class="text-muted">
+                                    <small>
+                                        Este formulario de adhesión constituye un acuerdo formal entre el cliente y la empresa.
+                                        Al firmar, ambas partes aceptan los términos y condiciones establecidos.
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Acción del Reporte -->
+    <record id="action_report_suscripcion_adhesion" model="ir.actions.report">
+        <field name="name">Formulario de Adhesión</field>
+        <field name="model">softer.suscripcion</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">softer_suscripciones.report_suscripcion_adhesion</field>
+        <field name="report_file">softer_suscripciones.report_suscripcion_adhesion</field>
+        <field name="print_report_name">'Formulario de Adhesión - %s' % object.name</field>
+        <field name="binding_model_id" ref="model_softer_suscripcion"/>
+        <field name="binding_type">report</field>
+    </record>
 </odoo> 

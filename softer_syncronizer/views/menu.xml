@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menú Principal -->
+    <menuitem id="menu_softer_syncronizer_root" name="Sincronizador" web_icon="softer_syncronizer,static/description/icon.png" sequence="10"/>
+
+    <!-- Submenús -->
+    <menuitem id="menu_softer_syncronizer" name="Sincronizadores" parent="menu_softer_syncronizer_root" action="action_syncronizer" sequence="10"/>
+
+    <menuitem id="menu_softer_syncronizer_origen" name="Orígenes" parent="menu_softer_syncronizer_root" action="action_syncronizer_origen" sequence="20"/>
+
+    <menuitem id="menu_softer_syncronizer_destino" name="Destinos" parent="menu_softer_syncronizer_root" action="action_syncronizer_destino" sequence="30"/>
+
+    <!-- <menuitem id="menu_softer_syncronizer_file" name="Archivos" parent="menu_softer_syncronizer_root" action="action_syncronizer_file" sequence="40"/> -->
+
+    <menuitem id="menu_softer_syncronizer_resultados" name="Resultados" parent="menu_softer_syncronizer_root" action="action_syncronizer_resultados" sequence="50"/>
+</odoo> 

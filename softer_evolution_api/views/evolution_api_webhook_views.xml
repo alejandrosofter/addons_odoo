@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Tree -->
+    <record id="evolution_api_webhook_tree_view" model="ir.ui.view">
+        <field name="name">evolution.api.webhook.tree</field>
+        <field name="model">evolution.api.webhook</field>
+        <field name="arch" type="xml">
+            <tree string="Eventos Webhook">
+                <field name="create_date"/>
+                <field name="event_type"/>
+                <field name="instance_id"/>
+                <field name="state" decoration-info="state == 'nuevo'" decoration-warning="state == 'procesando'" decoration-success="state == 'procesado'" decoration-danger="state == 'error'"/>
+                <field name="error_message"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Form -->
+    <record id="evolution_api_webhook_form_view" model="ir.ui.view">
+        <field name="name">evolution.api.webhook.form</field>
+        <field name="model">evolution.api.webhook</field>
+        <field name="arch" type="xml">
+            <form string="Evento Webhook">
+                <header>
+                    <button name="action_procesar" string="Procesar" type="object" class="oe_highlight" invisible="state != 'nuevo'"/>
+                    <button name="action_marcar_procesado" string="Marcar como Procesado" type="object" invisible="state != 'procesando'"/>
+                    <button name="action_reintentar" string="Reintentar" type="object" invisible="state != 'error'"/>
+                    <field name="state" widget="statusbar" options="{'clickable': '1'}" statusbar_visible="nuevo,procesando,procesado,error"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="event_type"/>
+                            <field name="instance_id"/>
+                            <field name="create_date"/>
+                            <field name="processed"/>
+                        </group>
+                        <group>
+                            <field name="error_message" invisible="state != 'error'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Datos del Evento">
+                            <field name="raw_data" />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista Search -->
+    <record id="evolution_api_webhook_search_view" model="ir.ui.view">
+        <field name="name">evolution.api.webhook.search</field>
+        <field name="model">evolution.api.webhook</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Eventos Webhook">
+                <field name="event_type"/>
+                <field name="instance_id"/>
+                <separator/>
+                <filter string="Nuevos" name="state_nuevo" domain="[('state', '=', 'nuevo')]"/>
+                <filter string="Procesando" name="state_procesando" domain="[('state', '=', 'procesando')]"/>
+                <filter string="Procesados" name="state_procesado" domain="[('state', '=', 'procesado')]"/>
+                <filter string="Con Error" name="state_error" domain="[('state', '=', 'error')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Tipo de Evento" name="group_event_type" context="{'group_by': 'event_type'}"/>
+                    <filter string="Estado" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Instancia" name="group_instance" context="{'group_by': 'instance_id'}"/>
+                    <filter string="Fecha" name="group_create_date" context="{'group_by': 'create_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción de Menú -->
+    <record id="action_evolution_api_webhook" model="ir.actions.act_window">
+        <field name="name">Eventos Webhook</field>
+        <field name="res_model">evolution.api.webhook</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="evolution_api_webhook_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay eventos webhook registrados
+            </p>
+            <p>
+                Los eventos webhook se registrarán automáticamente cuando 
+                Evolution API envíe notificaciones.
+            </p>
+        </field>
+    </record>
+
+
+</odoo> 

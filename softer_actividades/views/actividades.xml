@@ -4,17 +4,24 @@
         <field name="model">softer.actividades</field>
         <field name="arch" type="xml">
             <form string="Actividades">
+                <header>
+
+                    <button name="action_create_subscriptions" string="Generar Suscripciones" type="object" class="oe_highlight"/>
+                </header>
                 <sheet>
                     <notebook>
                         <!-- Pestaña de Datos Generales -->
                         <page string="Datos Generales">
                             <group>
                                 <field name="name"/>
+                                <field name="genero"/>
+                                <field name="estado"/>
                                 <field name="entrenador"/>
                                 <field name="administrador"/>
+                                <field name="categoria_suscripcion"/>
                                 <field name="tipoRangos"/>
-                                <field name="fechaDesde"/>
-                                <field name="fechaHasta"/>
+                                <field name="fechaDesde" invisible="tipoRangos == 'libre'"/>
+                                <field name="fechaHasta" invisible="tipoRangos == 'libre'"/>
                             </group>
                         </page>
                         <!-- Pestaña de Horarios -->
@@ -34,16 +41,74 @@
                                 <tree editable="bottom">
                                     <field name="cliente_id"/>
                                     <field name="cliente_contacto"/>
-                                    <field name="suscripcion_id"/>
-
+                                    <field name="numero_documento"/>
                                     <field name="fechaNacimiento"/>
                                     <field name="estado"/>
                                     <field name="estadoMotivo"/>
+                                    <field name="tiene_acceso_sistema"/>
+                                    <field name="usuario_id" attrs="{'invisible': [('tiene_acceso_sistema', '=', False)]}"/>
+                                    <field name="telefono_whatsapp"/>
+                                    <button name="action_view_suscripciones" type="object" icon="fa-list" title="Ver Suscripciones"/>
+                                    <button name="action_grant_system_access" type="object" icon="fa-key" title="Otorgar Acceso" attrs="{'invisible': [('tiene_acceso_sistema', '=', True)]}"/>
+                                    <button name="action_revoke_system_access" type="object" icon="fa-ban" title="Revocar Acceso" attrs="{'invisible': [('tiene_acceso_sistema', '=', False)]}"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <!-- Pestaña de Condiciones -->
+                        <page string="Condiciones (suscripciones)">
+                            <div colspan="2" class="alert alert-info" role="alert">
+                                <strong>Nota:</strong>
+                                <ul>
+                                    <li>Si marca "Es Indefinida", la suscripción no tendrá fecha de vencimiento.</li>
+                                    <li>Si marca "Es Única", solo puede existir una suscripción activa por producto y cliente.</li>
+                                </ul>
+                            </div>
+                            <field name="productosAsociados">
+                                <tree editable="bottom">
+                                    <field name="producto_id" width="300"/>
+                                    <field name="cantidad" width="80"/>
+                                    <field name="fechaInicio" width="100"/>
+                                    <field name="fechaFin" invisible="esIndefinida" width="100"/>
+                                    <field name="esIndefinida" width="80"/>
+                                    <field name="esUnica" width="80"/>
+                                    <field name="paga_debito_automatico" width="80"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Registro de Suscripciones">
+                            <field name="registroSuscripciones"/>
+                        </page>
+                        <!-- Pestaña de Mensajes -->
+                        <page string="Mensajes Equipo">
+                            <field name="mensajes">
+                                <tree>
+                                    <field name="fecha_hora"/>
+                                    <field name="tipo_mensaje"/>
+                                    <field name="archivo" filename="nombre_archivo"/>
+                                    <field name="texto"/>
                                 </tree>
                             </field>
                         </page>
                     </notebook>
                 </sheet>
+                <div colspan="2" class="alert alert-info" role="alert">
+                    <strong>Generar Suscripciones:</strong>
+                    <ul>
+                        <li>Se generarán suscripciones para todos los integrantes activos de la actividad.</li>
+                        <li>Para cada producto asociado:</li>
+                        <ul>
+                            <li>Si es único: solo se creará una suscripción por cliente y producto.</li>
+                            <li>Si es indefinido: la suscripción no tendrá fecha de fin.</li>
+                            <li>Se usará la fecha de inicio y fin configurada en el producto.</li>
+                        </ul>
+                        <li>Las suscripciones se crearán directamente en estado activo.</li>
+                        <li>Si ya existe una suscripción activa para un cliente y producto:</li>
+                        <ul>
+                            <li>Si el producto es único: se omitirá la creación.</li>
+                            <li>Si el producto no es único: se creará una nueva suscripción.</li>
+                        </ul>
+                    </ul>
+                </div>
             </form>
         </field>
     </record>
@@ -54,11 +119,16 @@
         <field name="arch" type="xml">
             <tree string="Actividades">
                 <field name="name"/>
+                <field name="genero"/>
+                <field name="estado"/>
                 <field name="entrenador"/>
                 <field name="administrador"/>
                 <field name="tipoRangos"/>
+                <field name="categoria_suscripcion"/>
+
                 <field name="fechaDesde"/>
                 <field name="fechaHasta"/>
+
             </tree>
         </field>
     </record>

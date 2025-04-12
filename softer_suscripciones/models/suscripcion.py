@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -15,11 +15,18 @@ class Suscripcion(models.Model):
         required=True,
         copy=False,
         readonly=True,
-        default=lambda self: "Nuevo",
+        default=lambda self: _("New"),
     )
 
     cliente_id = fields.Many2one(
-        "res.partner", string="Cliente", required=True, tracking=True
+        "res.partner",
+        string="Socio",
+        required=True,
+        tracking=True,
+        ondelete="cascade",
+    )
+    alta_id = fields.Many2one(
+        "softer.suscripcion.alta", string="Alta", tracking=True, ondelete="cascade"
     )
     contacto_comunicacion = fields.Many2one(
         "res.partner", string="Comunicacion con...", required=True, tracking=True
@@ -29,17 +36,22 @@ class Suscripcion(models.Model):
     )
     fecha_inicio = fields.Date(string="Fecha de Comienzo", required=True, tracking=True)
     fecha_fin = fields.Date(string="Fecha Fin", tracking=True)
-    proxima_factura = fields.Date(string="Próxima Factura", tracking=True)
+    proxima_factura = fields.Date(
+        string="Próxima Factura",
+        tracking=True,
+        compute="_compute_proxima_factura",
+        store=True,
+        readonly=False,
+    )
 
     estado = fields.Selection(
         [
-            ("borrador", "Borrador"),
             ("activa", "Activa"),
-            ("suspendida", "Suspendida"),
-            ("baja", "Baja"),
+            ("finalizada", "Finalizada"),
+            ("cancelada", "Cancelada"),
         ],
         string="Estado",
-        default="borrador",
+        default="activa",
         tracking=True,
     )
 
@@ -50,6 +62,19 @@ class Suscripcion(models.Model):
     )
 
     active = fields.Boolean(default=True)
+
+    categoria_id = fields.Many2one(
+        "softer.suscripcion.categoria",
+        string="Categoría",
+        help="Categoría de la suscripción",
+    )
+
+    paga_debito_automatico = fields.Boolean(
+        string="Paga Débito Automático",
+        default=False,
+        tracking=True,
+        help="Indica si la suscripción se paga mediante débito automático",
+    )
 
     # Campos adicionales para la gestión de ventas
     sale_order_count = fields.Integer(
@@ -72,10 +97,15 @@ class Suscripcion(models.Model):
     ultima_factura = fields.Date(string="Última Factura")
 
     tipo_temporalidad = fields.Selection(
-        [("dia", "Día"), ("semana", "Semana"), ("mes", "Mes"), ("anio", "Año")],
+        [
+            ("diaria", "Diaria"),
+            ("semanal", "Semanal"),
+            ("mensual", "Mensual"),
+            ("anual", "Anual"),
+        ],
         string="Tipo de Temporalidad",
         required=True,
-        default="mes",
+        default="mensual",
         tracking=True,
     )
 
@@ -84,6 +114,7 @@ class Suscripcion(models.Model):
         required=True,
         tracking=True,
         help="Número de unidades de tiempo entre cada facturación",
+        default=1,
     )
 
     line_ids = fields.One2many(
@@ -122,20 +153,14 @@ class Suscripcion(models.Model):
         else:
             self.contacto_comunicacion = False
 
-    @api.model
-    def create(self, vals):
-        # Obtener el cliente y los productos
-        cliente = self.env["res.partner"].browse(vals.get("cliente_id"))
-        productos = vals.get("nombres_productos", "")
-
-        # Establecer el nombre en el formato {cliente}/{productos}
-        vals["name"] = (
-            f"{cliente.name}/{productos}" if cliente else "CLIENTE/ACTIVIDADES"
-        )
-
-        if vals.get("fecha_inicio") and not vals.get("proxima_factura"):
-            vals["proxima_factura"] = vals.get("fecha_inicio")
-        return super(Suscripcion, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("name", _("New")) == _("New"):
+                vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "softer.suscripcion"
+                ) or _("New")
+        return super().create(vals_list)
 
     @api.constrains("fecha_inicio", "fecha_fin")
     def _check_fechas(self):
@@ -218,13 +243,13 @@ class Suscripcion(models.Model):
         if not fecha_base:
             return False
 
-        if self.tipo_temporalidad == "dia":
+        if self.tipo_temporalidad == "diaria":
             return fecha_base + relativedelta(days=self.cantidad_recurrencia)
-        elif self.tipo_temporalidad == "semana":
+        elif self.tipo_temporalidad == "semanal":
             return fecha_base + relativedelta(weeks=self.cantidad_recurrencia)
-        elif self.tipo_temporalidad == "mes":
+        elif self.tipo_temporalidad == "mensual":
             return fecha_base + relativedelta(months=self.cantidad_recurrencia)
-        elif self.tipo_temporalidad == "anio":
+        elif self.tipo_temporalidad == "anual":
             return fecha_base + relativedelta(years=self.cantidad_recurrencia)
         return False
 
@@ -273,7 +298,19 @@ class Suscripcion(models.Model):
         )
 
         for suscripcion in suscripciones:
-            suscripcion.create_sale_order()
+            # Crear la orden de venta con los valores de la suscripción
+            sale_order_vals = suscripcion._prepare_sale_order_values()
+            sale_order = self.env["sale.order"].create(sale_order_vals)
+
+            # Agregar líneas de producto
+            lines = suscripcion._prepare_sale_order_line_values(sale_order)
+            sale_order.write({"order_line": lines})
+
+            # Actualizar fechas de facturación
+            suscripcion.ultima_factura = fields.Date.today()
+            suscripcion.proxima_factura = suscripcion._calcular_siguiente_fecha(
+                fields.Date.today()
+            )
 
         return True
 
@@ -331,7 +368,10 @@ class Suscripcion(models.Model):
             auxProductos = ", ".join(
                 product.product_id.name for product in record.line_ids
             )
-            total_importe = sum(line.precio_unitario for line in record.line_ids)
+            # Calcular el total usando el precio actual del producto multiplicado por la cantidad
+            total_importe = sum(
+                line.product_id.list_price * line.cantidad for line in record.line_ids
+            )
             record.importeTotal = total_importe
             record.nombres_productos = auxProductos
             record.name = f"{record.cliente_id.name}/{auxProductos}"
@@ -340,3 +380,26 @@ class Suscripcion(models.Model):
     def _compute_nombre_temporalidad(self):
         for record in self:
             record.nombre_temporalidad = f"{record.cantidad_recurrencia} {dict(self._fields['tipo_temporalidad'].selection).get(record.tipo_temporalidad, '')}"
+
+    def print_adhesion(self):
+        """Imprime el formulario de adhesión de la suscripción"""
+        self.ensure_one()
+        return self.env.ref(
+            "softer_suscripciones.action_report_suscripcion_adhesion"
+        ).report_action(self)
+
+    @api.depends("cliente_id")
+    def _compute_nombres_productos(self):
+        for record in self:
+            record.nombres_productos = ", ".join(
+                record.cliente_id.mapped("product_line_ids.product_id.name")
+            )
+
+    @api.depends("fecha_inicio", "tipo_temporalidad", "cantidad_recurrencia")
+    def _compute_proxima_factura(self):
+        """Calcula la próxima fecha de factura si no existe"""
+        for record in self:
+            if not record.proxima_factura and record.fecha_inicio:
+                record.proxima_factura = self._calcular_siguiente_fecha(
+                    record.fecha_inicio
+                )

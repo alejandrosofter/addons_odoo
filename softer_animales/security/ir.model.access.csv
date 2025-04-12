@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_softer_animal_user,softer.animal.user,model_softer_animal,base.group_user,1,1,1,1
-access_softer_evento_animal_user,softer.evento.animal.user,model_softer_evento_animal,base.group_user,1,1,1,1 

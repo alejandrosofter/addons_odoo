@@ -6,3 +6,4 @@ from . import suscripcion_inherith
 from . import recursos
 from . import asistencias
 from . import asistencias_integrantes
+from . import alta_inherit

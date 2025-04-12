@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Acción de ventana para suscripciones -->
+    <record id="action_suscripcion" model="ir.actions.act_window">
+        <field name="name">Suscripciones</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">softer.suscripcion</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primera suscripción
+            </p>
+        </field>
+    </record>
     <!-- Form View -->
     <record id="view_suscripcion_form" model="ir.ui.view">
         <field name="name">softer.suscripcion.form</field>
@@ -20,6 +32,7 @@
                         </button>
                         <button name="action_archive" type="object" class="oe_stat_button" icon="fa-archive" invisible="not active" string="Archivar"/>
                         <button name="action_unarchive" type="object" class="oe_stat_button" icon="fa-archive" invisible="active" string="Desarchivar"/>
+                        <button name="print_adhesion" type="object" class="oe_stat_button" icon="fa-print" string="Imprimir Adhesión"/>
                     </div>
                     <div class="oe_title">
                         <h1>
@@ -36,7 +49,7 @@
                             <field name="fecha_inicio"/>
                             <field name="fecha_fin"/>
                             <field name="ultima_factura" readonly="1"/>
-
+                            <field name="categoria_id"/>
 
                         </group>
                         <group>
@@ -44,6 +57,7 @@
                             <field name="cantidad_recurrencia"/>
                             <field name="proxima_factura"/>
                             <field name="termino_pago"/>
+                            <field name="paga_debito_automatico"/>
                             <field name="fecha_baja" invisible="estado != 'baja'"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="active" invisible="1"/>
@@ -55,8 +69,6 @@
                                 <tree editable="bottom">
                                     <field name="product_id"/>
                                     <field name="cantidad"/>
-                                    <field name="precio_unitario"/>
-                                    <field name="importe" sum="Total"/>
                                     <field name="anotacion"/>
                                 </tree>
                                 <form>
@@ -64,8 +76,6 @@
                                         <group>
                                             <field name="product_id"/>
                                             <field name="cantidad"/>
-                                            <field name="precio_unitario"/>
-                                            <field name="importe"/>
                                         </group>
                                         <group>
                                             <field name="anotacion"/>
@@ -99,7 +109,7 @@
                 <field name="nombres_productos"/>
                 <field name="termino_pago"/>
                 <field name="importeTotal"/>
-
+                <field name="categoria_id"/>
                 <field name="estado"/>
             </tree>
         </field>

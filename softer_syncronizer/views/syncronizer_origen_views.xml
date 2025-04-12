@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_syncronizer_origen_tree" model="ir.ui.view">
+        <field name="name">softer.syncronizer.origen.tree</field>
+        <field name="model">softer.syncronizer.origen</field>
+        <field name="arch" type="xml">
+            <tree string="Orígenes de Sincronización">
+                <field name="name"/>
+                <field name="url"/>
+                <field name="auth_type"/>
+                <field name="esConTask"/>
+                <field name="active"/>
+                <field name="method"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_syncronizer_origen_form" model="ir.ui.view">
+        <field name="name">softer.syncronizer.origen.form</field>
+        <field name="model">softer.syncronizer.origen</field>
+        <field name="arch" type="xml">
+            <form string="Origen de Sincronización">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="url"/>
+                        </group>
+                        <group>
+                            <field name="auth_type"/>
+                            <field name="esConTask"/>
+                            <field name="active"/>
+                            <field name="method"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Configuración de Autenticación">
+                            <group>
+                                <group>
+                                    <field name="auth_user" invisible="auth_type != 'basic'"/>
+                                    <field name="auth_password" invisible="auth_type != 'basic'"/>
+                                    <field name="auth_token" invisible="auth_type != 'bearer'"/>
+                                    <field name="auth_header" invisible="auth_type != 'header'"/>
+                                </group>
+
+                            </group>
+                        </page>
+                        <page string="Configuración de Tarea" invisible="not esConTask">
+                            <group>
+                                <group>
+                                    <field name="task_status_url"/>
+                                    <field name="task_status_field"/>
+                                    <field name="task_status_value"/>
+                                </group>
+                                <group>
+                                    <field name="task_interval"/>
+                                    <field name="task_timeout"/>
+                                    <field name="urlResultados"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Parámetros">
+                            <field name="param_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="value"/>
+                                    <field name="active"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_syncronizer_origen" model="ir.actions.act_window">
+        <field name="name">Orígenes de Sincronización</field>
+        <field name="res_model">softer.syncronizer.origen</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo> 

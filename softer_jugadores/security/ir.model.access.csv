@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_jugadores_user,access_jugadores_user,model_res_partner,,1,1,1,1
+access_jugadores_eventos_user,access_jugadores_eventos_user,model_softer_jugadores_eventos,,1,1,1,1
+access_jugadores_eventos_tipos_user,access_jugadores_eventos_tipos_user,model_softer_jugadores_eventos_tipos,,1,1,1,1
+access_pruebas_user,access_pruebas_user,model_softer_pruebas,,1,1,1,1
+access_pruebas_equipos_user,access_pruebas_equipos_user,model_softer_pruebas_equipos,,1,1,1,1
+access_pruebas_equipos_jugadores_user,access_pruebas_equipos_jugadores_user,model_softer_pruebas_equipos_jugadores,,1,1,1,1
+access_pruebas_equipos_jugador_user,access_pruebas_equipos_jugador_user,model_softer_pruebas_equipos_jugador,,1,1,1,1
+access_pruebas_partidos_user,access_pruebas_partidos_user,model_softer_pruebas_partidos,,1,1,1,1
+

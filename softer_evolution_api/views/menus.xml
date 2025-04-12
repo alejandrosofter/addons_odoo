@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem id="menu_evolution_api_root" name="Evolution API" web_icon="softer_evolution_api,static/description/icon.png" />
+
+    <menuitem id="menu_evolution_api_numbers" name="Números" parent="menu_evolution_api_root" action="action_evolution_api_numbers" sequence="10"/>
+
+    <!-- Messages Menu -->
+    <menuitem id="menu_evolution_api_message" name="Mensajes" parent="menu_evolution_api_root" action="action_evolution_api_message" sequence="20"/>
+
+    <!-- Webhook Events Menu -->
+    <menuitem id="menu_evolution_api_webhook" name="Eventos Webhook" parent="menu_evolution_api_root" action="action_evolution_api_webhook" sequence="30"/>
+</odoo> 

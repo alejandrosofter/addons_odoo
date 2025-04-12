@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_evolution_api_numbers_tree" model="ir.ui.view">
+        <field name="name">evolution.api.numbers.tree</field>
+        <field name="model">evolution.api.numbers</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="channel"/>
+                <field name="number"/>
+                <field name="estado"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_evolution_api_numbers_form" model="ir.ui.view">
+        <field name="name">evolution.api.numbers.form</field>
+        <field name="model">evolution.api.numbers</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="channel"/>
+                        </group>
+                        <group>
+                            <field name="number"/>
+                            <field name="token"/>
+                            <field name="estado"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_evolution_api_numbers" model="ir.actions.act_window">
+        <field name="name">WhatsApp Numbers</field>
+        <field name="res_model">evolution.api.numbers</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo> 

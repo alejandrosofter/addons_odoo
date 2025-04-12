@@ -10,6 +10,10 @@ class ClubMember(models.Model):
         string="Nro de Socio", copy=False, index=True, unique=True
     )
     fechaNacimiento = fields.Date(string="Fecha de Nacimiento")
+    genero = fields.Selection(
+        selection=[("M", "Masculino"), ("F", "Femenino")],
+        string="Género",
+    )
     tipoSocio = fields.Selection(
         selection=[("particular", "Particular"), ("empresa", "Empresa")],
         string="Tipo de Socio",
@@ -28,22 +32,6 @@ class ClubMember(models.Model):
     fechaAlta = fields.Date(string="Fecha de Alta")
     fechaBaja = fields.Date(string="Fecha de Baja")
     esSocio = fields.Boolean(string="Es Socio", default=False)
-    suscripcion_id = fields.Many2one(
-        "softer.suscripcion",
-        string="Suscripción",
-        # ondelete="set null",
-    )
-    estado_suscripcion = fields.Selection(
-        selection=[
-            ("borrador", "Borrador"),
-            ("activa", "Activa"),
-            ("suspendida", "Suspendida"),
-            ("baja", "Baja"),
-        ],
-        string="Estado de Suscripción",
-        compute="_compute_estado_suscripcion",
-        store=False,
-    )
 
     @api.model
     def action_get_next_member_number(self, args):
@@ -81,13 +69,3 @@ class ClubMember(models.Model):
             )
         record = super(ClubMember, self).create(vals)
         return record
-
-    @api.depends("suscripcion_id")
-    def _compute_estado_suscripcion(self):
-        for record in self:
-            record.estado_suscripcion = (
-                record.suscripcion_id.estado if record.suscripcion_id else False
-            )
-            record.estado = (
-                record.suscripcion_id.estado if record.suscripcion_id else False
-            )

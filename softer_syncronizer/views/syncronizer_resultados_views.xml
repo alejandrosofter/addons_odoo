@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_syncronizer_resultados_tree" model="ir.ui.view">
+        <field name="name">softer.syncronizer.resultados.tree</field>
+        <field name="model">softer.syncronizer.resultados</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="sincronizador_id"/>
+                <field name="fecha_sincronizacion"/>
+                <field name="estado"/>
+                <field name="registros_procesados"/>
+                <field name="registros_exitosos"/>
+                <field name="registros_fallidos"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_syncronizer_resultados_form" model="ir.ui.view">
+        <field name="name">softer.syncronizer.resultados.form</field>
+        <field name="model">softer.syncronizer.resultados</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_apply_results" string="Aplicar Resultados" type="object" class="oe_highlight" invisible="estado == 'working'" />
+                    <field name="estado" widget="statusbar" statusbar_visible="success,warning,error,working,pending"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre del Resultado"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sincronizador_id"/>
+                            <field name="fecha_sincronizacion"/>
+                            <field name="taskId"/>
+                            <field name="clave_busqueda"/>
+                            <field name="clave_modelo"/>
+                        </group>
+                        <group>
+                            <field name="registros_procesados"/>
+                            <field name="registros_exitosos"/>
+                            <field name="registros_fallidos"/>
+                            <field name="nro_registro_actual"/>
+                            <field name="total_registros"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Detalles" name="detalles">
+                            <group>
+                                <group>
+                                    <field name="mensaje"/>
+                                    <field name="detalles"/>
+                                </group>
+                                <group>
+                                    <field name="archivo" filename="nombre_archivo"/>
+                                    <field name="nombre_archivo" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_syncronizer_resultados_search" model="ir.ui.view">
+        <field name="name">softer.syncronizer.resultados.search</field>
+        <field name="model">softer.syncronizer.resultados</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="sincronizador_id"/>
+                <field name="taskId"/>
+                <field name="clave_busqueda"/>
+                <separator/>
+                <filter string="Exitosos" name="exitosos" domain="[('estado', '=', 'success')]"/>
+                <filter string="Con Errores" name="con_errores" domain="[('estado', '=', 'error')]"/>
+                <filter string="Con Advertencias" name="con_advertencias" domain="[('estado', '=', 'warning')]"/>
+                <filter string="En Proceso" name="en_proceso" domain="[('estado', '=', 'working')]"/>
+                <filter string="Pendientes" name="pendientes" domain="[('estado', '=', 'pending')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Sincronizador" name="group_by_sincronizador" context="{'group_by': 'sincronizador_id'}"/>
+                    <filter string="Estado" name="group_by_estado" context="{'group_by': 'estado'}"/>
+                    <filter string="Fecha" name="group_by_fecha" context="{'group_by': 'fecha_sincronizacion'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_syncronizer_resultados" model="ir.actions.act_window">
+        <field name="name">Resultados de Sincronización</field>
+        <field name="res_model">softer.syncronizer.resultados</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_syncronizer_resultados_search"/>
+        <field name="context">{'search_default_pendientes': 1}</field>
+    </record>
+
+    <!-- Action para aplicar resultados -->
+    <record id="action_apply_syncronizer_resultados" model="ir.actions.act_window">
+        <field name="name">Aplicar Resultados</field>
+        <field name="res_model">softer.syncronizer.resultados</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_estado': 'pending'}</field>
+        <field name="domain">[('estado', '=', 'pending')]</field>
+    </record>
+</odoo> 

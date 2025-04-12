@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_orders" inherit_id="portal.portal_my_orders" name="Portal My Orders">
+        <xpath expr="//head" position="inside">
+            <meta name="csrf-token" t-att-content="request.csrf_token()"/>
+            <style>
+                .o_portal_my_orders {
+                    background-color: #ffebee;
+                }
+                .o_portal_my_orders:hover {
+                    background-color: #ffcdd2;
+                }
+                .btn-generate-invoice {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+            </style>
+        </xpath>
+        <xpath expr="//div[hasclass('o_portal_my_orders')]" position="inside">
+            <div class="o_portal_my_orders_actions">
+                <button type="button" class="btn btn-primary btn-generate-invoice" id="generate_invoice_button" disabled>
+<i class="fa fa-file-invoice"></i>
+                <span>Generar Factura</span>
+            </button>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="select_all_orders">
+                    <label class="form-check-label" for="select_all_orders">
+                        <b>Seleccionar Todas</b>
+                    </label>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//tr[hasclass('o_portal_my_orders')]" position="attributes">
+            <attribute name="class">o_portal_my_orders</attribute>
+        </xpath>
+        <xpath expr="//td[hasclass('o_portal_my_orders')]" position="before">
+            <td>
+                <input type="checkbox" class="order-checkbox" t-att-value="order.id">
+                </td>
+            </xpath>
+        </template>
+    </odoo>

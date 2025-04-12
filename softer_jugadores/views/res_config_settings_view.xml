@@ -1,0 +1,36 @@
+<odoo>
+    <data>
+        <!-- Hereda la vista del formulario de configuración general -->
+        <record id="view_res_config_settings_inherit" model="ir.ui.view">
+            <field name="name">res.config.settings.inherit</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <!-- Cambiar el XPath a comillas dobles y revisar el lugar adecuado para insertar la nueva solapa -->
+                <xpath expr="//form[@class='oe_form_configuration']" position="inside">
+                    <app data-string="Jugadores" string="Jugadores" name="softer_jugadores_settings" logo="/softer_jugadores/static/description/icon.png">
+                        <div id="softer_wsap_settings_container">
+                            <block title="Configuración para Jugadores" name="jugadores_configuration">
+                                <group>
+                                    <field name="tieneComet" />
+                                    <field name="userComet" invisible="not tieneComet" />
+                                    <field name="passComet" invisible="not tieneComet" />
+                                    <div colspan="2" invisible="not tieneComet">
+                                        <button name="action_sync_comet" string="Sincronizar" type="object" class="btn-primary"/>
+                                    </div>
+
+                                    <field name="tieneLigaVeteranosCr" />
+                                    <field name="userVeteranos" invisible="not tieneLigaVeteranosCr" />
+                                    <field name="claveVeteranos" invisible="not tieneLigaVeteranosCr" />
+                                    <div colspan="2" invisible="not tieneLigaVeteranosCr">
+                                        <button name="action_sync_veteranos" string="Sincronizar" type="object" class="btn-primary"/>
+                                    </div>
+                                </group>
+                            </block>
+                        </div>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

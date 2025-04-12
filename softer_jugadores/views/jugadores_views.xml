@@ -1,0 +1,48 @@
+<odoo>
+    <record id="view_jugadores_tree" model="ir.ui.view">
+        <field name="name">jugadores.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Jugadores">
+                <field name="name"/>
+                <field name="fechaNacimiento"/>
+                <field name="posicion"/>
+                <field name="estado"/>
+                <field name="esJugador"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="view_jugadores_form" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.jugadores</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Jugador">
+                    <group>
+                        <field name="esJugador"/>
+
+                        <field name="fechaNacimiento"/>
+                        <field name="posicion"/>
+                        <field name="estado"/>
+
+                    </group>
+
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_jugadores" model="ir.actions.act_window">
+        <field name="name">Jugadores</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">current</field>
+        <field name="domain">[('esJugador', '=', True)]</field>
+    </record>
+
+
+    <menuitem id="jugadores_menu_root" name="Jugadores" web_icon="softer_jugadores,static/description/icon.png"/>
+    <menuitem id="jugadores_menu" name="Jugadores" parent="jugadores_menu_root" action="action_jugadores" sequence="30"/>
+</odoo> 

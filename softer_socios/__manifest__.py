@@ -11,15 +11,16 @@
     "installable": True,
     "auto_install": False,
     # any module necessary for this one to work correctly
-    "depends": ["base", "mail", "contacts", "softer_suscripciones"],
+    "depends": ["base", "mail", "contacts", "account"],
     # "pre_init_hook": "pre_init_hook",
     # always loaded
     "data": [
         "security/ir.model.access.csv",
-        "views/res_config_settings_view.xml",
-        # "views/cron.xml",
         "views/socios.xml",
-        # "views/menu.xml",
+        "views/menu.xml",
+        "views/res_config_settings_view.xml",
+        "views/message_wizard.xml",
+        # "views/cron.xml",
         # "views/res_partner_view.xml",
     ],
     # "data": ["security/ir.model.access.csv", "views/importer.xml"],

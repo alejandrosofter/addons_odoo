@@ -1,0 +1,2 @@
+id,name,model_id:id,domain_force,groups
+rule_portal_sale_order,Portal: Ver solo sus propias órdenes,model_sale_order,"[('partner_id','=',user.partner_id.id)]",10

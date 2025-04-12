@@ -11,7 +11,7 @@
     "installable": True,
     "auto_install": False,
     # any module necessary for this one to work correctly
-    "depends": ["softer_suscripciones"],
+    "depends": ["softer_suscripciones", "softer_evolution_api"],
     # "pre_init_hook": "pre_init_hook",
     # always loaded
     "data": [
@@ -22,9 +22,11 @@
         # "views/cron.xml",
         # "security/rules.xml",  # Asegúrate de incluir este archivo
         "views/actividades.xml",
+        "views/actividades_mensajes.xml",
         "views/suscripciones_inherit.xml",
         "views/asistencias.xml",
         "views/recursos.xml",
+        "views/actividades_views.xml",
         # "views/menu.xml",
         # "views/res_partner_view.xml",
     ],

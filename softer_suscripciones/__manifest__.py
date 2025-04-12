@@ -1,23 +1,25 @@
 {
     "name": "Softer Suscripciones",
     "version": "1.0",
-    "category": "Sales",
-    "summary": "Módulo para gestionar suscripciones a productos",
+    "category": "Softer",
+    "summary": "Gestión de Suscripciones",
     "description": """
-        Módulo de suscripciones que permite:
-        * Registrar suscripciones a productos
-        * Gestionar fechas de inicio y fin
-        * Control de recurrencia
-        * Estados de suscripción
-        * Generación automática de ventas según recurrencia
+        Módulo para gestionar suscripciones
+        ==================================
+
+        * Gestión de suscripciones
+        * Gestión de altas
+        * Gestión de productos
     """,
-    "depends": ["base", "sale", "web"],
+    "author": "Softer",
+    "website": "https://www.softer.com",
+    "depends": ["base", "softer_socios", "sale"],
     "data": [
         "security/ir.model.access.csv",
         "data/cron_data.xml",
-        "reports/suscripcion_report.xml",
         "views/suscripciones.xml",
-        # "views/suscripcion_report_views.xml",
+        "views/alta.xml",
+        "views/sale_order_views.xml",
         "views/menu.xml",
     ],
     "installable": True,

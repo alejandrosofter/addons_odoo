@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_softer_actividades_mensajes_form" model="ir.ui.view">
+        <field name="name">softer.actividades.mensajes.form</field>
+        <field name="model">softer.actividades.mensajes</field>
+        <field name="arch" type="xml">
+            <form string="Mensaje">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="fecha_hora"/>
+                            <field name="tipo_mensaje"/>
+                        </group>
+                        <group>
+                            <field name="archivo" invisible="tipo_mensaje != 'media'" filename="nombre_archivo"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="texto" invisible="tipo_mensaje != 'text'" placeholder="Escribe el mensaje aquí..."/>
+                    </group>
+                    <group>
+                        <field name="registro" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_softer_actividades_mensajes_tree" model="ir.ui.view">
+        <field name="name">softer.actividades.mensajes.tree</field>
+        <field name="model">softer.actividades.mensajes</field>
+        <field name="arch" type="xml">
+            <tree string="Mensajes">
+                <field name="fecha_hora"/>
+                <field name="tipo_mensaje"/>
+                <field name="archivo" filename="nombre_archivo"/>
+                <field name="texto"/>
+                <field name="registro"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_softer_actividades_mensajes" model="ir.actions.act_window">
+        <field name="name">Mensajes</field>
+        <field name="res_model">softer.actividades.mensajes</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

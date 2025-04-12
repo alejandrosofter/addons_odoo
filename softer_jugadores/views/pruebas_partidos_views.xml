@@ -1,0 +1,49 @@
+<odoo>
+    <record id="view_pruebas_partidos_tree" model="ir.ui.view">
+        <field name="name">pruebas.partidos.tree</field>
+        <field name="model">softer.pruebas_partidos</field>
+        <field name="arch" type="xml">
+            <tree string="Pruebas Partidos">
+                <field name="fecha"/>
+                <field name="resultado"/>
+                <field name="lugar"/>
+                <field name="oponente"/>
+                <field name="prueba_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_pruebas_partidos_form" model="ir.ui.view">
+        <field name="name">pruebas.partidos.form</field>
+        <field name="model">softer.pruebas_partidos</field>
+        <field name="arch" type="xml">
+            <form string="Prueba Partido">
+                <sheet>
+                    <group>
+                        <field name="fecha"/>
+                        <field name="resultado"/>
+                        <field name="lugar"/>
+                        <field name="oponente"/>
+                        <field name="detalle"/>
+                        <field name="prueba_id"/>
+                        <!-- <field name="eventos_ids" widget="one2many_list"/> -->
+                        <field name="eventos_ids">
+                            <tree editable="bottom">
+                                <field name="tipoEvento_id"/>
+                                <field name="jugador_id"/>
+                                <field name="detalle"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_partidos" model="ir.actions.act_window">
+        <field name="name">Partidos de prueba</field>
+        <field name="res_model">softer.pruebas_partidos</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">current</field>
+    </record>
+    <menuitem id="partidos_menu" name="Partidos" parent="jugadores_menu_root" action="action_partidos" sequence="30"/>
+</odoo> 

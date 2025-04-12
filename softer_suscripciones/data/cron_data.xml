@@ -6,7 +6,7 @@
             <field name="name">Check Subscriptions Status</field>
             <field name="model_id" ref="model_softer_suscripcion"/>
             <field name="state">code</field>
-            <field name="code">model._check_subscription_status()</field>
+            <field name="code">model._cron_generate_sales()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_syncronizer_destino_tree" model="ir.ui.view">
+        <field name="name">softer.syncronizer.destino.tree</field>
+        <field name="model">softer.syncronizer.destino</field>
+        <field name="arch" type="xml">
+            <tree string="Destinos de Sincronización">
+                <field name="name"/>
+                <field name="model_id"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_syncronizer_destino_form" model="ir.ui.view">
+        <field name="name">softer.syncronizer.destino.form</field>
+        <field name="model">softer.syncronizer.destino</field>
+        <field name="arch" type="xml">
+            <form string="Destino de Sincronización">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="model_id"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Script de Transformación">
+                            <group>
+                                <field name="script_transformer" widget="ace" options="{'mode': 'python'}"/>
+                                <div colspan="2" class="alert alert-info" role="alert">
+                                    <h4>Ejemplo de Script de Transformación:</h4>
+                                    <pre>
+def transform(data, nroRegistroProcesado, existing):
+    """
+    Función que transforma los datos del origen al modelo destino.
+    
+    Args:
+        data (dict): Diccionario con los datos del origen
+        nroRegistroProcesado (int): Número de registro procesado
+        existing (dict): Diccionario con los datos del registro existente
+    Returns:
+        dict: Diccionario con los valores para el modelo destino
+    """
+    return {
+        'name': data.get('nombre'),
+        'email': data.get('correo'),
+        'phone': data.get('telefono'),
+        'street': data.get('direccion'),
+        'city': data.get('ciudad'),
+        'state_id': data.get('estado_id'),
+        'zip': data.get('codigo_postal'),
+        'country_id': data.get('pais_id'),
+        'vat': data.get('ruc'),
+        'website': data.get('sitio_web'),
+        'comment': data.get('notas'),
+    }
+
+def postCreateEdit(record_original, record_odoo):
+    """
+    Función opcional que se ejecuta después de crear o editar un registro.
+    
+    Args:
+        record_original (dict): Registro original del JSON
+        record_odoo (Model): Registro creado/actualizado en Odoo
+    """
+    # Ejemplo: Agregar el cliente a una actividad
+    if 'actividad' in record_original:
+        self.env['softer.actividades'].agregar_cliente_a_actividad( cliente_id=record_odoo.id, nombre_actividad=record_original['actividad']
+        )
+                                    </pre>
+                                    <p>Notas importantes:</p>
+                                    <ul>
+                                        <li>La función principal debe llamarse <code>transform</code>
+                                        </li>
+                                        <li>Debe recibir un parámetro <code>data</code> con los datos del origen</li>
+                                        <li>Debe recibir un parámetro <code>nroRegistroProcesado</code> con el número de registro</li>
+                                        <li>Puede recibir un parámetro <code>existing</code> con los datos del registro existente</li>
+                                        <li>Debe retornar un diccionario con los valores para el modelo destino</li>
+                                        <li>Use <code>data.get('campo')</code> para acceder a los datos de forma segura</li>
+                                        <li>Los nombres de los campos deben coincidir con los del modelo destino</li>
+                                    </ul>
+                                    <p>Función postCreateEdit (opcional):</p>
+                                    <ul>
+                                        <li>Puede definir una función <code>postCreateEdit</code> para acciones posteriores</li>
+                                        <li>Se ejecuta después de crear o editar un registro</li>
+                                        <li>Recibe el registro original y el registro de Odoo</li>
+                                        <li>Tiene acceso al entorno de Odoo mediante <code>self.env</code>
+                                        </li>
+                                        <li>Los errores en esta función no detienen el proceso principal</li>
+                                    </ul>
+                                </div>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_syncronizer_destino" model="ir.actions.act_window">
+        <field name="name">Destinos de Sincronización</field>
+        <field name="res_model">softer.syncronizer.destino</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo> 

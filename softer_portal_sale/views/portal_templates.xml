@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_orders_inherit" inherit_id="sale.portal_my_orders">
+        <xpath expr="//div[hasclass('alert')]" position="before">
+            <t t-if="any(order.invoice_status == 'to invoice' for order in orders)">
+                <div class="alert alert-warning" role="alert">
+                    <i class="fa fa-exclamation-triangle me-2" aria-hidden="true"></i>
+                    Tienes órdenes pendientes de liquidacion. Por favor, selecciona las órdenes para luego poder realizar el pago.
+                </div>
+            </t>
+        </xpath>
+
+        <xpath expr="//thead/tr" position="replace">
+            <tr class="active">
+                <th class="text-center">
+                    <input type="checkbox" id="select_all_orders" name="select_all_orders"/>
+                </th>
+                <th class="text-end">Fecha de la orden</th>
+                <th>Producto/Servicio</th>
+                <th class="text-end">Cantidad</th>
+                <th class="text-end">Precio Unitario</th>
+                <th class="text-end">Subtotal</th>
+                <th class="text-end">Total</th>
+            </tr>
+        </xpath>
+
+        <xpath expr="//t[@t-foreach='orders']/tr" position="attributes">
+            <attribute name="t-att-data-order-id">order.id</attribute>
+            <attribute name="t-att-class">'text-danger' if order.invoice_status == 'to invoice' else 'text-muted'</attribute>
+        </xpath>
+
+        <xpath expr="//t[@t-foreach='orders']/tr" position="replace">
+            <tr t-att-data-order-id="order.id" t-att-class="'text-danger' if order.invoice_status == 'to invoice' else 'text-muted'">
+                <td class="text-center">
+                    <input type="checkbox" t-att-value="order.id" t-att-disabled="order.invoice_status != 'to invoice'" class="order-checkbox"/>
+                </td>
+                <td class="text-end">
+                    <span t-out="order.date_order"/>
+                </td>
+                <td>
+                    <t t-foreach="order.order_line" t-as="line">
+                        <div t-out="line.product_id.name"/>
+                    </t>
+                </td>
+                <td class="text-end">
+                    <t t-foreach="order.order_line" t-as="line">
+                        <div t-out="line.product_uom_qty"/>
+                    </t>
+                </td>
+                <td class="text-end">
+                    <t t-foreach="order.order_line" t-as="line">
+                        <div t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': order.currency_id}"/>
+                    </t>
+                </td>
+                <td class="text-end">
+                    <t t-foreach="order.order_line" t-as="line">
+                        <div t-field="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': order.currency_id}"/>
+                    </t>
+                </td>
+                <td class="text-end">
+                    <span t-field="order.amount_total" t-options="{'widget': 'monetary', 'display_currency': order.currency_id}"/>
+                </td>
+            </tr>
+        </xpath>
+
+        <xpath expr="//div[hasclass('alert')]" position="after">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <button id="generate_invoice_button" disabled="disabled" class="btn btn-primary float-end">
+                        <b>PAGAR
+                            <i class="fa fa-money" aria-hidden="true"></i>
+                        </b>
+                    </button>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

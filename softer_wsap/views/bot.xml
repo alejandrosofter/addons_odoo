@@ -51,17 +51,6 @@
                                     </div>
                                 </group>
                             </page>
-                            <page string="Código QR">
-                                <group>
-                                    <field name="qr_image" widget="image"/>
-                                    <div colspan="2">
-                                        <button name="action_get_qr_api" type="object" string="Actualizar QR" class="btn-primary"/>
-                                    </div>
-                                    <div colspan="2">
-                                        <i>(*) Si ya te has vinculado en tu telefono por favor espera a que sincronice el sistema!</i>
-                                    </div>
-                                </group>
-                            </page>
                             <page string="Estado Whatsapp">
                                 <group string="Estado de WhatsApp">
                                     <field name="estaConectado"/>

@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_softer_syncronizer_user,access.softer.syncronizer.user,model_softer_syncronizer,base.group_user,1,1,1,0
+access_softer_syncronizer_manager,softer.syncronizer.manager,model_softer_syncronizer,base.group_system,1,1,1,1
+access_softer_syncronizer_origen_user,access.softer.syncronizer.origen.user,model_softer_syncronizer_origen,base.group_user,1,1,1,0
+access_softer_syncronizer_origen_manager,softer.syncronizer.origen.manager,model_softer_syncronizer_origen,base.group_system,1,1,1,1
+access_softer_syncronizer,access.softer.syncronizer,model_softer_syncronizer,base.group_user,1,1,1,1
+access_softer_syncronizer_origen,access.softer.syncronizer.origen,model_softer_syncronizer_origen,base.group_user,1,1,1,1
+access_softer_syncronizer_origen_param,access.softer.syncronizer.origen.param,model_softer_syncronizer_origen_param,base.group_user,1,1,1,1
+access_softer_syncronizer_destino,access.softer.syncronizer.destino,model_softer_syncronizer_destino,base.group_user,1,1,1,1
+access_softer_syncronizer_file,access.softer.syncronizer.file,model_softer_syncronizer_file,base.group_user,1,1,1,1
+access_softer_syncronizer_resultados,access.softer.syncronizer.resultados,model_softer_syncronizer_resultados,base.group_user,1,1,1,1
+access_softer_syncronizer_destino_user,access.softer.syncronizer.destino.user,model_softer_syncronizer_destino,base.group_user,1,1,1,0
+access_softer_syncronizer_destino_manager,softer.syncronizer.destino.manager,model_softer_syncronizer_destino,base.group_system,1,1,1,1
+access_softer_syncronizer_resultados_user,access.softer.syncronizer.resultados.user,model_softer_syncronizer_resultados,base.group_user,1,1,1,0
+access_softer_syncronizer_resultados_manager,softer.syncronizer.resultados.manager,model_softer_syncronizer_resultados,base.group_system,1,1,1,1

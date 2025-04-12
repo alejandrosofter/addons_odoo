@@ -2,7 +2,7 @@
     <data noupdate="1">
         <record id="cron_update_bots_wsap" model="ir.cron">
             <field name="name">Actualizar Bots de WhatsApp</field>
-            <field name="model_id" ref="model_res_users"/>
+            <field name="model_id" ref="base.model_res_users"/>
             <field name="state">code</field>
             <field name="code">model.actualizar_bots_wsap()</field>
             <field name="interval_type">minutes</field>
