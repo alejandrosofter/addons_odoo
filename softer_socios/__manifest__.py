@@ -16,6 +16,7 @@
     # always loaded
     "data": [
         "security/ir.model.access.csv",
+        "data/sequence.xml",
         "views/socios.xml",
         "views/menu.xml",
         "views/res_config_settings_view.xml",
