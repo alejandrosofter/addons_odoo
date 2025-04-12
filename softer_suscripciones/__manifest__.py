@@ -13,9 +13,10 @@
     """,
     "author": "Softer",
     "website": "https://www.softer.com",
-    "depends": ["base", "softer_socios", "sale"],
+    "depends": ["base", "sale"],
     "data": [
         "security/ir.model.access.csv",
+        "data/sequence.xml",
         "data/cron_data.xml",
         "views/suscripciones.xml",
         "views/alta.xml",
