@@ -29,11 +29,11 @@ class SofterSyncronizerDestino(models.Model):
         El script debe definir una función transform(data, nroRegistroProcesado) que recibe:
         - data: los datos del origen
         - nroRegistroProcesado: el número de registro que se está procesando
-        
+
         Opcionalmente puede definir una función postCreateEdit(record_original, record_odoo) que recibe:
         - record_original: el registro original del JSON
         - record_odoo: el registro creado/actualizado en Odoo
-        
+
         Ejemplo:
         def transform(data, nroRegistroProcesado):
             return {
@@ -42,7 +42,7 @@ class SofterSyncronizerDestino(models.Model):
                 'phone': data.get('telefono'),
                 'sequence': nroRegistroProcesado
             }
-            
+
         def postCreateEdit(record_original, record_odoo):
             # Acciones adicionales después de crear/editar
             if 'actividad' in record_original:
@@ -72,8 +72,8 @@ class SofterSyncronizerDestino(models.Model):
                     "El script debe definir una función 'transform(data, nroRegistroProcesado, existing)'"
                 )
 
-            # Ejecutar la transformación
-            return transform_func(data, nroRegistroProcesado, existing)
+            # Ejecutar la transformación pasando self como primer argumento
+            return transform_func(self, data, nroRegistroProcesado, existing)
 
         except Exception as e:
             _logger.error("Error en el script de transformación: %s", str(e))
