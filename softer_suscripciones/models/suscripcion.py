@@ -20,7 +20,7 @@ class Suscripcion(models.Model):
 
     cliente_id = fields.Many2one(
         "res.partner",
-        string="Socio",
+        string="Cliente",
         required=True,
         tracking=True,
         ondelete="cascade",
@@ -29,7 +29,7 @@ class Suscripcion(models.Model):
         "softer.suscripcion.alta", string="Alta", tracking=True, ondelete="cascade"
     )
     contacto_comunicacion = fields.Many2one(
-        "res.partner", string="Comunicacion con...", required=True, tracking=True
+        "res.partner", string="Comunicacion", required=True, tracking=True
     )
     fecha = fields.Date(
         string="Fecha de Creación", default=fields.Date.today, tracking=True

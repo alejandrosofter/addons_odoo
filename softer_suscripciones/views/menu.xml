@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Root Menu -->
-    <menuitem id="menu_softer_suscripcion_root" name="Suscripciones" web_icon="softer_suscripciones,static/description/icon.png" sequence="10"/>
+    <menuitem id="menu_softer_suscripcion_root" name="Suscripciones" web_icon="softer_suscripciones,static/description/icon.png" />
 
     <!-- Configuration Menu -->
-    <menuitem id="menu_softer_suscripcion_configuration" name="Configuración" parent="menu_softer_suscripcion_root" sequence="10"/>
+    <menuitem id="menu_softer_suscripcion_configuration" name="Configuración" parent="menu_softer_suscripcion_root" />
 
 
     <!-- Suscripciones Menu -->
-    <menuitem id="menu_softer_suscripcion_suscripciones" name="Suscripciones" parent="menu_softer_suscripcion_root" action="action_suscripcion" sequence="30"/>
+    <menuitem id="menu_softer_suscripcion_suscripciones" name="Suscripciones" parent="menu_softer_suscripcion_root" action="action_suscripcion" sequence="10"/>
     <!-- Altas Menu -->
-    <menuitem id="menu_softer_suscripcion_alta" name="Altas" parent="menu_softer_suscripcion_root" action="action_softer_suscripcion_alta" sequence="20"/>
+    <menuitem id="menu_softer_suscripcion_alta" name="Altas Multiples" parent="menu_softer_suscripcion_root" action="action_softer_suscripcion_alta" sequence="20"/>
 
     <!-- Menú de Reportes -->
-    <menuitem id="menu_suscripcion_reports" name="Reportes" parent="menu_softer_suscripcion_root" sequence="40"/>
+    <menuitem id="menu_suscripcion_reports" name="Reportes" parent="menu_softer_suscripcion_root" sequence="30"/>
 
     <!-- Menú del Reporte de Productos -->
     <!-- <menuitem id="menu_suscripcion_product_report" name="Productos Suscritos" parent="menu_suscripcion_reports" action="action_suscripcion_product_report" sequence="10"/> -->
-</odoo> 
+</odoo>
