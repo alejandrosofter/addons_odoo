@@ -6,12 +6,14 @@ class Website(models.Model):
     _inherit = "website"
 
     @api.model
-    def _get_current_website_id(self):
+    def _get_current_website_id(self, domain_name=None, fallback=True):
         """Sobrescribe el método para evitar errores con REQUEST_URI"""
         try:
-            return super()._get_current_website_id()
+            return super()._get_current_website_id(domain_name, fallback)
         except Exception:
-            return self.env["website"].search([], limit=1).id
+            if fallback:
+                return self.env["website"].search([], limit=1).id
+            return False
 
     def _get_request_url(self):
         """Método auxiliar para obtener la URL actual de forma segura"""
