@@ -76,6 +76,22 @@ class Suscripcion(models.Model):
         help="Indica si la suscripción se paga mediante débito automático",
     )
 
+    facturar_al_generar = fields.Boolean(
+        string="Facturar al Generar",
+        default=False,
+        tracking=True,
+        help="Indica si se debe facturar automáticamente al generar la "
+        "orden de venta",
+    )
+
+    notificar_al_generar = fields.Boolean(
+        string="Notificar al Generar",
+        default=False,
+        tracking=True,
+        help="Indica si se debe enviar una notificación al generar la "
+        "orden de venta",
+    )
+
     # Campos adicionales para la gestión de ventas
     sale_order_count = fields.Integer(
         string="Ventas", compute="_compute_sale_order_count"

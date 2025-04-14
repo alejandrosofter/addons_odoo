@@ -58,6 +58,8 @@
                             <field name="proxima_factura"/>
                             <field name="termino_pago"/>
                             <field name="paga_debito_automatico"/>
+                            <field name="facturar_al_generar"/>
+                            <field name="notificar_al_generar"/>
                             <field name="fecha_baja" invisible="estado != 'baja'"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="active" invisible="1"/>
@@ -138,4 +140,4 @@
             </search>
         </field>
     </record>
-</odoo> 
+</odoo>

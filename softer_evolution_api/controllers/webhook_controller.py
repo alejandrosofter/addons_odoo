@@ -154,20 +154,15 @@ class EvolutionWebhookController(http.Controller):
             _logger.info("Datos del mensaje: %s", json.dumps(message_data))
 
             # Crear mensaje en Odoo
-            message_vals = {
+            dataSend = {
                 "number_id": (webhook.instance_id.id if webhook.instance_id else False),
                 "numeroDestino": key_data.get("remoteJid"),
                 "text": (
                     message_data.get("message", {}).get("conversation")
                     or json.dumps(message_data.get("message", {}))
                 ),
-                "type": "text",  # Por ahora solo manejamos texto
-                "estado": "enviado",  # El mensaje ya fue enviado
                 "fechaHora": Datetime.now(),  # Usamos la hora actual
             }
-
-            message = request.env["evolution.api.message"].sudo().create(message_vals)
-            _logger.info("Mensaje creado con ID: %s", message.id)
 
         except Exception as e:
             _logger.error("Error procesando mensaje: %s", str(e))

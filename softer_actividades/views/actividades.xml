@@ -44,8 +44,6 @@
                                     <field name="numero_documento"/>
                                     <field name="fechaNacimiento"/>
                                     <field name="estado"/>
-                                    <field name="estadoMotivo"/>
-                                    <field name="tiene_acceso_sistema"/>
                                     <field name="usuario_id" attrs="{'invisible': [('tiene_acceso_sistema', '=', False)]}"/>
                                     <field name="telefono_whatsapp"/>
                                     <button name="action_view_suscripciones" type="object" icon="fa-list" title="Ver Suscripciones"/>
