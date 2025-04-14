@@ -5,7 +5,6 @@ from odoo.http import request
 class Website(models.Model):
     _inherit = "website"
 
-    @api.model
     def _get_current_website_id(self, domain_name=None, fallback=True):
         """Sobrescribe el método para evitar errores con REQUEST_URI"""
         try:
