@@ -38,14 +38,13 @@
                         <!-- Pestaña de Integrantes -->
                         <page string="Integrantes">
                             <field name="integrantes">
-                                <tree editable="bottom">
+                                <tree>
                                     <field name="cliente_id"/>
                                     <field name="cliente_contacto"/>
                                     <field name="numero_documento"/>
                                     <field name="fechaNacimiento"/>
                                     <field name="estado"/>
-                                    <field name="usuario_id" attrs="{'invisible': [('tiene_acceso_sistema', '=', False)]}"/>
-                                    <field name="telefono_whatsapp"/>
+                                    <field name="telefono_whatsapp" widget="phone"/>
                                     <button name="action_view_suscripciones" type="object" icon="fa-list" title="Ver Suscripciones"/>
                                     <button name="action_grant_system_access" type="object" icon="fa-key" title="Otorgar Acceso" attrs="{'invisible': [('tiene_acceso_sistema', '=', True)]}"/>
                                     <button name="action_revoke_system_access" type="object" icon="fa-ban" title="Revocar Acceso" attrs="{'invisible': [('tiene_acceso_sistema', '=', False)]}"/>

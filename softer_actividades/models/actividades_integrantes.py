@@ -5,125 +5,13 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import random
 import string
+from ..data.palabras_contrasena import PALABRAS_CONTRASENA
 
 
 class Integrantes(models.Model):
     _name = "softer.actividades.integrantes"
     _description = "Modelo de Integrantes"
-
-    # Lista de palabras simples para generar contraseñas
-    PALABRAS_CONTRASENA = [
-        "casa",
-        "perro",
-        "gato",
-        "sol",
-        "luna",
-        "mar",
-        "rio",
-        "arbol",
-        "flor",
-        "piedra",
-        "agua",
-        "fuego",
-        "aire",
-        "tierra",
-        "cielo",
-        "nube",
-        "lluvia",
-        "viento",
-        "nieve",
-        "hielo",
-        "pan",
-        "leche",
-        "queso",
-        "huevo",
-        "fruta",
-        "verde",
-        "azul",
-        "rojo",
-        "amarillo",
-        "blanco",
-        "negro",
-        "gris",
-        "rosa",
-        "naranja",
-        "morado",
-        "verde",
-        "cafe",
-        "plata",
-        "oro",
-        "bronce",
-        "libro",
-        "papel",
-        "lapiz",
-        "pluma",
-        "tinta",
-        "hoja",
-        "rama",
-        "tronco",
-        "raiz",
-        "semilla",
-        "mano",
-        "pie",
-        "ojo",
-        "nariz",
-        "boca",
-        "oreja",
-        "cabeza",
-        "pelo",
-        "diente",
-        "lengua",
-        "mesa",
-        "silla",
-        "cama",
-        "puerta",
-        "ventana",
-        "pared",
-        "techo",
-        "piso",
-        "escalera",
-        "pasillo",
-        "calle",
-        "auto",
-        "bici",
-        "moto",
-        "barco",
-        "avion",
-        "tren",
-        "bus",
-        "taxi",
-        "metro",
-        "amigo",
-        "familia",
-        "padre",
-        "madre",
-        "hijo",
-        "hija",
-        "hermano",
-        "hermana",
-        "abuelo",
-        "abuela",
-        "escuela",
-        "maestro",
-        "alumno",
-        "clase",
-        "libro",
-        "cuaderno",
-        "lapiz",
-        "regla",
-        "goma",
-        "tijera",
-        "juego",
-        "pelota",
-        "muñeca",
-        "carro",
-        "barco",
-        "avion",
-        "tren",
-        "lego",
-        "puzzle",
-        "dado",
-    ]
+    _order = "cliente_id asc"
 
     cliente_id = fields.Many2one(
         "res.partner", string="Integrante", required=True, tracking=True
@@ -164,10 +52,16 @@ class Integrantes(models.Model):
         "res.users", string="Usuario del Sistema", readonly=True
     )
     telefono_whatsapp = fields.Char(
-        related="cliente_contacto.phone", string="Teléfono WhatsApp", readonly=True
+        string="Teléfono WhatsApp",
+        related="cliente_contacto.phone",
+        readonly=False,
+        store=True,
     )
     numero_documento = fields.Char(
-        related="cliente_contacto.vat", string="Número de Documento", readonly=True
+        string="Número de Documento",
+        related="cliente_contacto.vat",
+        readonly=False,
+        store=True,
     )
 
     @api.depends("cliente_id")
@@ -382,3 +276,15 @@ Tu acceso al sistema ha sido desactivado. Si crees que esto es un error, por fav
                     "type": "success",
                 },
             }
+
+    @api.onchange("telefono_whatsapp")
+    def _onchange_telefono_whatsapp(self):
+        """Actualiza el teléfono del contacto cuando cambia el teléfono WhatsApp"""
+        if self.cliente_contacto and self.telefono_whatsapp:
+            self.cliente_contacto.phone = self.telefono_whatsapp
+
+    @api.onchange("numero_documento")
+    def _onchange_numero_documento(self):
+        """Actualiza el número de documento del contacto cuando cambia"""
+        if self.cliente_contacto and self.numero_documento:
+            self.cliente_contacto.vat = self.numero_documento
