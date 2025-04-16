@@ -27,6 +27,7 @@
         "views/asistencias.xml",
         "views/recursos.xml",
         "views/actividades_views.xml",
+        "views/actividades_integrantes.xml",
         # "views/menu.xml",
         # "views/res_partner_view.xml",
     ],

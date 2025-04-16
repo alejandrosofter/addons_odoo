@@ -26,6 +26,8 @@
                 <page string="Datos Socio" name="datos_socio">
                     <group>
                         <group>
+                            <field name="esSocio"/>
+
                             <field name="member_number"/>
                             <field name="tipoSocio"/>
                             <field name="genero"/>

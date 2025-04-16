@@ -56,8 +56,19 @@ class Actividades(models.Model):
     horarios = fields.One2many(
         "softer.actividades.horarios", "actividad_id", string="Horarios"
     )
-    productosAsociados = fields.One2many(
-        "softer.actividades.productos", "actividad_id", string="Productos Asociados"
+    producto_asociado = fields.Many2one(
+        "product.product",
+        string="Producto Asociado",
+        help="Producto principal asociado a esta actividad",
+    )
+    porcentaje_asistencia_cobro = fields.Float(
+        string="Porcentaje Asistencia Cobro",
+        help="Porcentaje mínimo de asistencia requerido para el cobro",
+        default=100.0,
+    )
+    condiciones_actividad = fields.Text(
+        string="Condiciones de la Actividad",
+        help="Condiciones específicas y reglas de la actividad",
     )
     registroSuscripciones = fields.Text(
         string="Registro de Suscripciones",
@@ -67,6 +78,28 @@ class Actividades(models.Model):
     mensajes = fields.One2many(
         "softer.actividades.mensajes", "actividad_id", string="Mensajes"
     )
+
+    @api.model
+    def create(self, vals):
+        """Sobrescribe el método create para verificar suscripciones después de crear"""
+        record = super().create(vals)
+        record._check_suscripciones()
+        return record
+
+    def write(self, vals):
+        """Sobrescribe el método write para verificar suscripciones después de cambios"""
+        result = super().write(vals)
+        self._check_suscripciones()
+        return result
+
+    def _check_suscripciones(self):
+        """
+        Verifica y actualiza las suscripciones cuando hay cambios en la actividad
+        o sus integrantes.
+        """
+        for record in self:
+            if record.producto_asociado:
+                record.subscription_upsert()
 
     def agregar_cliente_a_actividad(self, cliente_id, nombre_actividad=False):
         """
@@ -208,127 +241,108 @@ class Actividades(models.Model):
                 "message": f"Error al agregar integrante: {str(e)}",
             }
 
-    def action_create_subscriptions(self):
-        """Genera suscripciones para los integrantes basado en los productos asociados"""
-        self.ensure_one()
+    def subscription_upsert(self):
+        """Crea o actualiza suscripciones para los integrantes de la actividad"""
+        _logger.info(f"Iniciando subscription_upsert para actividad {self.id}")
 
-        # Validar si hay productos asociados
-        if not self.productosAsociados:
-            return {
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {
-                    "title": "Advertencia",
-                    "message": 'No hay productos asociados a esta actividad. Por favor, agregue productos en la pestaña "Condiciones (suscripciones)".',
-                    "type": "warning",
-                    "sticky": True,
-                },
-            }
+        if not self.producto_asociado:
+            _logger.warning(f"No hay producto asociado a la actividad {self.id}")
+            return
 
-        AltaModel = self.env["softer.suscripcion.alta"]
-        altas_creadas = 0
-        registro_nuevo = ""
+        _logger.info(f"Integrantes a procesar: {len(self.integrantes)}")
 
-        for integrante in self.integrantes.filtered(lambda i: i.estado == "activo"):
-            # Verificar si el integrante ya tiene una alta activa
-            alta_integrante = self.env["softer.suscripcion.alta"].search(
-                [
-                    ("idActividad", "=", self.id),
-                    ("cliente_id", "=", integrante.cliente_id.id),
-                    # ("state", "=", "done"),
-                ],
-                limit=1,
+        for integrante in self.integrantes:
+            _logger.info(
+                f"Procesando integrante {integrante.id} - Cliente: "
+                f"{integrante.cliente_id.name} - Estado: {integrante.estado}"
             )
 
-            if alta_integrante:
-                registro_nuevo += (
-                    f"[{fields.Datetime.now()}] Cliente: {integrante.cliente_id.name} - "
-                    f"Ya tiene una alta activa: {alta_integrante.name}\n"
-                )
-                continue
+            # Buscar suscripción existente
+            dominio = [
+                ("cliente_id", "=", integrante.cliente_id.id),
+                ("idActividad", "=", self.id),
+            ]
+            _logger.info(f"Buscando suscripción con dominio: {dominio}")
 
-            # Crear un alta por integrante
-            vals_alta = {
-                "cliente_id": integrante.cliente_id.id,
-                "fecha": fields.Date.today(),
-                "fecha_inicio": fields.Date.today(),
-                "idActividad": self.id,
-                "categoria_id": (
-                    self.categoria_suscripcion.id
-                    if self.categoria_suscripcion
-                    else False
-                ),
-                "product_line_ids": [
-                    (
-                        0,
-                        0,
+            suscripcion = self.env["softer.suscripcion"].search(dominio, limit=1)
+
+            _logger.info(f"Estado mapeado para suscripción: {integrante.estado}")
+
+            # Preparar motivo con información adicional
+            motivo_base = f"Cambio de estado desde actividad {self.name}"
+            if integrante.estadoMotivo:
+                motivo_base += f" - Motivo: {integrante.estadoMotivo}"
+            motivo_base += (
+                f" - Asistencia Mensual: {integrante.porcentajeAsistenciaMensual or 0}%"
+            )
+            motivo_base += (
+                f" - Asistencia Global: {integrante.porcentajeAsistenciaGlobal or 0}%"
+            )
+
+            if suscripcion:
+                # Actualizar suscripción existente
+                _logger.info(f"Actualizando suscripción {suscripcion.id}")
+                # Crear el registro de cambio de estado directamente
+                if integrante.estado != suscripcion.estado:
+                    self.env["softer.suscripcion.motivo_cambio"].create(
                         {
-                            "product_id": producto.producto_id.id,
-                            "quantity": producto.cantidad,
-                            "es_indefinido": producto.esIndefinida,
-                            "es_unica": producto.esUnica,
-                            "fecha_fin": (
-                                False if producto.esIndefinida else producto.fechaFin
-                            ),
-                            "es_debito_automatico": producto.paga_debito_automatico,
-                        },
+                            "suscripcion_id": suscripcion.id,
+                            "estado": integrante.estado,
+                            "motivo": motivo_base,
+                            "usuario_id": self.env.user.id,
+                        }
                     )
-                    for producto in self.productosAsociados
-                ],
-            }
-
-            try:
-                nueva_alta = AltaModel.create(vals_alta)
-                # Confirmar el alta
-                nueva_alta.action_confirm()
-                altas_creadas += 1
-
-                # Registrar las altas creadas
-                fecha_actual = fields.Datetime.now()
-                registro_nuevo += (
-                    f"[{fecha_actual}] Cliente: {integrante.cliente_id.name} - "
-                    f"Alta: {nueva_alta.name}\n"
+                # Actualizar el estado sin crear un nuevo registro
+                suscripcion.write(
+                    {
+                        "estado": integrante.estado,
+                        "idActividad": self.id,
+                    }
                 )
-            except Exception as e:
-                fecha_actual = fields.Datetime.now()
-                registro_nuevo += (
-                    f"[{fecha_actual}] ERROR - Cliente: {integrante.cliente_id.name} - "
-                    f"Error: {str(e)}\n"
+            else:
+                # Crear nueva suscripción
+                _logger.info("Creando nueva suscripción")
+                suscripcion = self.env["softer.suscripcion"].create(
+                    {
+                        "cliente_id": integrante.cliente_id.id,
+                        "contacto_comunicacion": integrante.cliente_contacto.id,
+                        "estado": integrante.estado,
+                        "idActividad": self.id,
+                        "fecha_inicio": fields.Date.today(),
+                        "tipo_temporalidad": "mensual",
+                        "cantidad_recurrencia": 1,
+                        "line_ids": [
+                            (
+                                0,
+                                0,
+                                {
+                                    "product_id": self.producto_asociado.id,
+                                    "cantidad": 1,
+                                },
+                            )
+                        ],
+                    }
                 )
-                _logger.error(
-                    "Error al crear alta para cliente %s: %s",
-                    integrante.cliente_id.name,
-                    str(e),
+
+                self.env["softer.suscripcion.motivo_cambio"].create(
+                    {
+                        "suscripcion_id": suscripcion.id,
+                        "estado": integrante.estado,
+                        "motivo": motivo_base,
+                        "usuario_id": self.env.user.id,
+                    }
                 )
-                continue
 
-        # Actualizar el registro
-        if registro_nuevo:
-            registro_actual = self.registroSuscripciones or ""
-            self.registroSuscripciones = registro_nuevo + registro_actual
-
-        if altas_creadas > 0:
-            return {
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {
-                    "title": "Éxito",
-                    "message": f"Se han generado {altas_creadas} altas para los integrantes.",
-                    "type": "success",
-                    "sticky": False,
-                },
-            }
-        else:
-            return {
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {
-                    "title": "Información",
-                    "message": "No se crearon nuevas altas. Todos los integrantes ya tienen altas activas.",
-                    "type": "info",
-                    "sticky": False,
-                },
-            }
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Éxito",
+                "message": "Suscripciones actualizadas correctamente.",
+                "type": "success",
+                "sticky": True,
+            },
+        }
 
     def action_grant_system_access_team(self):
         """Otorga acceso al sistema a todos los integrantes del equipo"""
@@ -363,29 +377,6 @@ class Actividades(models.Model):
                 "type": "success",
             },
         }
-
-
-class ActividadesProductos(models.Model):
-    _name = "softer.actividades.productos"
-    _description = "Productos Asociados a Actividades"
-
-    actividad_id = fields.Many2one("softer.actividades", string="Actividad")
-    producto_id = fields.Many2one("product.product", string="Producto", required=True)
-    cantidad = fields.Integer(string="Cantidad", default=1)
-    fechaInicio = fields.Date(string="Fecha Inicio")
-    fechaFin = fields.Date(string="Fecha Fin")
-    esIndefinida = fields.Boolean(string="Es Indefinida", default=False)
-    esUnica = fields.Boolean(string="Es Unica", default=False)
-    paga_debito_automatico = fields.Boolean(
-        string="Paga Débito Automático",
-        default=False,
-        help="Indica si este producto se paga mediante débito automático",
-    )
-
-    @api.onchange("esIndefinida")
-    def _onchange_esIndefinida(self):
-        if self.esIndefinida:
-            self.fechaFin = False
 
 
 class ActividadesMensajes(models.Model):

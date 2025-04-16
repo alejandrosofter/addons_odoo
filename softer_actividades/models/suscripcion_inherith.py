@@ -6,5 +6,5 @@ class SuscripcionInherited(models.Model):
 
     tieneActividad = fields.Boolean(string="Tiene Actividad", default=False)
     idActividad = fields.Many2one(
-        "softer.actividades", string="Actividad", tracking=True, required=True
+        "softer.actividades", string="Actividad", tracking=True
     )

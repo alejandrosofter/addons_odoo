@@ -1,31 +1,26 @@
+# -*- coding: utf-8 -*-
 {
-    "name": "Socios Clubes",
-    "summary": "Modulo para socios de clubes",
-    "description": "Modulo para socios de clubes",
+    "name": "Softer Socios",
+    "version": "17.0.1.0.0",
+    "category": "Softer",
+    "summary": "Gestión de Socios",
+    "description": """
+        Módulo para la gestión de socios
+    """,
     "author": "Softer",
-    "website": "https://softer.com.ar",
-    "category": "Uncategorized",
-    "version": "0.1",
-    "application": False,
-    "license": "LGPL-3",
-    "installable": True,
-    "auto_install": False,
-    # any module necessary for this one to work correctly
-    "depends": ["base", "mail", "contacts", "account", "softer_suscripciones"],
-    # "pre_init_hook": "pre_init_hook",
-    # always loaded
+    "website": "https://www.softer.com.ar",
+    "depends": [
+        "base",
+        "contacts",
+        "softer_wsap",
+    ],
     "data": [
         "security/ir.model.access.csv",
-        "data/sequence.xml",
-        "views/socios.xml",
-        "views/menu.xml",
-        "views/res_config_settings_view.xml",
-        "views/message_wizard.xml",
-        # "views/cron.xml",
-        # "views/res_partner_view.xml",
+        "views/socio_views.xml",
+        "views/res_config_settings_views.xml",
     ],
-    # "data": ["security/ir.model.access.csv", "views/importer.xml"],
-    # "images": ["static/description/icon.png"],
-    # "pre_init_hook": "pre_init_hook",
-    # only loaded in demonstration mode
+    "installable": True,
+    "application": True,
+    "auto_install": False,
+    "license": "LGPL-3",
 }

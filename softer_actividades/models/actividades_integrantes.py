@@ -6,11 +6,15 @@ from dateutil.relativedelta import relativedelta
 import random
 import string
 from ..data.palabras_contrasena import PALABRAS_CONTRASENA
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class Integrantes(models.Model):
     _name = "softer.actividades.integrantes"
     _description = "Modelo de Integrantes"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "cliente_id asc"
 
     cliente_id = fields.Many2one(
@@ -18,14 +22,28 @@ class Integrantes(models.Model):
     )
     estado = fields.Selection(
         [
-            ("activo", "Activo"),
-            ("suspendido", "Suspendido"),
+            ("activa", "Activa"),
+            ("finalizada", "Finalizada"),
+            ("cancelada", "Cancelada"),
+            ("suspendida", "Suspendida"),
             ("baja", "Baja"),
         ],
         string="Estado",
+        default="activa",
+        tracking=True,
     )
     estadoMotivo = fields.Char(
         string="Motivo Estado",
+    )
+    porcentajeAsistenciaMensual = fields.Float(
+        string="Asistencia Mensual",
+        help="Porcentaje de asistencia del integrante en el mes actual",
+        default=0,
+    )
+    porcentajeAsistenciaGlobal = fields.Float(
+        string="Asistencia Global",
+        help="Porcentaje de asistencia del integrante desde su ingreso",
+        default=100.0,
     )
     cliente_contacto = fields.Many2one(
         "res.partner", string="Contacto Integrante", required=True, tracking=True
@@ -288,3 +306,37 @@ Tu acceso al sistema ha sido desactivado. Si crees que esto es un error, por fav
         """Actualiza el número de documento del contacto cuando cambia"""
         if self.cliente_contacto and self.numero_documento:
             self.cliente_contacto.vat = self.numero_documento
+
+    def write(self, vals):
+        """Sobrescribe el método write para verificar suscripciones después de cambios"""
+        result = super().write(vals)
+        if "estado" in vals:
+            # Verificar suscripciones para todos los registros modificados
+            for record in self:
+                if record.actividad_id.producto_asociado:
+                    record.actividad_id.subscription_upsert()
+        return result
+
+    def _actualizar_estados_por_defecto(self):
+        """Actualiza los registros existentes con estados incorrectos"""
+        # Buscar registros con estados que no sean 'activa' o 'suspendida'
+        registros_a_actualizar = self.search(
+            [
+                "|",
+                "|",
+                ("estado", "=", False),
+                ("estado", "=", ""),
+                ("estado", "=", "activo"),
+            ]
+        )
+        if registros_a_actualizar:
+            registros_a_actualizar.write({"estado": "activa"})
+            _logger.info(
+                f"Se actualizaron {len(registros_a_actualizar)} registros a estado 'activa'"
+            )
+
+    @api.model
+    def init(self):
+        """Método llamado al instalar/actualizar el módulo"""
+        super().init()
+        self._actualizar_estados_por_defecto()

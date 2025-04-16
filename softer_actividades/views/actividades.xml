@@ -4,10 +4,7 @@
         <field name="model">softer.actividades</field>
         <field name="arch" type="xml">
             <form string="Actividades">
-                <header>
 
-                    <button name="action_create_subscriptions" string="Generar Suscripciones" type="object" class="oe_highlight"/>
-                </header>
                 <sheet>
                     <notebook>
                         <!-- Pestaña de Datos Generales -->
@@ -22,6 +19,11 @@
                                 <field name="tipoRangos"/>
                                 <field name="fechaDesde" invisible="tipoRangos == 'libre'"/>
                                 <field name="fechaHasta" invisible="tipoRangos == 'libre'"/>
+                                <field name="producto_asociado"/>
+                                <field name="porcentaje_asistencia_cobro"/>
+                            </group>
+                            <group>
+                                <field name="condiciones_actividad" placeholder="Ingrese las condiciones y reglas de la actividad..."/>
                             </group>
                         </page>
                         <!-- Pestaña de Horarios -->
@@ -38,7 +40,7 @@
                         <!-- Pestaña de Integrantes -->
                         <page string="Integrantes">
                             <field name="integrantes">
-                                <tree>
+                                <tree decoration-warning="estado == 'suspendida'" decoration-danger="estado == 'cancelada'">
                                     <field name="cliente_id"/>
                                     <field name="cliente_contacto"/>
                                     <field name="numero_documento"/>
@@ -48,27 +50,6 @@
                                     <button name="action_view_suscripciones" type="object" icon="fa-list" title="Ver Suscripciones"/>
                                     <button name="action_grant_system_access" type="object" icon="fa-key" title="Otorgar Acceso" attrs="{'invisible': [('tiene_acceso_sistema', '=', True)]}"/>
                                     <button name="action_revoke_system_access" type="object" icon="fa-ban" title="Revocar Acceso" attrs="{'invisible': [('tiene_acceso_sistema', '=', False)]}"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <!-- Pestaña de Condiciones -->
-                        <page string="Condiciones (suscripciones)">
-                            <div colspan="2" class="alert alert-info" role="alert">
-                                <strong>Nota:</strong>
-                                <ul>
-                                    <li>Si marca "Es Indefinida", la suscripción no tendrá fecha de vencimiento.</li>
-                                    <li>Si marca "Es Única", solo puede existir una suscripción activa por producto y cliente.</li>
-                                </ul>
-                            </div>
-                            <field name="productosAsociados">
-                                <tree editable="bottom">
-                                    <field name="producto_id" width="300"/>
-                                    <field name="cantidad" width="80"/>
-                                    <field name="fechaInicio" width="100"/>
-                                    <field name="fechaFin" invisible="esIndefinida" width="100"/>
-                                    <field name="esIndefinida" width="80"/>
-                                    <field name="esUnica" width="80"/>
-                                    <field name="paga_debito_automatico" width="80"/>
                                 </tree>
                             </field>
                         </page>

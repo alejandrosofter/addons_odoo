@@ -60,6 +60,7 @@
                             <field name="paga_debito_automatico"/>
                             <field name="facturar_al_generar"/>
                             <field name="notificar_al_generar"/>
+                            <field name="usoSuscripcion"/>
                             <field name="fecha_baja" invisible="estado != 'baja'"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="active" invisible="1"/>
@@ -86,6 +87,15 @@
                                 </form>
                             </field>
                         </page>
+                        <page string="Historial de Estados" name="historial_estados">
+                            <field name="motivosCambioEstado">
+                                <tree editable="bottom" decoration-info="estado=='activa'" decoration-warning="estado=='suspendida'" decoration-danger="estado=='baja'">
+                                    <field name="fecha" string="Fecha Cambio"/>
+                                    <field name="estado" string="Estado"/>
+                                    <field name="motivo" string="Motivo del Cambio"/>
+                                </tree>
+                            </field>
+                        </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
@@ -102,7 +112,7 @@
         <field name="name">softer.suscripcion.tree</field>
         <field name="model">softer.suscripcion</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="estado=='baja'" decoration-warning="estado=='suspendida'" decoration-info="estado=='borrador'">
+            <tree decoration-danger="estado=='cancelada'" decoration-warning="estado=='suspendida'">
 
                 <field name="cliente_id"/>
                 <field name="fecha_inicio"/>
@@ -113,6 +123,7 @@
                 <field name="importeTotal"/>
                 <field name="categoria_id"/>
                 <field name="estado"/>
+                <field name="usoSuscripcion"/>
             </tree>
         </field>
     </record>

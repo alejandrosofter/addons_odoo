@@ -5,3 +5,4 @@ access_softer_suscripcion_line_user,softer.suscripcion.line.user,model_softer_su
 access_softer_suscripcion_alta_user,softer.suscripcion.alta.user,model_softer_suscripcion_alta,base.group_user,1,1,1,1
 access_softer_suscripcion_alta_product_line_user,softer.suscripcion.alta.product.line.user,model_softer_suscripcion_alta_product_line,base.group_user,1,1,1,1
 access_softer_suscripcion_categoria,softer.suscripcion.categoria,model_softer_suscripcion_categoria,base.group_user,1,1,1,1
+access_softer_suscripcion_motivo_cambio_user,softer.suscripcion.motivo_cambio.user,model_softer_suscripcion_motivo_cambio,base.group_user,1,1,1,1

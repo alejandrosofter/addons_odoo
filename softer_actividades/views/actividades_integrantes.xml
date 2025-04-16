@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_actividades_integrantes_form" model="ir.ui.view">
+        <field name="name">softer.actividades.integrantes.form</field>
+        <field name="model">softer.actividades.integrantes</field>
+        <field name="arch" type="xml">
+            <form string="Integrante">
+                <header>
+                    <button name="action_grant_system_access" string="Otorgar Acceso" type="object" class="oe_highlight" invisible="tiene_acceso_sistema"/>
+                    <button name="action_revoke_system_access" string="Revocar Acceso" type="object" class="oe_highlight" invisible="not tiene_acceso_sistema"/>
+                    <field name="estado" widget="statusbar" statusbar_visible="activa,suspendida,finalizada,cancelada,baja"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="cliente_id" placeholder="Seleccione el integrante"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="estado"/>
+                            <field name="cliente_contacto"/>
+                            <field name="telefono_whatsapp"/>
+                            <field name="numero_documento"/>
+                            <field name="fechaNacimiento"/>
+                        </group>
+                        <group>
+                            <field name="estadoMotivo"/>
+                            <field name="porcentajeAsistenciaMensual"/>
+                            <field name="porcentajeAsistenciaGlobal"/>
+                            <field name="tiene_acceso_sistema" readonly="1"/>
+                            <field name="usuario_id" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_actividades_integrantes_tree" model="ir.ui.view">
+        <field name="name">softer.actividades.integrantes.tree</field>
+        <field name="model">softer.actividades.integrantes</field>
+        <field name="arch" type="xml">
+            <tree string="Integrantes" decoration-info="estado=='activa'" decoration-warning="estado=='suspendida'" decoration-danger="estado in ('finalizada','cancelada','baja')">
+                <field name="cliente_id"/>
+                <field name="cliente_contacto"/>
+                <field name="estado"/>
+                <field name="porcentajeAsistenciaMensual"/>
+                <field name="porcentajeAsistenciaGlobal"/>
+                <field name="tiene_acceso_sistema"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_actividades_integrantes_search" model="ir.ui.view">
+        <field name="name">softer.actividades.integrantes.search</field>
+        <field name="model">softer.actividades.integrantes</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Integrantes">
+                <field name="cliente_id"/>
+                <field name="cliente_contacto"/>
+                <field name="estado"/>
+                <field name="numero_documento"/>
+                <separator/>
+                <filter string="Activos" name="activos" domain="[('estado','=','activa')]"/>
+                <filter string="Suspendidos" name="suspendidos" domain="[('estado','=','suspendida')]"/>
+                <filter string="Sin Acceso" name="sin_acceso" domain="[('tiene_acceso_sistema','=',False)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Estado" name="group_by_estado" context="{'group_by':'estado'}"/>
+                    <filter string="Actividad" name="group_by_actividad" context="{'group_by':'actividad_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_actividades_integrantes" model="ir.actions.act_window">
+        <field name="name">Integrantes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">softer.actividades.integrantes</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_actividades_integrantes_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer integrante
+            </p>
+        </field>
+    </record>
+</odoo>

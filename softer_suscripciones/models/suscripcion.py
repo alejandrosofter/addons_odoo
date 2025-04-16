@@ -5,6 +5,36 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 
+class MotivoCambioEstado(models.Model):
+    _name = "softer.suscripcion.motivo_cambio"
+    _description = "Motivos de Cambio de Estado en Suscripciones"
+    _order = "fecha desc"
+
+    suscripcion_id = fields.Many2one(
+        "softer.suscripcion", string="Suscripción", required=True, ondelete="cascade"
+    )
+    fecha = fields.Datetime(
+        string="Fecha", default=lambda self: fields.Datetime.now(), required=True
+    )
+    estado = fields.Selection(
+        [
+            ("activa", "Activa"),
+            ("finalizada", "Finalizada"),
+            ("cancelada", "Cancelada"),
+            ("suspendida", "Suspendida"),
+        ],
+        string="Estado",
+        required=True,
+    )
+    motivo = fields.Text(string="Motivo", required=True)
+    usuario_id = fields.Many2one(
+        "res.users",
+        string="Usuario",
+        default=lambda self: self.env.user.id,
+        required=True,
+    )
+
+
 class Suscripcion(models.Model):
     _name = "softer.suscripcion"
     _description = "Modelo de Suscripción"
@@ -49,6 +79,7 @@ class Suscripcion(models.Model):
             ("activa", "Activa"),
             ("finalizada", "Finalizada"),
             ("cancelada", "Cancelada"),
+            ("suspendida", "Suspendida"),
         ],
         string="Estado",
         default="activa",
@@ -62,6 +93,14 @@ class Suscripcion(models.Model):
     )
 
     active = fields.Boolean(default=True)
+
+    usoSuscripcion = fields.Boolean(
+        string="Usa Suscripción?",
+        default=True,
+        tracking=True,
+        help="Indica si la suscripción debe ser considerada para la "
+        "generación automática de órdenes de venta",
+    )
 
     categoria_id = fields.Many2one(
         "softer.suscripcion.categoria",
@@ -161,6 +200,12 @@ class Suscripcion(models.Model):
         store=False,  # No es necesario almacenar este campo
     )
 
+    motivosCambioEstado = fields.One2many(
+        "softer.suscripcion.motivo_cambio",
+        "suscripcion_id",
+        string="Historial de Cambios de Estado",
+    )
+
     @api.onchange("cliente_id")
     def _onchange_cliente_id(self):
         """Actualiza contacto_comunicacion al cambiar cliente_id"""
@@ -171,11 +216,25 @@ class Suscripcion(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        """Sobrescribe el método create para registrar el estado inicial"""
         for vals in vals_list:
             if vals.get("name", _("New")) == _("New"):
                 vals["name"] = self.env["ir.sequence"].next_by_code(
                     "softer.suscripcion"
                 ) or _("New")
+
+            # Crear el registro de cambio de estado si viene de subscription_upsert
+            if self.env.context.get("from_subscription_upsert") and "estado" in vals:
+                self.env["softer.suscripcion.motivo_cambio"].create(
+                    {
+                        "suscripcion_id": vals.get(
+                            "id"
+                        ),  # Se actualizará después del create
+                        "estado": vals["estado"],
+                        "motivo": vals.get("motivo_cambio", "Creación de suscripción"),
+                        "usuario_id": self.env.user.id,
+                    }
+                )
         return super().create(vals_list)
 
     @api.constrains("fecha_inicio", "fecha_fin")
@@ -310,6 +369,7 @@ class Suscripcion(models.Model):
             [
                 ("estado", "=", "activa"),
                 ("proxima_factura", "<=", today),
+                ("usoSuscripcion", "=", True),
             ]
         )
 
@@ -413,9 +473,15 @@ class Suscripcion(models.Model):
 
     @api.depends("fecha_inicio", "tipo_temporalidad", "cantidad_recurrencia")
     def _compute_proxima_factura(self):
-        """Calcula la próxima fecha de factura si no existe"""
+        """Calcula la próxima fecha de facturación para cada suscripción"""
         for record in self:
-            if not record.proxima_factura and record.fecha_inicio:
-                record.proxima_factura = self._calcular_siguiente_fecha(
+            if (
+                record.fecha_inicio
+                and record.tipo_temporalidad
+                and record.cantidad_recurrencia
+            ):
+                record.proxima_factura = record._calcular_siguiente_fecha(
                     record.fecha_inicio
                 )
+            else:
+                record.proxima_factura = False
