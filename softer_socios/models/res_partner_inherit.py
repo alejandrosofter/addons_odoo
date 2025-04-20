@@ -12,3 +12,7 @@ class ResPartner(models.Model):
         tracking=True,
         store=True,
     )
+    genero = fields.Selection(
+        selection=[("M", "Masculino"), ("F", "Femenino")],
+        string="Género",
+    )
