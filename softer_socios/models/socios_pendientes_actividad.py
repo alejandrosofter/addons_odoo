@@ -373,6 +373,7 @@ class SociosPendientesActividad(models.Model):
                 vals = {
                     "integrante_id": integrante.id,
                     "cliente_facturacion": integrante.cliente_contacto.id,
+                    "socio": integrante.cliente_id.id,
                     "es_debito_automatico": integrante.es_debito_automatico,
                     "dni": integrante.cliente_id.vat,
                     "fecha_nacimiento": integrante.fechaNacimiento,
