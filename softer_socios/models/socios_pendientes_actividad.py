@@ -155,7 +155,6 @@ class SociosPendientesActividad(models.Model):
         for record in self:
             partner = record.cliente_facturacion
             record.dni = partner.vat
-            record.fecha_nacimiento = partner.fechaNacimiento
             record.telefono = partner.phone
             record.email = partner.email
             record.domicilio = partner.street
@@ -166,7 +165,6 @@ class SociosPendientesActividad(models.Model):
         for record in self:
             partner = record.cliente_facturacion
             partner.vat = record.dni
-            partner.fechaNacimiento = record.fecha_nacimiento
             partner.phone = record.telefono
             partner.email = record.email
             partner.street = record.domicilio
