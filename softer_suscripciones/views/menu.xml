@@ -10,7 +10,7 @@
     <!-- Suscripciones Menu -->
     <menuitem id="menu_softer_suscripcion_suscripciones" name="Suscripciones" parent="menu_softer_suscripcion_root" action="action_suscripcion" sequence="10"/>
     <!-- Altas Menu -->
-    <menuitem id="menu_softer_suscripcion_alta" name="Altas Multiples" parent="menu_softer_suscripcion_root" action="action_softer_suscripcion_alta" sequence="20"/>
+    <!-- <menuitem id="menu_softer_suscripcion_alta" name="Altas Multiples" parent="menu_softer_suscripcion_root" action="action_softer_suscripcion_alta" sequence="20"/> -->
 
     <!-- Menú de Reportes -->
     <menuitem id="menu_suscripcion_reports" name="Reportes" parent="menu_softer_suscripcion_root" sequence="30"/>

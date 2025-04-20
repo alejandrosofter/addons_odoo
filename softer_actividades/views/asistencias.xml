@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
         <record id="view_asistencias_form" model="ir.ui.view">
@@ -12,8 +13,11 @@
                         </group>
                         <group>
                             <field name="integrantes_ids">
-                                <tree editable="bottom">
-                                    <field name="cliente_id"/>
+                                <tree editable="bottom" decoration-warning="estado == 'suspendida'" decoration-danger="estado == 'cancelada'">
+                                    <field name="nombre_cliente"/>
+                                    <field name="estado" />
+                                    <field name="porcentaje_mensual"/>
+                                    <field name="porcentaje_global"/>
                                     <field name="asistio"/>
                                 </tree>
                             </field>
@@ -43,4 +47,4 @@
         <menuitem id="menu_asistencias" parent="menu_softer_actividades_root" name="Asistencias" sequence="10"/>
         <menuitem id="menu_asistencias_action" name="Asistencias" parent="menu_asistencias" action="action_asistencias" sequence="1"/>
     </data>
-</odoo> 
+</odoo>

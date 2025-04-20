@@ -28,10 +28,22 @@ class Actividades(models.Model):
     estado = fields.Selection(
         [
             ("activa", "Activa"),
-            ("suspendida", "Suspendida"),
-            ("baja", "Baja"),
+            ("finalizada", "Finalizada"),
         ],
         string="Estado",
+    )
+    fechaFin = fields.Date(
+        string="Fecha de Fin",
+        tracking=True,
+        help="Fecha en la que finaliza la actividad",
+    )
+    pagaCuotaSocial = fields.Boolean(
+        string="Paga Cuota Socal",
+        help="Indica si los integrantes de la actividad pagan cuota social",
+    )
+    cobroPorAsistencia = fields.Boolean(
+        string="Cobro por Asistencia",
+        help="Indica si se cobra por asistencia",
     )
     categoria_suscripcion = fields.Many2one(
         "softer.suscripcion.categoria",
@@ -78,19 +90,6 @@ class Actividades(models.Model):
     mensajes = fields.One2many(
         "softer.actividades.mensajes", "actividad_id", string="Mensajes"
     )
-
-    @api.model
-    def create(self, vals):
-        """Sobrescribe el método create para verificar suscripciones después de crear"""
-        record = super().create(vals)
-        record._check_suscripciones()
-        return record
-
-    def write(self, vals):
-        """Sobrescribe el método write para verificar suscripciones después de cambios"""
-        result = super().write(vals)
-        self._check_suscripciones()
-        return result
 
     def _check_suscripciones(self):
         """
@@ -284,21 +283,26 @@ class Actividades(models.Model):
                 _logger.info(f"Actualizando suscripción {suscripcion.id}")
                 # Crear el registro de cambio de estado directamente
                 if integrante.estado != suscripcion.estado:
-                    self.env["softer.suscripcion.motivo_cambio"].create(
+                    suscripcion.cambiarEstado(
+                        integrante.estado,
+                        motivo_base,
+                        self.env.user.id,
+                    )
+
+                    suscripcion.write(
                         {
-                            "suscripcion_id": suscripcion.id,
-                            "estado": integrante.estado,
-                            "motivo": motivo_base,
-                            "usuario_id": self.env.user.id,
+                            "idActividad": self.id,
                         }
                     )
-                # Actualizar el estado sin crear un nuevo registro
-                suscripcion.write(
-                    {
-                        "estado": integrante.estado,
-                        "idActividad": self.id,
-                    }
-                )
+                else:
+                    # Actualizar el estado sin crear un nuevo registro
+                    usaSuscripcion = integrante.estado == "activa"
+                    suscripcion.write(
+                        {
+                            "idActividad": self.id,
+                            "usoSuscripcion": usaSuscripcion,
+                        }
+                    )
             else:
                 # Crear nueva suscripción
                 _logger.info("Creando nueva suscripción")
@@ -308,7 +312,11 @@ class Actividades(models.Model):
                         "contacto_comunicacion": integrante.cliente_contacto.id,
                         "estado": integrante.estado,
                         "idActividad": self.id,
+                        "tieneActividad": True,
+                        "paga_debito_automatico": integrante.es_debito_automatico,
+                        "categoria_id": self.categoria_suscripcion.id,
                         "fecha_inicio": fields.Date.today(),
+                        "fecha_fin": self.fechaFin,
                         "tipo_temporalidad": "mensual",
                         "cantidad_recurrencia": 1,
                         "line_ids": [
@@ -323,14 +331,10 @@ class Actividades(models.Model):
                         ],
                     }
                 )
-
-                self.env["softer.suscripcion.motivo_cambio"].create(
-                    {
-                        "suscripcion_id": suscripcion.id,
-                        "estado": integrante.estado,
-                        "motivo": motivo_base,
-                        "usuario_id": self.env.user.id,
-                    }
+                suscripcion.cambiarEstado(
+                    integrante.estado,
+                    motivo_base,
+                    self.env.user.id,
                 )
 
         return {
@@ -374,6 +378,48 @@ class Actividades(models.Model):
             "params": {
                 "title": "Éxito",
                 "message": f"Se han creado {len(integrantes_sin_acceso)} accesos al sistema para el equipo",
+                "type": "success",
+            },
+        }
+
+    def action_alta(self):
+        """Da de alta la actividad"""
+        self.ensure_one()
+        self.write({"estado": "activa"})
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Éxito",
+                "message": "La actividad ha sido activada correctamente.",
+                "type": "success",
+            },
+        }
+
+    def action_baja(self):
+        """Finaliza la actividad"""
+        self.ensure_one()
+        self.write({"estado": "finalizada"})
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Éxito",
+                "message": "La actividad ha sido finalizada correctamente.",
+                "type": "success",
+            },
+        }
+
+    def action_generar(self):
+        """Regenera las suscripciones de los integrantes"""
+        self.ensure_one()
+        self.subscription_upsert()
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Éxito",
+                "message": "Las suscripciones han sido regeneradas correctamente.",
                 "type": "success",
             },
         }

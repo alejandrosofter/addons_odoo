@@ -6,9 +6,10 @@
         <field name="arch" type="xml">
             <form string="Integrante">
                 <header>
-                    <button name="action_grant_system_access" string="Otorgar Acceso" type="object" class="oe_highlight" invisible="tiene_acceso_sistema"/>
-                    <button name="action_revoke_system_access" string="Revocar Acceso" type="object" class="oe_highlight" invisible="not tiene_acceso_sistema"/>
-                    <field name="estado" widget="statusbar" statusbar_visible="activa,suspendida,finalizada,cancelada,baja"/>
+                    <field name="estado" widget="statusbar" statusbar_visible="activa,suspendida,baja"/>
+                    <button name="action_view_estados" class="oe_highlight" type="object" string="Dar de Alta" icon="fa-play" invisible="estado == 'activa'" context="{'default_estado': 'activa'}"/>
+                    <button name="action_view_estados" class="oe_highlight" type="object" string="Suspender" icon="fa-pause" invisible="estado == 'suspendida'" context="{'default_estado': 'suspendida'}"/>
+                    <button name="action_view_estados" type="object" string="Dar de Baja" icon="fa-stop" invisible="estado == 'baja'" context="{'default_estado': 'baja'}"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -16,22 +17,34 @@
                             <field name="cliente_id" placeholder="Seleccione el integrante"/>
                         </h1>
                     </div>
-                    <group>
-                        <group>
-                            <field name="estado"/>
-                            <field name="cliente_contacto"/>
-                            <field name="telefono_whatsapp"/>
-                            <field name="numero_documento"/>
-                            <field name="fechaNacimiento"/>
-                        </group>
-                        <group>
-                            <field name="estadoMotivo"/>
-                            <field name="porcentajeAsistenciaMensual"/>
-                            <field name="porcentajeAsistenciaGlobal"/>
-                            <field name="tiene_acceso_sistema" readonly="1"/>
-                            <field name="usuario_id" readonly="1"/>
-                        </group>
-                    </group>
+                    <notebook>
+                        <page string="Datos Generales" name="gral">
+                            <group>
+                                <group>
+                                    <field name="cliente_contacto"/>
+                                    <field name="es_debito_automatico"/>
+                                    <field name="telefono_whatsapp"/>
+
+                                </group>
+                                <group>
+                                    <field name="porcentajeAsistenciaMensual"/>
+                                    <field name="porcentajeAsistenciaGlobal"/>
+                                    <field name="numero_documento"/>
+                                    <field name="fechaNacimiento"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Historial de Estados" name="historial_estados">
+                            <field name="estado_ids" nolabel="1">
+                                <tree >
+                                    <field name="fecha"/>
+                                    <field name="estado"/>
+                                    <field name="motivo"/>
+                                    <field name="idUsuario"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>

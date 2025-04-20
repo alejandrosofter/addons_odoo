@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
         <!-- Hereda la vista del formulario de configuración general -->
@@ -6,14 +7,28 @@
             <field name="model">res.config.settings</field>
             <field name="inherit_id" ref="base.res_config_settings_view_form"/>
             <field name="arch" type="xml">
-                <!-- Cambiar el XPath a comillas dobles y revisar el lugar adecuado para insertar la nueva solapa -->
                 <xpath expr="//form[@class='oe_form_configuration']" position="inside">
                     <app data-string="Socios" string="Socios" name="softer_socios_settings" logo="/softer_socios/static/description/icon.png">
-                        <div id="softer_wsap_settings_container">
-                            <block title="Configuración para Socios " name="socios_configuration">
+                        <div id="softer_socios_settings_container">
+                            <block title="Configuración para Socios" name="socios_configuration">
                                 <group>
-                                    <field name="proximoNroSocio" />
 
+                                    <group string="Valores por Defecto de Dirección">
+                                        <field name="default_city" string="Ciudad"/>
+                                        <field name="default_state_id" string="Provincia"/>
+                                        <field name="default_zip" string="Código Postal"/>
+                                        <field name="default_country_id" string="País"/>
+                                    </group>
+                                    <group string="Valores por Defecto de Producto">
+                                        <field name="default_product_id" string="Producto"/>
+                                    </group>
+                                    <group string="Valores por Defecto SOCIOS">
+                                        <field name="default_edad_adherente" string="Edad Adherente"/>
+                                        <field name="default_categoria_id" string="Categoría por Defecto"/>
+                                    </group>
+                                    <group string="Valores por Defecto de Suscripción Cuota Social">
+                                        <field name="categoria_suscripcion" string="Categoría de Suscripción"/>
+                                    </group>
                                 </group>
                             </block>
                         </div>

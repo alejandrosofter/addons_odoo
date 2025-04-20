@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista árbol -->
+    <record id="view_socios_pendientes_actividad_tree" model="ir.ui.view">
+        <field name="name">socios.pendientes.actividad.tree</field>
+        <field name="model">socios.pendientes.actividad</field>
+        <field name="arch" type="xml">
+            <tree string="Socios Pendientes">
+
+                <field name="socio"/>
+                <field name="cliente_facturacion"/>
+                <field name="dni"/>
+                <field name="es_debito_automatico" />
+                <field name="fecha_nacimiento"/>
+                <field name="telefono"/>
+                <field name="email"/>
+                <field name="genero"/>
+                <field name="domicilio"/>
+                <field name="fecha_creacion"/>
+                <field name="estado"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista formulario -->
+    <record id="view_socios_pendientes_actividad_form" model="ir.ui.view">
+        <field name="name">socios.pendientes.actividad.form</field>
+        <field name="model">socios.pendientes.actividad</field>
+        <field name="arch" type="xml">
+            <form string="Socio Pendiente">
+                <header>
+                    <button name="procesar_pendiente" string="Procesar" type="object" class="oe_highlight"/>
+                    <field name="estado" widget="statusbar" statusbar_visible="pendiente,procesado,error"/>
+                </header>
+                <sheet>
+                    <notebook>
+                        <page string="Datos Generales">
+                            <group>
+                                <group>
+                                    <field name="socio"/>
+                                    <field name="cliente_facturacion"/>
+                                    <field name="dni"/>
+                                    <field name="fecha_nacimiento"/>
+                                    <field name="genero"/>
+                                </group>
+                                <group>
+                                    <field name="nro_socio" help="Si no se especifica un número, el sistema asignará automáticamente el próximo número disponible de la categoría seleccionada."/>
+                                    <field name="categoria_socio" />
+                                    <field name="product_id" />
+
+                                    <field name="categoria_suscripcion" />
+                                </group>
+                                <group string="Datos Bancarios">
+                                    <field name="es_debito_automatico" />
+                                    <field name="titularBanco" invisible="es_debito_automatico == False" />
+                                    <field name="cbu" invisible="es_debito_automatico == False" />
+                                    <field name="banco" invisible="es_debito_automatico == False" />
+                                </group>
+                                <group>
+                                    <field name="telefono"/>
+                                    <field name="email"/>
+                                    <field name="domicilio"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Estado" invisible="estado != 'error'">
+                            <group>
+                                <group>
+                                    <field name="mensaje_error" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista de búsqueda -->
+    <record id="view_socios_pendientes_actividad_search" model="ir.ui.view">
+        <field name="name">socios.pendientes.actividad.search</field>
+        <field name="model">socios.pendientes.actividad</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Socios Pendientes">
+                <field name="socio" filter_domain="['|',('socio','ilike',self),('cliente_facturacion','ilike',self)]"/>
+
+                <field name="dni"/>
+                <separator/>
+                <filter string="Pendientes" name="pendientes" domain="[('estado','=','pendiente')]"/>
+                <filter string="Procesados" name="procesados" domain="[('estado','=','procesado')]"/>
+                <filter string="Con Error" name="error" domain="[('estado','=','error')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Socio" name="group_by_socio" context="{'group_by':'socio'}"/>
+                    <filter string="Cliente" name="group_by_cliente" context="{'group_by':'cliente_facturacion'}"/>
+                    <filter string="Estado" name="group_by_estado" context="{'group_by':'estado'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción de ventana -->
+    <record id="action_socios_pendientes_actividad" model="ir.actions.act_window">
+        <field name="name">Socios Pendientes</field>
+        <field name="res_model">socios.pendientes.actividad</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_socios_pendientes_actividad_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay socios pendientes de procesar.
+            </p>
+        </field>
+        <field name="context">{'search_default_pendientes': 1}</field>
+    </record>
+</odoo>

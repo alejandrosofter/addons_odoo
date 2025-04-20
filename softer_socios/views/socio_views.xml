@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_socios_tree" model="ir.ui.view">
+        <field name="name">socios.tree</field>
+        <field name="model">socios.socio</field>
+        <field name="arch" type="xml">
+            <tree decoration-warning="estado=='suspendida'" decoration-danger="estado=='baja'">
+                <field name="member_number"/>
+
+                <field name="name"/>
+
+                <field name="dni"/>
+                <field name="cliente_facturacion"/>
+                <field name="genero"/>
+                <field name="tipoSocio"/>
+                <field name="categoria_id"/>
+                <field name="estado"/>
+                <field name="phone"/>
+                <field name="email"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_socios_form" model="ir.ui.view">
+        <field name="name">socios.form</field>
+        <field name="model">socios.socio</field>
+        <field name="arch" type="xml">
+            <form string="Socio">
+                <header>
+                    <field name="estado" widget="statusbar" invisible="not id" statusbar_visible="activa,suspendida,baja"/>
+                    <button name="action_view_estados" class="oe_highlight" type="object" string="Dar de Alta" icon="fa-play" invisible="estado == 'activa' or not id" context="{'default_estado': 'activa'}"/>
+                    <button name="action_view_estados" class="oe_highlight" type="object" string="Suspender" icon="fa-pause" invisible="estado == 'suspendida' or not id" context="{'default_estado': 'suspendida'}"/>
+                    <button name="action_view_estados" type="object" string="Dar de Baja" icon="fa-stop" invisible="estado == 'baja' or not id" context="{'default_estado': 'baja'}"/>
+                </header>
+                <sheet>
+
+
+                    <notebook>
+
+                        <page string="Datos Generales">
+                            <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_1920', 'size': [90, 90]}"/>
+
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="partner_id" options="{'disable_open': True}"/>
+                                </h1>
+                            </div>
+                            <group>
+
+                                <group string="Datos Personales">
+                                    <field name="dni" placeholder="D.N.I"/>
+                                    <field name="categoria_id"/>
+                                    <field name="member_number"/>
+                                    <field name="genero"/>
+                                    <field name="esActivo"/>
+                                    <field name="fechaNacimiento"/>
+                                    <field name="tipoSocio"/>
+                                </group>
+                                <div>
+                                    <group string="Datos de la Suscripción">
+
+
+                                        <field name="categoria_suscripcion"/>
+
+
+                                        <field name="product_id"/>
+                                    </group>
+                                    <group string="Contactos">
+                                        <field name="contactoPrimario" />
+                                        <field name="contactoSecundario" />
+                                    </group>
+                                </div>
+
+                            </group>
+                        </page>
+                        <page string="Datos para Facturacion">
+                            <group >
+                                <field name="cliente_facturacion" />
+                            </group>
+                            <group string="Datos Bancarios">
+                                <field name="paga_debito_automatico"/>
+                                <field name="cbu_contacto_facturacion" context="{'default_partner_id': cliente_facturacion}" invisible="paga_debito_automatico == False"/>
+
+                            </group>
+
+
+                        </page>
+                        <page string="Historial de Estados">
+                            <field name="estado_ids">
+                                <tree decoration-warning="estado=='suspendida'" decoration-danger="estado=='baja'">
+
+                                    <field name="fecha"/>
+                                    <field name="estado"/>
+                                    <field name="motivo"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="fecha"/>
+                                            <field name="estado"/>
+                                        </group>
+                                        <group>
+                                            <field name="motivo" placeholder="Describa el motivo del cambio de estado..."/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_socios_search" model="ir.ui.view">
+        <field name="name">socios.search</field>
+        <field name="model">socios.socio</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Socios">
+                <field name="name"/>
+                <field name="dni"/>
+                <field name="member_number"/>
+                <field name="categoria_id"/>
+                <field name="tipoSocio"/>
+                <field name="estado"/>
+                <filter string="Activos" name="activos" domain="[('esActivo', '=', True)]"/>
+                <filter string="Inactivos" name="inactivos" domain="[('esActivo', '=', False)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Categoría" name="categoria" context="{'group_by': 'categoria_id'}"/>
+                    <filter string="Tipo de Socio" name="tipo" context="{'group_by': 'tipoSocio'}"/>
+                    <filter string="Estado" name="estado" context="{'group_by': 'estado'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_socios" model="ir.actions.act_window">
+        <field name="name">Socios</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">socios.socio</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear un nuevo socio
+            </p>
+        </field>
+    </record>
+</odoo>

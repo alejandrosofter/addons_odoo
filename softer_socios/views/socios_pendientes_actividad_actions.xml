@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_socios_pendientes_actividad" model="ir.actions.act_window">
+        <field name="name">Socios Pendientes</field>
+        <field name="res_model">socios.pendientes.actividad</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay socios pendientes para procesar.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_buscar_pendientes" model="ir.actions.server">
+        <field name="name">Buscar Socios Pendientes</field>
+        <field name="model_id" ref="softer_socios.model_socios_pendientes_actividad"/>
+        <field name="binding_model_id" ref="softer_socios.model_socios_pendientes_actividad"/>
+        <field name="binding_view_types">tree,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            model.action_buscar_pendientes()
+        </field>
+    </record>
+</odoo>

@@ -1,2 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-
+access_socios_categoria_user,socios.categoria.user,softer_socios.model_socios_categoria,base.group_user,1,1,1,1
+access_socios_categoria_manager,socios.categoria.manager,softer_socios.model_socios_categoria,base.group_system,1,1,1,1
+access_socios_socio_user,socios.socio.user,softer_socios.model_socios_socio,base.group_user,1,1,1,1
+access_socios_socio_manager,socios.socio.manager,softer_socios.model_socios_socio,base.group_system,1,1,1,1
+access_socios_estado_user,socios.estado.user,softer_socios.model_socios_estado,base.group_user,1,1,1,1
+access_socios_estado_manager,socios.estado.manager,softer_socios.model_socios_estado,base.group_system,1,1,1,1
+access_socios_pendientes_actividad_user,socios.pendientes.actividad.user,softer_socios.model_socios_pendientes_actividad,base.group_user,1,1,1,1
+access_socios_pendientes_actividad_manager,socios.pendientes.actividad.manager,softer_socios.model_socios_pendientes_actividad,base.group_system,1,1,1,1

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_socios_categoria_tree" model="ir.ui.view">
+        <field name="name">socios.categoria.tree</field>
+        <field name="model">socios.categoria</field>
+        <field name="arch" type="xml">
+            <tree string="Categorías de Socios">
+                <field name="name"/>
+                <field name="proximoNroSocio"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_socios_categoria_form" model="ir.ui.view">
+        <field name="name">socios.categoria.form</field>
+        <field name="model">socios.categoria</field>
+        <field name="arch" type="xml">
+            <form string="Categoría de Socio">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre de la categoría"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="proximoNroSocio"/>
+                            <field name="descripcion"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_socios_categoria_search" model="ir.ui.view">
+        <field name="name">socios.categoria.search</field>
+        <field name="model">socios.categoria</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Categorías de Socios">
+                <field name="name"/>
+                <field name="descripcion"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="softer_socios.action_socios_categoria" model="ir.actions.act_window">
+        <field name="name">Categorías de Socios</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">socios.categoria</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear una nueva categoría de socio
+            </p>
+        </field>
+    </record>
+</odoo>

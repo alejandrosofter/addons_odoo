@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_socio_estados_tree" model="ir.ui.view">
+        <field name="name">socios.estado.tree</field>
+        <field name="model">socios.estado</field>
+        <field name="arch" type="xml">
+            <tree string="Estados de Socio" decoration-warning="estado=='suspendida'" decoration-danger="estado=='baja'">
+                <field name="fecha"/>
+                <field name="estado"/>
+                <field name="motivo"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_socio_estados_form" model="ir.ui.view">
+        <field name="name">socios.estado.form</field>
+        <field name="model">socios.estado</field>
+        <field name="arch" type="xml">
+            <form string="Estado de Socio">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="socio_id" options="{'no_create': True}"/>
+                            <field name="fecha"/>
+                            <field name="estado"/>
+                        </group>
+                        <group>
+                            <field name="motivo" placeholder="Describa el motivo del cambio de estado..."/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_socio_estados_search" model="ir.ui.view">
+        <field name="name">socios.estado.search</field>
+        <field name="model">socios.estado</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Estados">
+                <field name="socio_id"/>
+                <field name="estado"/>
+                <field name="fecha"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Socio" name="socio" context="{'group_by': 'socio_id'}"/>
+                    <filter string="Estado" name="estado" context="{'group_by': 'estado'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_socio_estados" model="ir.actions.act_window">
+        <field name="name">Estados de Socio</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">socios.estado</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear un nuevo registro de estado
+            </p>
+        </field>
+    </record>
+</odoo>

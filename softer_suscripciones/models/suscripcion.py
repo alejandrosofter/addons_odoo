@@ -20,7 +20,7 @@ class MotivoCambioEstado(models.Model):
         [
             ("activa", "Activa"),
             ("finalizada", "Finalizada"),
-            ("cancelada", "Cancelada"),
+            ("baja", "Baja"),
             ("suspendida", "Suspendida"),
         ],
         string="Estado",
@@ -58,8 +58,8 @@ class Suscripcion(models.Model):
     alta_id = fields.Many2one(
         "softer.suscripcion.alta", string="Alta", tracking=True, ondelete="cascade"
     )
-    contacto_comunicacion = fields.Many2one(
-        "res.partner", string="Comunicacion", required=True, tracking=True
+    cliente_facturacion = fields.Many2one(
+        "res.partner", string="Cliente Facturación", required=True, tracking=True
     )
     fecha = fields.Date(
         string="Fecha de Creación", default=fields.Date.today, tracking=True
@@ -208,11 +208,11 @@ class Suscripcion(models.Model):
 
     @api.onchange("cliente_id")
     def _onchange_cliente_id(self):
-        """Actualiza contacto_comunicacion al cambiar cliente_id"""
+        """Actualiza cliente_facturacion al cambiar cliente_id"""
         if self.cliente_id:
-            self.contacto_comunicacion = self.cliente_id.id
+            self.cliente_facturacion = self.cliente_id.id
         else:
-            self.contacto_comunicacion = False
+            self.cliente_facturacion = False
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -246,8 +246,18 @@ class Suscripcion(models.Model):
                 )
 
     def action_suspender(self):
+        """Suspende la suscripción"""
         self.ensure_one()
-        self.estado = "suspendida"
+        self.write({"estado": "suspendida"})
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Éxito",
+                "message": "La suscripción ha sido suspendida correctamente.",
+                "type": "success",
+            },
+        }
 
     def action_activar(self):
         self.ensure_one()
@@ -258,9 +268,18 @@ class Suscripcion(models.Model):
         self.estado = "activa"
 
     def action_baja(self):
+        """Da de baja la suscripción"""
         self.ensure_one()
-        self.estado = "baja"
-        self.fecha_baja = fields.Date.today()
+        self.write({"estado": "baja"})
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Éxito",
+                "message": "La suscripción ha sido dada de baja correctamente.",
+                "type": "success",
+            },
+        }
 
     def _compute_sale_order_count(self):
         """Calcula el número de órdenes de venta relacionadas con la suscripción"""
@@ -485,3 +504,55 @@ class Suscripcion(models.Model):
                 )
             else:
                 record.proxima_factura = False
+
+    def cambiarEstado(self, estado, motivo, usuario_id):
+        """Cambia el estado de la suscripción y registra el cambio en el historial"""
+        self.ensure_one()
+        if self.estado != estado:
+            # Registrar el cambio de estado
+            self.env["softer.suscripcion.motivo_cambio"].create(
+                {
+                    "suscripcion_id": self.id,
+                    "estado": estado,
+                    "motivo": motivo,
+                    "usuario_id": usuario_id,
+                }
+            )
+            # Actualizar el estado de la suscripción
+            self.write(
+                {
+                    "estado": estado,
+                    "fecha_baja": fields.Date.today() if estado == "baja" else False,
+                    "usoSuscripcion": estado == "activa",
+                }
+            )
+            return True
+        return False
+
+    def action_alta(self):
+        """Da de alta la suscripción"""
+        self.ensure_one()
+        self.write({"estado": "activa"})
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Éxito",
+                "message": "La suscripción ha sido activada correctamente.",
+                "type": "success",
+            },
+        }
+
+    def action_finalizar(self):
+        """Finaliza la suscripción"""
+        self.ensure_one()
+        self.write({"estado": "finalizada"})
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Éxito",
+                "message": "La suscripción ha sido finalizada correctamente.",
+                "type": "success",
+            },
+        }

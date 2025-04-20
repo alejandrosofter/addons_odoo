@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_softer_socios_root" name="Socios" web_icon="softer_socios,static/description/icon.png" sequence="10"/>
+    <menuitem id="menu_socios_root" name="Socios" web_icon="softer_socios,static/description/icon.png" sequence="10"/>
 
-    <menuitem id="menu_softer_socios_configuration" name="Configuración" parent="menu_softer_socios_root" sequence="10"/>
+    <menuitem id="menu_socios_configuracion" name="Configuración" parent="menu_socios_root" sequence="20"/>
+    <menuitem id="menu_socios_categoria" name="Categorías de Socios" parent="menu_socios_configuracion" action="softer_socios.action_socios_categoria" sequence="20"/>
 
-    <menuitem id="menu_softer_socios_socios" name="Socios" parent="menu_softer_socios_root" action="action_socios" sequence="10"/>
+    <menuitem id="menu_socios_socios" name="Socios" parent="menu_socios_root" action="action_socios" sequence="10"/>
+
+    <menuitem id="menu_socios_pendientes" name="Socios Pendientes" parent="menu_socios_root" action="softer_socios.action_socios_pendientes_actividad" sequence="30"/>
+
+    <menuitem id="menu_crear_pendientes" name="Buscar Socios Pendientes" parent="menu_socios_root" action="action_buscar_pendientes" sequence="40"/>
 </odoo>

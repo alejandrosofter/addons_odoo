@@ -32,6 +32,10 @@ class Integrantes(models.Model):
         default="activa",
         tracking=True,
     )
+    es_debito_automatico = fields.Boolean(
+        string="Debito Automatico",
+        default=False,
+    )
     estadoMotivo = fields.Char(
         string="Motivo Estado",
     )
@@ -43,10 +47,10 @@ class Integrantes(models.Model):
     porcentajeAsistenciaGlobal = fields.Float(
         string="Asistencia Global",
         help="Porcentaje de asistencia del integrante desde su ingreso",
-        default=100.0,
+        default=0,
     )
     cliente_contacto = fields.Many2one(
-        "res.partner", string="Contacto Integrante", required=True, tracking=True
+        "res.partner", string="Facturacion", required=True, tracking=True
     )
     actividad_id = fields.Many2one("softer.actividades", string="Actividad")
     # suscripcion_id = fields.Many2one(
@@ -59,7 +63,8 @@ class Integrantes(models.Model):
         string="Fecha de Nacimiento",
         compute="_compute_fecha_nacimiento",
         store=True,
-        readonly=True,
+        readonly=False,
+        tracking=True,
     )
     tiene_acceso_sistema = fields.Boolean(
         string="Tiene Acceso al Sistema",
@@ -70,7 +75,7 @@ class Integrantes(models.Model):
         "res.users", string="Usuario del Sistema", readonly=True
     )
     telefono_whatsapp = fields.Char(
-        string="Teléfono WhatsApp",
+        string=" WhatsApp",
         related="cliente_contacto.phone",
         readonly=False,
         store=True,
@@ -81,13 +86,11 @@ class Integrantes(models.Model):
         readonly=False,
         store=True,
     )
-
-    @api.depends("cliente_id")
-    def _compute_fecha_nacimiento(self):
-        for record in self:
-            record.fechaNacimiento = (
-                record.cliente_id.fechaNacimiento if record.cliente_id else False
-            )
+    estado_ids = fields.One2many(
+        "softer.actividades.integrantes.estados",
+        "integrante_id",
+        string="Historial de Estados",
+    )
 
     def _generate_friendly_password(self):
         """Genera una contraseña amigable usando palabras simples y números"""
@@ -294,6 +297,21 @@ Tu acceso al sistema ha sido desactivado. Si crees que esto es un error, por fav
                     "type": "success",
                 },
             }
+
+    def action_view_estados(self):
+        """Abre el formulario para crear un nuevo estado"""
+        self.ensure_one()
+        return {
+            "name": "Nuevo Estado",
+            "type": "ir.actions.act_window",
+            "res_model": "softer.actividades.integrantes.estados",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_integrante_id": self.id,
+                "default_estado": self.env.context.get("default_estado", "activa"),
+            },
+        }
 
     @api.onchange("telefono_whatsapp")
     def _onchange_telefono_whatsapp(self):
