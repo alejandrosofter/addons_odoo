@@ -26,7 +26,7 @@
     ],
     "data": [
         "security/security.xml",
-        "views/res_partner_inherit.xml",
+        # "views/res_partner_inherit.xml",
         "security/ir.model.access.csv",
         "views/socio_views.xml",
         "views/socios_categoria_views.xml",
