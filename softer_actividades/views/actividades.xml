@@ -122,15 +122,12 @@
         <field name="arch" type="xml">
             <tree string="Actividades">
                 <field name="name"/>
-                <field name="genero"/>
                 <field name="estado"/>
                 <field name="fechaFin"/>
                 <field name="entrenador"/>
                 <field name="administrador"/>
                 <field name="tipoRangos"/>
                 <field name="categoria_suscripcion"/>
-                <field name="fechaDesde"/>
-                <field name="fechaHasta"/>
             </tree>
         </field>
     </record>
