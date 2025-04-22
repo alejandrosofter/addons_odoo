@@ -26,6 +26,8 @@
                                     <field name="es_debito_automatico"/>
                                     <field name="telefono_whatsapp"/>
                                     <field name="excluir_socio"/>
+                                    <field name="tieneBeneficio"/>
+                                    <field name="motivoBeneficio" invisible="not tieneBeneficio"/>
                                 </group>
                                 <group>
                                     <field name="porcentajeAsistenciaMensual"/>

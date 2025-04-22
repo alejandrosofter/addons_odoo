@@ -110,6 +110,19 @@ class Integrantes(models.Model):
         string="Historial de Estados",
     )
 
+    tieneBeneficio = fields.Boolean(
+        string="Tiene Beneficio",
+        help="Indica si el integrante tiene algún beneficio especial",
+        default=False,
+        tracking=True,
+    )
+
+    motivoBeneficio = fields.Text(
+        string="Motivo del Beneficio",
+        help="Descripción del motivo por el cual tiene el beneficio",
+        tracking=True,
+    )
+
     @api.depends("cliente_id.name", "apodo")
     def _compute_name(self):
         """Calcula el nombre del integrante basado en el apodo o nombre del cliente"""
