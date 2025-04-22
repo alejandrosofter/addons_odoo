@@ -12,7 +12,6 @@
                         <div id="softer_socios_settings_container">
                             <block title="Configuración para Socios" name="socios_configuration">
                                 <group>
-
                                     <group string="Valores por Defecto de Dirección">
                                         <field name="default_city" string="Ciudad"/>
                                         <field name="default_state_id" string="Provincia"/>
@@ -35,6 +34,21 @@
                     </app>
                 </xpath>
             </field>
+        </record>
+
+
+        <!-- Acción para abrir la configuración -->
+        <record id="action_socios_config_settings" model="ir.actions.act_window">
+            <field name="name">Configuración de Socios</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+            <field name="context">{
+                'module' : 'softer_socios_settings',
+                'bin_size' : 'False',
+            }</field>
+
         </record>
     </data>
 </odoo>

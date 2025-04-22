@@ -17,6 +17,24 @@ class Integrantes(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "cliente_id asc"
 
+    name = fields.Char(
+        string="Nombre",
+        compute="_compute_name",
+        store=True,
+        readonly=True,
+    )
+    excluir_socio = fields.Boolean(
+        string="Excluir Socio",
+        help="Al seleccionar no sera incluido la busqueda de socios pendientes.",
+        default=False,
+    )
+
+    apodo = fields.Char(
+        string="Apodo",
+        help="Apodo o sobrenombre del integrante, en caso de no colocarlo, se mostrará el nombre del cliente",
+        tracking=True,
+    )
+
     cliente_id = fields.Many2one(
         "res.partner", string="Integrante", required=True, tracking=True
     )
@@ -91,6 +109,15 @@ class Integrantes(models.Model):
         "integrante_id",
         string="Historial de Estados",
     )
+
+    @api.depends("cliente_id.name", "apodo")
+    def _compute_name(self):
+        """Calcula el nombre del integrante basado en el apodo o nombre del cliente"""
+        for record in self:
+            if record.apodo:
+                record.name = record.apodo
+            else:
+                record.name = record.cliente_id.name or False
 
     def _generate_friendly_password(self):
         """Genera una contraseña amigable usando palabras simples y números"""

@@ -94,12 +94,8 @@ class SociosPendientesActividad(models.Model):
     categoria_socio = fields.Many2one(
         "socios.categoria",
         string="Categoría de Socio",
-        default=lambda self: int(
-            self.env["ir.config_parameter"]
-            .sudo()
-            .get_param("socios.default_categoria_id", default=False)
-        )
-        or False,
+        ondelete="set null",
+        required=False,
     )
     domicilio = fields.Char(
         string="Domicilio",
@@ -107,24 +103,13 @@ class SociosPendientesActividad(models.Model):
         inverse="_inverse_fields_to_partner",
         store=True,
     )
-    titularBanco = fields.Char(
-        string="Titular de la Cuenta",
+    cbu_contacto_facturacion = fields.Many2one(
+        "res.partner.bank",
+        string="CBU Facturación",
+        required=False,
         store=True,
-    )
-    cbu = fields.Char(
-        string="CBU",
-        store=True,
-    )
-    banco = fields.Selection(
-        selection=[
-            ("chubut", "Banco del Chubut"),
-            ("santander", "Banco Santander"),
-            ("hipotecario", "Banco Hipotecario"),
-            ("hcbc", "HCBC"),
-            ("otros", "Otros"),
-        ],
-        string="Banco",
-        store=True,
+        domain="[('partner_id', '=', cliente_facturacion)]",
+        help="CBU asociado al contacto de facturación",
     )
     fecha_creacion = fields.Datetime(
         string="Fecha de Creación",
@@ -241,9 +226,7 @@ class SociosPendientesActividad(models.Model):
                 "street": self.domicilio,
                 "zip": default_zip,
                 "city": default_city,
-                "titularBanco": self.titularBanco,
-                "cbu": self.cbu,
-                "banco": self.banco,
+                "cbu_contacto_facturacion": self.cbu_contacto_facturacion.id,
                 "paga_debito_automatico": self.es_debito_automatico,
                 "state_id": int(default_state_id) if default_state_id else False,
                 "country_id": int(default_country_id) if default_country_id else False,
@@ -316,100 +299,15 @@ class SociosPendientesActividad(models.Model):
             % error
         )
 
-    @api.model
     def action_buscar_pendientes(self):
-        """Crea registros pendientes para integrantes sin socio asociado"""
-        _logger.info("Iniciando creación de registros pendientes")
-
-        # Buscar actividades activas
-        actividades = self.env["softer.actividades"].search([("estado", "=", "activa")])
-        _logger.info(f"Se encontraron {len(actividades)} actividades activas")
-
-        contador = 0
-        for actividad in actividades:
-            _logger.info(f"Procesando actividad: {actividad.id} - {actividad.name}")
-
-            # Buscar integrantes de la actividad
-            integrantes = self.env["softer.actividades.integrantes"].search(
-                [("actividad_id", "=", actividad.id)]
-            )
-            _logger.info(
-                f"Se encontraron {len(integrantes)} integrantes en la actividad"
-            )
-
-            for integrante in integrantes:
-                _logger.info(f"Procesando integrante: {integrante.id}")
-                _logger.info(
-                    f"Cliente socio: {integrante.cliente_id.id} - {integrante.cliente_id.name}"
-                )
-
-                # Verificar si ya existe un socio
-                socio = self.env["socios.socio"].search(
-                    [("partner_id", "=", integrante.cliente_id.id)],
-                    limit=1,
-                )
-
-                if socio:
-                    _logger.info(f"Ya existe socio {socio.id} para el integrante")
-                    continue
-
-                # Verificar si ya existe un registro pendiente
-                pendiente = self.search(
-                    [
-                        ("socio", "=", integrante.cliente_id.id),
-                        ("estado", "=", "pendiente"),
-                    ],
-                    limit=1,
-                )
-
-                if pendiente:
-                    _logger.info(
-                        f"Ya existe registro pendiente {pendiente.id} para el integrante"
-                    )
-                    continue
-
-                # Crear nuevo registro pendiente
-                _logger.info("Creando nuevo registro pendiente")
-                vals = {
-                    "integrante_id": integrante.id,
-                    "cliente_facturacion": integrante.cliente_contacto.id,
-                    "socio": integrante.cliente_id.id,
-                    "es_debito_automatico": integrante.es_debito_automatico,
-                    "dni": integrante.cliente_id.vat,
-                    "fecha_nacimiento": integrante.fechaNacimiento,
-                    "telefono": integrante.telefono_whatsapp,
-                    "email": integrante.cliente_contacto.email,
-                    "domicilio": integrante.cliente_id.street,
-                    "categoria_suscripcion": actividad.categoria_suscripcion.id,
-                }
-                _logger.info(f"Valores para crear registro: {vals}")
-
-                nuevo_pendiente = self.create(vals)
-                contador += 1
-                _logger.info(f"Registro pendiente creado: {nuevo_pendiente.id}")
-
-        _logger.info(f"Proceso completado. Se crearon {contador} registros pendientes")
-
-        # Mostrar mensaje con la cantidad de registros creados
-        if contador > 0:
-            return {
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {
-                    "title": "Registros Pendientes",
-                    "message": f"Se crearon {contador} registros pendientes",
-                    "type": "success",
-                    "sticky": False,
-                },
-            }
-        else:
-            return {
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {
-                    "title": "Registros Pendientes",
-                    "message": "No se encontraron nuevos registros pendientes para crear",
-                    "type": "info",
-                    "sticky": False,
-                },
-            }
+        """Abre un wizard para confirmar la búsqueda de socios pendientes"""
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Buscar Socios Pendientes",
+            "res_model": "socios.pendientes.actividad.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_message": "¿Desea buscar socios pendientes en las actividades activas?"
+            },
+        }

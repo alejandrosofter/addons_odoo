@@ -57,7 +57,7 @@
                                     <field name="telefono_whatsapp"/>
                                     <field name="numero_documento"/>
                                     <field name="fechaNacimiento"/>
-
+                                    <field name="excluir_socio"/>
                                     <field name="estado"/>
                                     <button name="action_view_suscripciones" type="object" icon="fa-list" title="Ver Suscripciones"/>
                                     <button name="action_grant_system_access" type="object" icon="fa-key" title="Otorgar Acceso" attrs="{'invisible': [('tiene_acceso_sistema', '=', True)]}"/>

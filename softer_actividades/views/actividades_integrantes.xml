@@ -22,9 +22,10 @@
                             <group>
                                 <group>
                                     <field name="cliente_contacto"/>
+                                    <field name="apodo"/>
                                     <field name="es_debito_automatico"/>
                                     <field name="telefono_whatsapp"/>
-
+                                    <field name="excluir_socio"/>
                                 </group>
                                 <group>
                                     <field name="porcentajeAsistenciaMensual"/>

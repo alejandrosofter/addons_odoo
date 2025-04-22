@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_socios_pendientes_actividad_wizard_form" model="ir.ui.view">
+        <field name="name">socios.pendientes.actividad.wizard.form</field>
+        <field name="model">socios.pendientes.actividad.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Buscar Socios Pendientes">
+                <sheet>
+
+                    <span>El sistema buscara los integrantes activos de <b> todas actividades activas</b> que no esten asociados y que no esten tildados <b>Excluir Socio</b>
+                    </span>
+
+                </sheet>
+                <footer>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    <button string="Continuar" name="action_confirm" type="object" class="btn-primary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_socios_pendientes_actividad_wizard" model="ir.actions.act_window">
+        <field name="name">Buscar Socios Pendientes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">socios.pendientes.actividad.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

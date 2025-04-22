@@ -12,11 +12,12 @@
                             <field name="tipo_mensaje"/>
                         </group>
                         <group>
-                            <field name="archivo" invisible="tipo_mensaje != 'media'" filename="nombre_archivo"/>
+                            <field name="archivo" filename="nombre_archivo"/>
                         </group>
                     </group>
                     <group>
-                        <field name="texto" invisible="tipo_mensaje != 'text'" placeholder="Escribe el mensaje aquí..."/>
+                        <field name="texto" placeholder="Escribe el mensaje aquí..."/>
+
                     </group>
                     <group>
                         <field name="registro" readonly="1"/>

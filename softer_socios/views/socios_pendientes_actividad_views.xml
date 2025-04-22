@@ -52,9 +52,8 @@
                                 </group>
                                 <group string="Datos Bancarios">
                                     <field name="es_debito_automatico" />
-                                    <field name="titularBanco" invisible="es_debito_automatico == False" />
-                                    <field name="cbu" invisible="es_debito_automatico == False" />
-                                    <field name="banco" invisible="es_debito_automatico == False" />
+
+                                    <field name="cbu_contacto_facturacion" invisible="es_debito_automatico == False" />
                                 </group>
                                 <group>
                                     <field name="telefono"/>

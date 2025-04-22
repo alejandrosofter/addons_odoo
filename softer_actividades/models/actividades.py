@@ -309,7 +309,7 @@ class Actividades(models.Model):
                 suscripcion = self.env["softer.suscripcion"].create(
                     {
                         "cliente_id": integrante.cliente_id.id,
-                        "contacto_comunicacion": integrante.cliente_contacto.id,
+                        "cliente_facturacion": integrante.cliente_contacto.id,
                         "estado": integrante.estado,
                         "idActividad": self.id,
                         "tieneActividad": True,
@@ -440,10 +440,19 @@ class ActividadesMensajes(models.Model):
         [("text", "Texto"), ("media", "Multimedia")],
         string="Tipo de Mensaje",
         required=True,
+        help="En el campo Mensaje puede usar estas variables:\n"
+        "- {integrante.name}: Nombre del integrante\n"
+        "- {cliente.name}: Nombre del cliente\n"
+        "- {contacto.name}: Nombre del contacto\n"
+        "- {actividad.name}: Nombre de la actividad\n"
+        "- {contacto.phone}: Teléfono del contacto\n"
+        "- {cliente.vat}: DNI del cliente",
     )
     archivo = fields.Binary(string="Archivo")
     nombre_archivo = fields.Char(string="Nombre del Archivo")
-    texto = fields.Text(string="Mensaje")
+    texto = fields.Text(
+        string="Mensaje",
+    )
     registro = fields.Text(
         string="Registro de Envío", help="Registro de a quiénes se envió el mensaje"
     )
@@ -460,51 +469,84 @@ class ActividadesMensajes(models.Model):
         self.ensure_one()
         registro = []
 
+        _logger.info(
+            f"Iniciando envío de mensaje para actividad {self.actividad_id.name}"
+        )
+        _logger.info(f"Tipo de mensaje: {self.tipo_mensaje}")
+        _logger.info(f"Texto del mensaje: {self.texto}")
+
         # Obtener la instancia activa de Evolution API
         instance = self.env["evolution.api.numbers"].search(
             [("estado", "=", "active")], limit=1
         )
 
         if not instance:
+            _logger.error("No hay una instancia activa de Evolution API")
             raise ValidationError("No hay una instancia activa de Evolution API")
 
         # Obtener todos los integrantes activos con teléfono
         integrantes = self.actividad_id.integrantes.filtered(
-            lambda i: i.estado == "activo" and i.cliente_contacto.phone
+            lambda i: i.estado == "activa" and i.cliente_contacto.phone
         )
+
+        _logger.info(f"Integrantes a procesar: {len(integrantes)}")
 
         for integrante in integrantes:
             try:
+                _logger.info(f"Procesando integrante: {integrante.cliente_id.name}")
+                _logger.info(
+                    f"Teléfono de contacto: {integrante.cliente_contacto.phone}"
+                )
+
+                # Preparar el texto con las variables
+                texto_formateado = self.texto.format(
+                    integrante=integrante,
+                    cliente=integrante.cliente_id,
+                    contacto=integrante.cliente_contacto,
+                    actividad=self.actividad_id,
+                )
+
+                _logger.info(f"Texto formateado: {texto_formateado}")
+
                 if self.tipo_mensaje == "text":
+                    _logger.info("Enviando mensaje de texto")
                     # Enviar mensaje de texto
                     self.env["evolution.api.message"].sudo().create(
                         {
                             "number_id": instance.id,
                             "numeroDestino": integrante.cliente_contacto.phone,
                             "type": "text",
-                            "text": self.texto,
+                            "text": texto_formateado,
                         }
                     )
                 else:
+                    _logger.info("Enviando mensaje multimedia")
                     # Enviar mensaje multimedia
                     self.env["evolution.api.message"].sudo().create(
                         {
                             "number_id": instance.id,
                             "numeroDestino": integrante.cliente_contacto.phone,
                             "type": "media",
-                            "text": self.texto or "",
+                            "text": texto_formateado or "",
                             "media": self.archivo,
                             "filename": self.nombre_archivo,
                         }
                     )
 
+                _logger.info(
+                    f"Mensaje enviado exitosamente a {integrante.cliente_id.name}"
+                )
                 registro.append(
                     f"{integrante.cliente_id.name} ({integrante.cliente_contacto.phone}) - Enviado"
                 )
             except Exception as e:
+                _logger.error(
+                    f"Error al enviar mensaje a {integrante.cliente_id.name}: {str(e)}"
+                )
                 registro.append(
                     f"{integrante.cliente_id.name} ({integrante.cliente_contacto.phone}) - Error: {str(e)}"
                 )
 
         # Actualizar el registro
         self.registro = "\n".join(registro)
+        _logger.info("Proceso de envío de mensajes finalizado")

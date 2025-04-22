@@ -7,3 +7,5 @@ access_socios_estado_user,socios.estado.user,softer_socios.model_socios_estado,b
 access_socios_estado_manager,socios.estado.manager,softer_socios.model_socios_estado,base.group_system,1,1,1,1
 access_socios_pendientes_actividad_user,socios.pendientes.actividad.user,softer_socios.model_socios_pendientes_actividad,base.group_user,1,1,1,1
 access_socios_pendientes_actividad_manager,socios.pendientes.actividad.manager,softer_socios.model_socios_pendientes_actividad,base.group_system,1,1,1,1
+access_socios_pendientes_actividad_wizard_user,socios.pendientes.actividad.wizard.user,softer_socios.model_socios_pendientes_actividad_wizard,base.group_user,1,1,1,1
+access_socios_pendientes_actividad_wizard_manager,socios.pendientes.actividad.wizard.manager,softer_socios.model_socios_pendientes_actividad_wizard,base.group_system,1,1,1,1
