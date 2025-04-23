@@ -5,6 +5,7 @@
         <field name="name">socios.pendientes.actividad.tree</field>
         <field name="model">socios.pendientes.actividad</field>
         <field name="arch" type="xml">
+
             <tree string="Socios Pendientes">
 
                 <field name="socio"/>

@@ -19,7 +19,9 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_activar" string="Activar" type="object" invisible="estado == 'suspendida'" class="oe_highlight"/>
+                    <button name="action_generar" string="Generar Orden de Venta" type="object" invisible="estado != 'activa'" class="oe_highlight"/>
+
+                    <button name="action_activar" string="Activar" type="object" invisible="estado == 'activa'" class="oe_highlight"/>
                     <button name="action_suspender" string="Suspender" type="object" invisible="estado == 'suspendida'" class="oe_highlight"/>
                     <button name="action_baja" string="Dar de Baja" type="object" invisible="estado == 'baja'"/>
                     <button name="action_finalizar" string="Finalizar" type="object" invisible="estado == 'finalizada'"/>

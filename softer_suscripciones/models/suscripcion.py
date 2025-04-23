@@ -3,6 +3,9 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class MotivoCambioEstado(models.Model):
@@ -306,7 +309,7 @@ class Suscripcion(models.Model):
         return {
             "partner_id": self.cliente_id.id,
             "subscription_id": self.id,
-            "payment_term_id": self.termino_pago,
+            "payment_term_id": self.termino_pago.id if self.termino_pago else False,
             "date_order": fields.Datetime.now(),
             "origin": self.name,
             "company_id": self.company_id.id,
@@ -315,16 +318,15 @@ class Suscripcion(models.Model):
     def _prepare_sale_order_line_values(self, order):
         """Prepara las líneas de la orden de venta"""
         lines = []
-        for product in self.line_ids:
+        for line in self.line_ids:
             lines.append(
                 (
                     0,
                     0,
                     {
-                        "product_id": product.id,
-                        "name": product.name,
-                        "product_uom_qty": 1,
-                        "price_unit": product.list_price,
+                        "product_id": line.product_id.id,
+                        "product_uom_qty": line.cantidad,
+                        "price_unit": line.product_id.list_price,
                         "order_id": order.id,
                     },
                 )
@@ -392,20 +394,23 @@ class Suscripcion(models.Model):
             ]
         )
 
+        _logger.info(f"Se encontraron {len(suscripciones)} suscripciones para generar")
+
         for suscripcion in suscripciones:
-            # Crear la orden de venta con los valores de la suscripción
-            sale_order_vals = suscripcion._prepare_sale_order_values()
-            sale_order = self.env["sale.order"].create(sale_order_vals)
-
-            # Agregar líneas de producto
-            lines = suscripcion._prepare_sale_order_line_values(sale_order)
-            sale_order.write({"order_line": lines})
-
-            # Actualizar fechas de facturación
-            suscripcion.ultima_factura = fields.Date.today()
-            suscripcion.proxima_factura = suscripcion._calcular_siguiente_fecha(
-                fields.Date.today()
-            )
+            try:
+                _logger.info(f"Procesando suscripción: {suscripcion.name}")
+                result = suscripcion.generar()
+                if result and result.get("type") == "ir.actions.client":
+                    _logger.info(f"Orden generada exitosamente para {suscripcion.name}")
+                else:
+                    _logger.warning(
+                        f"No se pudo generar la orden para {suscripcion.name}"
+                    )
+            except Exception as e:
+                _logger.error(
+                    f"Error al generar orden de venta para suscripción "
+                    f"{suscripcion.name}: {str(e)}"
+                )
 
         return True
 
@@ -553,6 +558,65 @@ class Suscripcion(models.Model):
             "params": {
                 "title": "Éxito",
                 "message": "La suscripción ha sido finalizada correctamente.",
+                "type": "success",
+            },
+        }
+
+    def action_generar(self):
+        """Acción para generar la orden de venta"""
+        self.ensure_one()
+        return self.generar()
+
+    def generar(self):
+        """Genera la orden de venta y actualiza los valores para la próxima generación"""
+        self.ensure_one()
+        if self.estado != "activa":
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Advertencia",
+                    "message": "Solo se pueden generar órdenes de venta para suscripciones activas.",
+                    "type": "warning",
+                },
+            }
+
+        # Crear la orden de venta
+        sale_order = self.create_sale_order()
+        if not sale_order:
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Error",
+                    "message": "No se pudo crear la orden de venta.",
+                    "type": "error",
+                },
+            }
+
+        # Actualizar fechas de facturación
+        self.ultima_factura = fields.Date.today()
+        self.proxima_factura = self._calcular_siguiente_fecha(fields.Date.today())
+
+        # Confirmar la orden de venta
+        sale_order.action_confirm()
+
+        # Si está configurado para facturar al generar, crear las facturas
+        if self.facturar_al_generar:
+            sale_order._create_invoices()
+
+        # Si está configurado para notificar al generar, enviar notificación
+        if self.notificar_al_generar:
+            sale_order.message_post(
+                body="Se ha generado la orden de venta automáticamente."
+            )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Éxito",
+                "message": "Se ha generado y confirmado la orden de venta correctamente.",
                 "type": "success",
             },
         }

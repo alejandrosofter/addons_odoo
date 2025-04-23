@@ -134,9 +134,8 @@ class Integrantes(models.Model):
 
     def _generate_friendly_password(self):
         """Genera una contraseña amigable usando palabras simples y números"""
-        # Seleccionar dos palabras aleatorias
-        palabra1 = random.choice(self.PALABRAS_CONTRASENA)
-        # palabra2 = random.choice(self.PALABRAS_CONTRASENA)
+        # Seleccionar una palabra aleatoria
+        palabra1 = random.choice(PALABRAS_CONTRASENA)
         # Generar dos números aleatorios
         numeros = "".join(random.choices(string.digits, k=2))
         # Combinar todo
