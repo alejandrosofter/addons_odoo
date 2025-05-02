@@ -65,7 +65,7 @@ class Suscripcion(models.Model):
         "res.partner", string="Cliente Facturación", required=True, tracking=True
     )
     integrante_id = fields.Many2one(
-        "res.partner",
+        "softer.actividades.integrantes",
         string="Integrante",
         tracking=True,
         domain="[('cliente_contacto', '=', cliente_facturacion)]"
