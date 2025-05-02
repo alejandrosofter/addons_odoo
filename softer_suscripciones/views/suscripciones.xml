@@ -51,7 +51,7 @@
                                     <field name="fecha_fin"/>
                                     <field name="ultima_factura" readonly="1"/>
                                     <field name="categoria_id"/>
-                                    <field name="integrante_id" domain="[('cliente_contacto', '=', cliente_facturacion)]"/>
+                                    <field name="integrante_id" domain="[('parent_id', '=', cliente_facturacion)]"/>
                                 </group>
                                 <group>
                                     <field name="tipo_temporalidad"/>
