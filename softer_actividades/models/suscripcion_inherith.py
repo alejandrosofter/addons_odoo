@@ -8,3 +8,8 @@ class SuscripcionInherited(models.Model):
     idActividad = fields.Many2one(
         "softer.actividades", string="Actividad", tracking=True
     )
+    integrante_id = fields.Many2one(
+        "softer.actividades.integrantes",
+        string="Integrante",
+        tracking=True,
+    )

@@ -5,12 +5,12 @@
 
     <menuitem id="menu_socios_socios" name="Socios" parent="menu_socios_root" action="action_socios" sequence="10"/>
 
-    <menuitem id="menu_socios_pendientes" name="Socios Pendientes" parent="menu_socios_root" action="softer_socios.action_socios_pendientes_actividad" sequence="30"/>
+    <menuitem id="menu_socios_pendientes" name="Socios Pendientes" parent="menu_socios_root" action="action_socios_pendientes_actividad" sequence="30"/>
 
     <menuitem id="menu_socios_configuracion" name="Configuración" parent="menu_socios_root" sequence="40"/>
-    <menuitem id="menu_crear_pendientes" name="Buscar Socios Pendientes" parent="menu_socios_configuracion" action="softer_socios.action_socios_pendientes_actividad_wizard" sequence="30"/>
+    <menuitem id="menu_crear_pendientes" name="Buscar Socios Pendientes" parent="menu_socios_configuracion" action="action_socios_pendientes_actividad_wizard" sequence="30"/>
 
-    <menuitem id="menu_socios_categoria" name="Categorías de Socios" parent="menu_socios_configuracion" action="softer_socios.action_socios_categoria" sequence="20"/>
+    <menuitem id="menu_socios_categoria" name="Categorías de Socios" parent="menu_socios_configuracion" action="action_socios_categoria" sequence="20"/>
     <menuitem id="menu_socios_config_general" name="Ajustes" parent="menu_socios_configuracion" action="action_socios_config_settings" sequence="10"/>
 
 </odoo>

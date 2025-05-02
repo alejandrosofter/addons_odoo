@@ -12,12 +12,6 @@ class SociosCategoria(models.Model):
         string="Próximo Número de Socio", default=1, required=True
     )
     descripcion = fields.Text(string="Descripción")
-    socios_pendientes = fields.One2many(
-        "socios.pendientes.actividad",
-        "categoria_socio",
-        string="Socios Pendientes",
-        ondelete="set null",
-    )
 
     def next_nroSocio(self):
         """Busca el próximo número de socio disponible para esta categoría"""

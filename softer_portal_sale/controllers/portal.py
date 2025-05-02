@@ -1,7 +1,13 @@
 from odoo import http
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal
+from odoo.addons.payment.controllers.portal import PaymentPortal
 import json
+import logging
+
+# Configurar el logger específicamente para este módulo
+_logger = logging.getLogger("softer_portal_sale")
+_logger.setLevel(logging.INFO)
 
 
 class CustomerPortalInherit(CustomerPortal):
@@ -52,9 +58,7 @@ class CustomerPortalInherit(CustomerPortal):
                         json.dumps(
                             {
                                 "success": False,
-                                "error": (
-                                    "Una o más órdenes no están listas " "para facturar"
-                                ),
+                                "error": "Una o más órdenes no están listas para facturar",
                             }
                         ),
                         headers=[("Content-Type", "application/json")],
@@ -101,3 +105,76 @@ class CustomerPortalInherit(CustomerPortal):
                 ),
                 headers=[("Content-Type", "application/json")],
             )
+
+
+class PaymentPortalInherit(PaymentPortal):
+
+    def _get_extra_payment_form_values(self, **kwargs):
+        """Return a dict of extra payment form values to include in the rendering context.
+
+        :param dict kwargs: Optional data. This parameter is not used here.
+        :return: The dict of extra payment form values.
+        :rtype: dict
+        """
+
+        values = super()._get_extra_payment_form_values(**kwargs)
+
+        _logger.info("=== Inicio _get_extra_payment_form_values ===")
+        _logger.info("kwargs recibidos: %s", kwargs)
+
+        try:
+            if kwargs.get("invoice_id"):
+                invoice = (
+                    request.env["account.move"]
+                    .sudo()
+                    .search([("id", "=", int(kwargs.get("invoice_id")))], limit=1)
+                )
+
+                if invoice:
+                    # Preparar datos de las líneas
+                    lines_data = []
+                    for line in invoice.invoice_line_ids:
+                        lines_data.append(
+                            {
+                                "product_id": {
+                                    "id": line.product_id.id,
+                                    "name": line.product_id.name,
+                                },
+                                "quantity": line.quantity,
+                                "price_unit": line.price_unit,
+                                "price_subtotal": line.price_subtotal,
+                            }
+                        )
+
+                    # Agregar nuestros valores personalizados
+                    values.update(
+                        {
+                            "invoice": invoice,
+                            "lines": lines_data,
+                            "user": (
+                                "Sin Registro (solicita por wsap tu usuario!)"
+                                if request.env.user.name == "Public user"
+                                else request.env.user.name
+                            ),
+                            "reference": invoice.name,
+                        }
+                    )
+                    _logger.info("Valores personalizados agregados")
+                else:
+                    _logger.warning(
+                        "Factura no encontrada: %s", kwargs.get("invoice_id")
+                    )
+
+        except Exception as e:
+            _logger.error(
+                "Error en _get_extra_payment_form_values: %s", str(e), exc_info=True
+            )
+            raise
+
+        return values
+
+    @http.route(["/payment/pay"], type="http", auth="public", website=True)
+    def payment_pay(self, **kwargs):
+        _logger.info("=== Inicio payment_pay ===")
+        _logger.info("kwargs recibidos: %s", kwargs)
+        return super().payment_pay(**kwargs)

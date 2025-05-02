@@ -71,12 +71,13 @@ class Integrantes(models.Model):
         "res.partner", string="Facturacion", required=True, tracking=True
     )
     actividad_id = fields.Many2one("softer.actividades", string="Actividad")
-    # suscripcion_id = fields.Many2one(
-    #     "softer.suscripcion",
-    #     string="Suscripción",
-    #     tracking=True,
-    #     domain="[('cliente_id', '=', cliente_contacto)]",
-    # )
+    suscripcion_ids = fields.One2many(
+        "softer.suscripcion",
+        "integrante_id",
+        string="Suscripciones",
+        domain=[("tieneActividad", "=", True)],
+        help="Suscripciones asociadas al integrante",
+    )
     fechaNacimiento = fields.Date(
         string="Fecha de Nacimiento",
         compute="_compute_fecha_nacimiento",

@@ -34,8 +34,20 @@
                                     <field name="porcentajeAsistenciaGlobal"/>
                                     <field name="numero_documento"/>
                                     <field name="fechaNacimiento"/>
+
                                 </group>
                             </group>
+                        </page>
+                        <page string="Suscripciones" name="suscripciones">
+                            <field name="suscripcion_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="idActividad"/>
+                                    <field name="cliente_id"/>
+                                    <field name="fecha_inicio"/>
+                                    <field name="fecha_fin"/>
+                                </tree>
+                            </field>
                         </page>
                         <page string="Historial de Estados" name="historial_estados">
                             <field name="estado_ids" nolabel="1">

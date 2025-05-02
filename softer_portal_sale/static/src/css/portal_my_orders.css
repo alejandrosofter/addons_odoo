@@ -1,0 +1,62 @@
+/* Estilos para el portal de órdenes */
+.o_portal_my_orders {
+    margin-top: 20px;
+}
+
+.o_portal_my_orders .table {
+    margin-bottom: 0;
+}
+
+.o_portal_my_orders .table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.o_portal_my_orders .table td {
+    vertical-align: middle;
+}
+
+.o_portal_my_orders .btn {
+    margin-right: 5px;
+}
+
+.o_portal_my_orders .badge {
+    font-size: 0.9em;
+    padding: 0.5em 0.8em;
+}
+
+/* Estilos para los checkboxes */
+.o_portal_my_orders .form-check {
+    margin: 0;
+    padding: 0;
+}
+
+.o_portal_my_orders .form-check-input {
+    margin-top: 0.5rem;
+}
+
+/* Estilos para los botones de acción */
+.o_portal_my_orders .o_portal_my_orders_actions {
+    margin-bottom: 1rem;
+}
+
+/* Estilos para los estados */
+.o_portal_my_orders .state-draft {
+    color: #6c757d;
+}
+
+.o_portal_my_orders .state-sent {
+    color: #0dcaf0;
+}
+
+.o_portal_my_orders .state-sale {
+    color: #198754;
+}
+
+.o_portal_my_orders .state-done {
+    color: #198754;
+}
+
+.o_portal_my_orders .state-cancel {
+    color: #dc3545;
+}

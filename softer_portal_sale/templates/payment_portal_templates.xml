@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Heredar la plantilla principal de pago -->
+    <template id="payment_pay_form_inherit" inherit_id="payment.pay">
+        <xpath expr="//div[hasclass('o_cc')]" position="after">
+            <!-- Información del usuario -->
+            <t t-call="payment.summary_item">
+                <t t-set="name" t-value="'user'"/>
+                <t t-set="label">Usuario Web</t>
+                <t t-set="value" t-value="user"/>
+            </t>
+
+            <!-- Detalles de los items -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Detalle</th>
+                                <th class="text-end">Cantidad</th>
+                                <th class="text-end">Precio Unit.</th>
+                                <th class="text-end">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="lines">
+                                <t t-foreach="lines" t-as="line">
+                                    <tr>
+                                        <td>
+                                            <span t-out="line['product_id']['name']"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-out="line['quantity']"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-esc="line['price_unit']" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-esc="line['price_subtotal']" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        <div class="alert alert-warning" role="alert">
+                                            No se encontraron líneas de factura
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end">
+                                    <strong>Total:</strong>
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="amount" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Heredar la plantilla de confirmación de pago -->
+    <template id="payment_confirmation_status_inherit" inherit_id="payment.payment_status">
+        <xpath expr="//div[@name='o_payment_status_content']" position="inside">
+            <t t-call="payment.summary_item">
+                <t t-set="name" t-value="'reference'"/>
+                <t t-set="label">Factura</t>
+                <t t-set="value" t-value="reference"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="payment_pay_inherit" inherit_id="payment.pay">
+        <xpath expr="//div[hasclass('alert')]" position="before">
+            <t t-if="not invoice">
+                <div class="alert alert-danger" role="alert">
+                    <i class="fa fa-exclamation-triangle me-2" aria-hidden="true"></i>
+                    No se encontró la factura. Por favor, contacte al administrador.
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>
