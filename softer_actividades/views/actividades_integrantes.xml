@@ -41,11 +41,13 @@
                         <page string="Suscripciones" name="suscripciones">
                             <field name="suscripcion_ids">
                                 <tree>
-                                    <field name="name"/>
-                                    <field name="idActividad"/>
-                                    <field name="cliente_id"/>
+                             
+                                    <field name="cliente_facturacion"/>
                                     <field name="fecha_inicio"/>
                                     <field name="fecha_fin"/>
+                                    <field name="usoSuscripcion"/>
+                                    <field name="ultima_factura"/>
+                                    <field name="tipo_temporalidad"/>
                                 </tree>
                             </field>
                         </page>
