@@ -64,12 +64,7 @@ class Suscripcion(models.Model):
     cliente_facturacion = fields.Many2one(
         "res.partner", string="Cliente Facturación", required=True, tracking=True
     )
-    integrante_id = fields.Many2one(
-        "softer.actividades.integrantes",
-        string="Integrante",
-        tracking=True,
-        domain="[('cliente_contacto', '=', cliente_facturacion)]"
-    )
+
     fecha = fields.Date(
         string="Fecha de Creación", default=fields.Date.today, tracking=True
     )

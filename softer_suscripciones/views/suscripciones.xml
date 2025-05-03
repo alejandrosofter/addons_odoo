@@ -43,7 +43,7 @@
                     <notebook>
                         <page string="Datos de la Suscripción" name="datos_suscripcion">
                             <group>
-                                <group>
+                                <group string="Datos Generales">
                                     <field name="cliente_id"/>
                                     <field name="cliente_facturacion"/>
                                     <field name="fecha"/>
@@ -51,14 +51,18 @@
                                     <field name="fecha_fin"/>
                                     <field name="ultima_factura" readonly="1"/>
                                     <field name="categoria_id"/>
-                                    <field name="integrante_id" domain="[('parent_id', '=', cliente_facturacion)]"/>
+                                    <!-- <field name="integrante_id" domain="[('cliente_contacto', '=', cliente_facturacion)]"/> -->
                                 </group>
-                                <group>
+                                <group string="Datos de Pago">
                                     <field name="tipo_temporalidad"/>
                                     <field name="cantidad_recurrencia"/>
                                     <field name="proxima_factura"/>
                                     <field name="termino_pago"/>
                                     <field name="paga_debito_automatico"/>
+                              
+
+                                </group>
+                                <group string="Importante">
                                     <field name="usoSuscripcion"/>
 
                                 </group>
@@ -111,7 +115,7 @@
         <field name="arch" type="xml">
             <tree decoration-danger="estado=='cancelada'" decoration-warning="estado=='suspendida'">
                 <field name="cliente_id"/>
-                <field name="integrante_id"/>
+       
                 <field name="fecha_inicio"/>
                 <field name="nombre_temporalidad"/>
                 <field name="proxima_factura"/>
@@ -133,7 +137,7 @@
             <search>
                 <field name="name"/>
                 <field name="cliente_id"/>
-                <field name="integrante_id"/>
+
                 <field name="estado"/>
                 <field name="tipo_temporalidad"/>
                 <filter string="Borradores" name="borradores" domain="[('estado','=','borrador')]"/>
@@ -142,7 +146,6 @@
                 <filter string="Bajas" name="bajas" domain="[('estado','=','baja')]"/>
                 <group expand="0" string="Agrupar Por">
                     <filter string="Cliente" name="cliente" context="{'group_by':'cliente_id'}"/>
-                    <filter string="Integrante" name="integrante" context="{'group_by':'integrante_id'}"/>
                     <filter string="Estado" name="estado" context="{'group_by':'estado'}"/>
                     <filter string="Producto" name="nombres_productos" context="{'group_by':'nombres_productos'}"/>
                     <filter string="Tipo Temporalidad" name="tipo_temporalidad" context="{'group_by':'tipo_temporalidad'}"/>
