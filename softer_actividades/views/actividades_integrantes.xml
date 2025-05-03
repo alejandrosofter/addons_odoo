@@ -48,7 +48,7 @@
                                     <field name="fecha_fin"/>
                                     <field name="usoSuscripcion"/>
                                     <field name="ultima_factura"/>
-                                    <field name="tipo_temporalidad"/>
+                                     <field name="importeTotal"/>
                                 </tree>
                             </field>
                         </page>
