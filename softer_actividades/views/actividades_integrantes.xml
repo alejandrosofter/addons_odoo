@@ -43,6 +43,7 @@
                                 <tree>
                              
                                     <field name="cliente_facturacion"/>
+                                     <field name="nombres_productos"/>
                                     <field name="fecha_inicio"/>
                                     <field name="fecha_fin"/>
                                     <field name="usoSuscripcion"/>
