@@ -21,6 +21,7 @@
                         <page string="Datos Generales" name="gral">
                             <group>
                                 <group>
+                                    <field name="actividad_id" readonly="1"/>
                                     <field name="cliente_contacto"/>
                                     <field name="apodo"/>
                                     <field name="es_debito_automatico"/>
@@ -41,14 +42,14 @@
                         <page string="Suscripciones" name="suscripciones">
                             <field name="suscripcion_ids">
                                 <tree>
-                             
+
                                     <field name="cliente_facturacion"/>
-                                     <field name="nombres_productos"/>
+                                    <field name="nombres_productos"/>
                                     <field name="fecha_inicio"/>
                                     <field name="fecha_fin"/>
                                     <field name="usoSuscripcion"/>
                                     <field name="ultima_factura"/>
-                                     <field name="importeTotal"/>
+                                    <field name="importeTotal"/>
                                 </tree>
                             </field>
                         </page>

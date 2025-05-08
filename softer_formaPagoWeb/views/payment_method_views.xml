@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_payment_method_form_inherit_interes" model="ir.ui.view">
+        <field name="name">payment.method.form.inherit.interes</field>
+        <field name="model">payment.method</field>
+        <field name="inherit_id" ref="payment.payment_method_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Condiciones Web" name="condiciones_web">
+                    <group>
+
+                        <field name="porcentual"/>
+                        <field name="fijo"/>
+                        <field name="producto"/>
+                        <span colspan="2">
+                            <i>Los valores pueden ser positivos o negativos dependiendo del uso de interes o descuento.</i>
+                        </span>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+</odoo>

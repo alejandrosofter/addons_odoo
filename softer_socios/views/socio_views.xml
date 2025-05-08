@@ -87,6 +87,28 @@
 
 
                         </page>
+                        <page string="Actividades">
+                            <field name="integrantes_facturacion_ids">
+                                <tree>
+                                    <field name="actividad_id"/>
+                                    <field name="cliente_id"/>
+                                    <field name="estado"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Suscripciones">
+                            <field name="suscripciones_facturacion_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="fecha_inicio"/>
+                                    <field name="fecha_fin"/>
+                                    <field name="estado"/>
+                                    <field name="categoria_id"/>
+                                    <field name="paga_debito_automatico"/>
+                                </tree>
+                            </field>
+                        </page>
                         <page string="Historial de Estados">
                             <field name="estado_ids">
                                 <tree decoration-warning="estado=='suspendida'" decoration-danger="estado=='baja'">
@@ -108,6 +130,8 @@
                                 </form>
                             </field>
                         </page>
+
+
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">

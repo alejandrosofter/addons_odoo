@@ -131,7 +131,7 @@ class Integrantes(models.Model):
             if record.apodo:
                 record.name = record.apodo
             else:
-                record.name = record.cliente_id.name or False
+                record.name = record.cliente_id.name if record.cliente_id else False
 
     def _generate_friendly_password(self):
         """Genera una contraseña amigable usando palabras simples y números"""
@@ -368,11 +368,11 @@ Tu acceso al sistema ha sido desactivado. Si crees que esto es un error, por fav
     def write(self, vals):
         """Sobrescribe el método write para verificar suscripciones después de cambios"""
         result = super().write(vals)
-        if "estado" in vals:
-            # Verificar suscripciones para todos los registros modificados
-            for record in self:
-                if record.actividad_id.producto_asociado:
-                    record.actividad_id.subscription_upsert()
+        # if "estado" in vals:
+        #     # Verificar suscripciones para todos los registros modificados
+        #     for record in self:
+        #         if record.actividad_id.productos:
+        #             record.actividad_id.subscription_upsert()
         return result
 
     def _actualizar_estados_por_defecto(self):

@@ -31,7 +31,7 @@ class ClubMember(models.Model):
     cliente_facturacion = fields.Many2one(
         "res.partner",
         string="Facturación",
-        required=False,
+        required=True,
         store=True,
     )
     contactoPrimario = fields.Many2one(
@@ -56,9 +56,11 @@ class ClubMember(models.Model):
         "softer.suscripcion.categoria",
         string="Categoría de Suscripción",
         help="Categoría que se asignará a las suscripciones generadas",
-        default=lambda self: self.env["ir.config_parameter"]
-        .sudo()
-        .get_param("socios.default_categoria_suscripcion", default=False),
+    )
+    product_id = fields.Many2one(
+        "product.product",
+        string="Producto",
+        help="Producto que se asignará a la suscripcion generadas",
     )
     name = fields.Char(
         related="partner_id.name", string="Nombre", store=True, readonly=False
@@ -122,14 +124,7 @@ class ClubMember(models.Model):
         .sudo()
         .get_param("socios.default_country_id", default=False),
     )
-    product_id = fields.Many2one(
-        "product.product",
-        string="Producto",
-        help="Producto que se asignará a la suscripcion generadas",
-        default=lambda self: self.env["ir.config_parameter"]
-        .sudo()
-        .get_param("socios.default_product_id", default=False),
-    )
+
     image_1920 = fields.Image(
         related="partner_id.image_1920",
         string="Foto",
@@ -155,9 +150,6 @@ class ClubMember(models.Model):
         "socios.categoria",
         string="Categoría",
         required=True,
-        default=lambda self: self.env["ir.config_parameter"]
-        .sudo()
-        .get_param("socios.default_categoria_id", default=False),
     )
     estado = fields.Selection(
         selection=[
@@ -176,6 +168,34 @@ class ClubMember(models.Model):
 
     esActivo = fields.Boolean(string="Es Socio Activo", default=False)
     edad = fields.Integer(string="Edad", compute="_compute_edad")
+
+    integrante_ids = fields.One2many(
+        "softer.actividades.integrantes",
+        "cliente_id",
+        string="Actividades",
+        help="Registros de actividades en las que participa este socio",
+    )
+
+    suscripcion_ids = fields.One2many(
+        "softer.suscripcion",
+        "cliente_id",
+        string="Suscripciones",
+        help="Suscripciones asociadas a este socio (por contacto)",
+    )
+
+    integrantes_facturacion_ids = fields.Many2many(
+        "softer.actividades.integrantes",
+        compute="_compute_integrantes_facturacion_ids",
+        string="Integrantes (por Cliente Facturación)",
+        help="Integrantes donde el cliente_id es igual al cliente_facturacion del socio",
+    )
+
+    suscripciones_facturacion_ids = fields.Many2many(
+        "softer.suscripcion",
+        compute="_compute_suscripciones_facturacion_ids",
+        string="Suscripciones (por Cliente Facturación)",
+        help="Suscripciones donde el cliente_id es igual al cliente_facturacion del socio",
+    )
 
     _sql_constraints = [
         (
@@ -454,3 +474,40 @@ class ClubMember(models.Model):
         ):
             edad -= 1
         return edad
+
+    @api.depends("cliente_facturacion")
+    def _compute_integrantes_facturacion_ids(self):
+        for socio in self:
+            if socio.cliente_facturacion:
+                integrantes = self.env["softer.actividades.integrantes"].search(
+                    [("cliente_id", "=", socio.cliente_facturacion.id)]
+                )
+                socio.integrantes_facturacion_ids = integrantes
+            else:
+                socio.integrantes_facturacion_ids = False
+
+    @api.depends("cliente_facturacion")
+    def _compute_suscripciones_facturacion_ids(self):
+        for socio in self:
+            if socio.cliente_facturacion:
+                suscripciones = self.env["softer.suscripcion"].search(
+                    [("cliente_id", "=", socio.cliente_facturacion.id)]
+                )
+                socio.suscripciones_facturacion_ids = suscripciones
+            else:
+                socio.suscripciones_facturacion_ids = False
+
+    @api.model
+    def default_get(self, fields):
+        res = super().default_get(fields)
+        config = self.env["ir.config_parameter"].sudo()
+        categoria_suscripcion = config.get_param("socios.categoria_suscripcion")
+        categoria_id = config.get_param("socios.default_categoria_id")
+        product_id = config.get_param("socios.default_product_id")
+        if categoria_suscripcion:
+            res["categoria_suscripcion"] = int(categoria_suscripcion)
+        if categoria_id:
+            res["categoria_id"] = int(categoria_id)
+        if product_id:
+            res["product_id"] = int(product_id)
+        return res

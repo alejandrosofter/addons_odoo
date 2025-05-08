@@ -68,10 +68,10 @@ class Actividades(models.Model):
     horarios = fields.One2many(
         "softer.actividades.horarios", "actividad_id", string="Horarios"
     )
-    producto_asociado = fields.Many2one(
+    productos = fields.Many2many(
         "product.product",
-        string="Producto Asociado",
-        help="Producto principal asociado a esta actividad",
+        string="Productos Asociados",
+        help="Productos asociados a esta actividad",
     )
     porcentaje_asistencia_cobro = fields.Float(
         string="Porcentaje Asistencia Cobro",
@@ -97,7 +97,7 @@ class Actividades(models.Model):
         o sus integrantes.
         """
         for record in self:
-            if record.producto_asociado:
+            if record.productos:
                 record.subscription_upsert()
 
     def agregar_cliente_a_actividad(self, cliente_id, nombre_actividad=False):
@@ -244,8 +244,8 @@ class Actividades(models.Model):
         """Crea o actualiza suscripciones para los integrantes de la actividad"""
         _logger.info(f"Iniciando subscription_upsert para actividad {self.id}")
 
-        if not self.producto_asociado:
-            _logger.warning(f"No hay producto asociado a la actividad {self.id}")
+        if not self.productos:
+            _logger.warning(f"No hay productos asociados a la actividad {self.id}")
             return
 
         _logger.info(f"Integrantes a procesar: {len(self.integrantes)}")
@@ -278,6 +278,11 @@ class Actividades(models.Model):
                 f" - Asistencia Global: {integrante.porcentajeAsistenciaGlobal or 0}%"
             )
 
+            lineas = [
+                (0, 0, {"product_id": producto.id, "cantidad": 1})
+                for producto in self.productos
+            ]
+
             if suscripcion:
                 # Actualizar suscripción existente
                 _logger.info(f"Actualizando suscripción {suscripcion.id}")
@@ -292,6 +297,7 @@ class Actividades(models.Model):
                     suscripcion.write(
                         {
                             "idActividad": self.id,
+                            "line_ids": lineas,
                         }
                     )
                 else:
@@ -301,6 +307,7 @@ class Actividades(models.Model):
                         {
                             "idActividad": self.id,
                             "usoSuscripcion": usaSuscripcion,
+                            "line_ids": lineas,
                         }
                     )
             else:
@@ -319,16 +326,7 @@ class Actividades(models.Model):
                         "fecha_fin": self.fechaFin,
                         "tipo_temporalidad": "mensual",
                         "cantidad_recurrencia": 1,
-                        "line_ids": [
-                            (
-                                0,
-                                0,
-                                {
-                                    "product_id": self.producto_asociado.id,
-                                    "cantidad": 1,
-                                },
-                            )
-                        ],
+                        "line_ids": lineas,
                     }
                 )
                 suscripcion.cambiarEstado(

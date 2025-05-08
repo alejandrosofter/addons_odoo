@@ -40,7 +40,7 @@
                                 <field name="tipoRangos"/>
                                 <field name="fechaDesde" invisible="tipoRangos == 'libre'"/>
                                 <field name="fechaHasta" invisible="tipoRangos == 'libre'"/>
-                                <field name="producto_asociado"/>
+
                                 <!-- <field name="pagaCuotaSocial"/> -->
                                 <field name="cobroPorAsistencia"/>
                                 <field name="porcentaje_asistencia_cobro" invisible="cobroPorAsistencia == False"/>
@@ -67,6 +67,9 @@
                             </field>
                         </page>
                         <page string="Condiciones de la Actividad">
+
+                            <field name="productos"/>
+
                             <field name="condiciones_actividad" nolabel="1" placeholder="Ingrese las condiciones y reglas de la actividad..."/>
                         </page>
                         <page string="Horarios">

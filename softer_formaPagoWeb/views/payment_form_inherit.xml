@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="payment_form_inherit_interes" inherit_id="payment.form">
+        <xpath expr="//div[@id='o_payment_form_options']" position="inside">
+            <tr t-if="selected_payment_method and selected_payment_method.account_payment_method_id.interes">
+                <td colspan="2" class="ps-0 pt-0 pb-2 border-0 text-muted">
+                    Interés
+                </td>
+                <td class="text-end pe-0 pt-0 pb-2 border-0 text-muted">
+                    <span>
+                        <t t-esc="selected_payment_method.account_payment_method_id.interes"/>
+%
+                    </span>
+                </td>
+            </tr>
+            <tr t-if="selected_payment_method and selected_payment_method.account_payment_method_id.descuento">
+                <td colspan="2" class="ps-0 pt-0 pb-2 border-0 text-muted">
+                    Descuento
+                </td>
+                <td class="text-end pe-0 pt-0 pb-2 border-0 text-muted">
+                    <span>
+                        <t t-esc="selected_payment_method.account_payment_method_id.descuento"/>
+%
+                    </span>
+                </td>
+            </tr>
+        </xpath>
+    </template>
+</odoo>
