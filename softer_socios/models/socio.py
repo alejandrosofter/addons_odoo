@@ -319,7 +319,7 @@ class ClubMember(models.Model):
             ("city", "city"),
             ("state_id", "state_id"),
             ("country_id", "country_id"),
-            ("vat", "dni"),
+            ("dni", "vat"),
             ("fecha_nacimiento", "fecha_nacimiento"),
             ("genero", "genero"),
         ]
@@ -525,3 +525,13 @@ class ClubMember(models.Model):
                 socio.motivos_cambio_productos = motivos
             else:
                 socio.motivos_cambio_productos = False
+
+    def _handle_error(self, error):
+        return (
+            _(
+                "Ocurrió un error al procesar el socio pendiente. "
+                "Por favor, intente nuevamente o contacte al administrador.\n\n"
+                "Error técnico: %s"
+            )
+            % error
+        )
