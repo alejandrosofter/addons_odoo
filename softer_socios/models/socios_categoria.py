@@ -18,7 +18,7 @@ class SociosCategoria(models.Model):
         self.ensure_one()
         # Buscar el número más alto usado en esta categoría
         max_nro = (
-            self.env["socios.socio"]
+            self.env["res_partner.socio"]
             .search(
                 [("categoria_id", "=", self.id)],
                 order="member_number desc",

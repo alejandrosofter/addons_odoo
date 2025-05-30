@@ -4,8 +4,7 @@
     <menuitem id="menu_softer_suscripcion_root" name="Suscripciones" web_icon="softer_suscripciones,static/description/icon.png" />
 
     <!-- Configuration Menu -->
-    <menuitem id="menu_softer_suscripcion_configuration" name="Configuración" parent="menu_softer_suscripcion_root" />
-
+    <!-- <menuitem id="menu_softer_suscripcion_configuration" name="Configuración" parent="menu_softer_suscripcion_root" sequence="100"/> -->
 
     <!-- Suscripciones Menu -->
     <menuitem id="menu_softer_suscripcion_suscripciones" name="Suscripciones" parent="menu_softer_suscripcion_root" action="action_suscripcion" sequence="10"/>
@@ -15,6 +14,13 @@
     <!-- Menú de Reportes -->
     <menuitem id="menu_suscripcion_reports" name="Reportes" parent="menu_softer_suscripcion_root" sequence="30"/>
 
+    <!-- Menú de Plantillas en Configuración -->
+    <menuitem id="menu_softer_suscripcion_plan" name="Planes" parent="menu_softer_suscripcion_root" action="action_softer_suscripcion_plan" sequence="20"/>
+
     <!-- Menú del Reporte de Productos -->
     <!-- <menuitem id="menu_suscripcion_product_report" name="Productos Suscritos" parent="menu_suscripcion_reports" action="action_suscripcion_product_report" sequence="10"/> -->
+
+    <menuitem id="menu_softer_suscripcion_productos" name="Productos" parent="menu_softer_suscripcion_root" action="product.product_normal_action" sequence="25"/>
+
+    <menuitem id="menu_softer_suscripcion_generator" name="Generador de Ordenes" parent="menu_softer_suscripcion_root" action="action_softer_suscripcion_generator" sequence="40"/>
 </odoo>

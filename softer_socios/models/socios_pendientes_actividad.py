@@ -179,7 +179,7 @@ class SociosPendientesActividad(models.Model):
                 return
 
             # Verificar si ya existe un socio
-            socio = self.env["socios.socio"].search(
+            socio = self.env["res_partner.socio"].search(
                 [("partner_id", "=", self.cliente_facturacion.id)], limit=1
             )
 
@@ -190,7 +190,7 @@ class SociosPendientesActividad(models.Model):
                 self.estado = "procesado"
                 return {
                     "type": "ir.actions.act_window",
-                    "res_model": "socios.socio",
+                    "res_model": "res_partner.socio",
                     "res_id": socio.id,
                     "view_mode": "form",
                     "target": "current",
@@ -247,7 +247,7 @@ class SociosPendientesActividad(models.Model):
             _logger.info(f"Creando socio con valores: {vals}")
 
             try:
-                nuevo_socio = self.env["socios.socio"].create(vals)
+                nuevo_socio = self.env["res_partner.socio"].create(vals)
                 _logger.info(f"Socio creado exitosamente: {nuevo_socio.id}")
             except Exception as e:
                 self.env.cr.rollback()
@@ -264,7 +264,7 @@ class SociosPendientesActividad(models.Model):
 
             return {
                 "type": "ir.actions.act_window",
-                "res_model": "socios.socio",
+                "res_model": "res_partner.socio",
                 "res_id": nuevo_socio.id,
                 "view_mode": "form",
                 "target": "current",

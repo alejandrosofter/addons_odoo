@@ -46,13 +46,28 @@ class IntegrantesEstados(models.Model):
 
     @api.model
     def create(self, vals):
-        """Sobrescribe el método create para actualizar el estado del integrante"""
+        """Sobrescribe el método create para actualizar el estado del integrante y la suscripción"""
         record = super().create(vals)
-        if record.integrante_id:
+        if record.integrante_id and record.integrante_id.suscripcion_id:
+            suscripcion = record.integrante_id.suscripcion_id
+            # Crear motivo de cambio de estado en la suscripción
+            motivo_actividad = (
+                f"{record.integrante_id.actividad_id.name} :{record.motivo}"
+            )
+            suscripcion.env["softer.suscripcion.motivo_cambio"].create(
+                {
+                    "suscripcion_id": suscripcion.id,
+                    "estado": record.estado,
+                    "motivo": motivo_actividad,
+                    "usuario_id": record.idUsuario.id,
+                    "fecha": record.fecha,
+                }
+            )
+            # Actualizar el estado principal de la suscripción
+            suscripcion.estado = record.estado
             record.integrante_id.write(
                 {
                     "estado": record.estado,
-                    "estadoMotivo": record.motivo,
                 }
             )
         return record

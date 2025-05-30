@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Tree -->
+    <record id="payment_pendientes_pago_tree_view" model="ir.ui.view">
+        <field name="name">payment.pendientes.pago.tree</field>
+        <field name="model">payment.pendientes.pago</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="estado"/>
+                <field name="lote_deuda_id"/>
+                <field name="periodo"/>
+                <field name="interes"/>
+                <field name="fecha_actual"/>
+                <field name="fecha_vto1"/>
+                <field name="fecha_vto2"/>
+                <field name="fecha_vto3"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista Form -->
+    <record id="payment_pendientes_pago_form_view" model="ir.ui.view">
+        <field name="name">payment.pendientes.pago.form</field>
+        <field name="model">payment.pendientes.pago</field>
+        <field name="arch" type="xml">
+            <form string="Pendiente de Pago">
+                <header>
+                    <field name="estado" widget="statusbar" />
+                    <button name="action_imputar" type="object" confirm="¿Está seguro de querer imputar? Al aceptar se generará un 'Lote de Deuda' con los items cargados.  " string="Imputar" class="oe_highlight" invisible="estado == 'imputado'"/>
+                    <button name="action_agregar_cotizaciones" type="object" string="Buscar Pendientes" invisible="estado == 'imputado'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Información General">
+                            <field name="provider_id"/>
+                            <field name="base_pagos"/>
+                            <field name="confirmar_automaticamente"/>
+                            <field name="fecha_actual"/>
+                            <field name="periodo"/>
+                            <field name="concepto"/>
+                            <field name="estado"/>
+                        </group>
+                        <group string="Información de Pago">
+                            <field name="interes"/>
+                            <field name="importe_total" readonly="1"/>
+                            <field name="lote_deuda_id" readonly="1"/>
+                        </group>
+                        <group string="Fechas de Vencimiento">
+                            <field name="fecha_vto1"/>
+                            <field name="fecha_vto2"/>
+                            <field name="fecha_vto3"/>
+
+                        </group>
+                        <group string="Mensajes">
+                            <field name="mensaje_cliente"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Items">
+                            <field name="items">
+                                <tree >
+                                    <field name="order_id"/>
+                                    <field name="cliente_id"/>
+                                    <field name="detalle_orden" />
+                                    <field name="importe" sum="Total"/>
+                                    <field name="currency_id"/>
+                                    <field name="estado"/>
+                                </tree>
+                                <form string="Item de Pendiente de Pago">
+                                    <group>
+                                        <field name="order_id"/>
+                                        <field name="cliente_id" readonly="1"/>
+                                        <field name="importe" readonly="1"/>
+                                        <field name="detalle_orden" readonly="1"/>
+                                        <field name="estado"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista Search -->
+    <record id="payment_pendientes_pago_search_view" model="ir.ui.view">
+        <field name="name">payment.pendientes.pago.search</field>
+        <field name="model">payment.pendientes.pago</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Pendientes de Pago">
+                <field name="estado"/>
+                <field name="lote_deuda_id"/>
+                <field name="periodo"/>
+                <field name="fecha_actual"/>
+                <field name="fecha_vto1"/>
+                <field name="fecha_vto2"/>
+                <field name="fecha_vto3"/>
+                <filter string="Pendientes" name="pendiente" domain="[('estado', '=', 'pendiente')]"/>
+                <filter string="Procesados" name="procesado" domain="[('estado', '=', 'procesado')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Estado" name="group_by_estado" context="{'group_by': 'estado'}"/>
+                    <filter string="Lote de Deuda" name="group_by_lote" context="{'group_by': 'lote_deuda_id'}"/>
+                    <filter string="Período" name="group_by_periodo" context="{'group_by': 'periodo'}"/>
+                    <filter string="Fecha Actual" name="group_by_fecha_actual" context="{'group_by': 'fecha_actual'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_payment_pendientes_de_pago" model="ir.actions.act_window">
+        <field name="name">Pendientes de Pago</field>
+        <field name="res_model">payment.pendientes.pago</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="payment_pendientes_pago_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Crear un nuevo pendiente de pago
+            </p>
+            <p>
+            Los pendientes de pago permiten gestionar deudas individuales o agrupadas por lote.
+            </p>
+        </field>
+    </record>
+</odoo>

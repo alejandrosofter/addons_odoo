@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="payment_qr_estatico_pago_tree_view" model="ir.ui.view">
+        <field name="name">payment.qr.estatico.pago.tree</field>
+        <field name="model">payment.qr.estatico.pago</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="payment_qr_estatico_id"/>
+                <field name="nro_terminal"/>
+                <field name="fechaHora"/>
+                <field name="importe"/>
+                <field name="nro_comprobante"/>
+                <field name="id_referencia_operacion"/>
+                <field name="nro_cliente_empresa"/>
+                <field name="state"/>
+                <field name="estado_sync"/>
+                <field name="pagada"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="payment_qr_estatico_pago_form_view" model="ir.ui.view">
+        <field name="name">payment.qr.estatico.pago.form</field>
+        <field name="model">payment.qr.estatico.pago</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_sync" string="Sincronizar" invisible="state != 'pendiente' or id == False" type="object" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+
+                    <notebook>
+                        <page string="Datos Generales" name="general">
+                            <group>
+                                <group>
+                                    <field name="payment_qr_estatico_id"/>
+                                    <field name="fechaHora"/>
+                                    <field name="importe"/>
+                                    <field name="nro_comprobante" />
+                                </group>
+                                <group>
+                                    <field name="id_referencia_operacion"/>
+                                    <field name="nro_cliente_empresa"/>
+                                    <field name="estado_sync" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Datos de Pago" name="payment">
+                            <group>
+                                <group>
+                                    <field name="pagada" readonly="1"/>
+                                    <field name="fecha_pago" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="resultado_pago" readonly="1"/>
+                                    <field name="hash" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="payment_qr_estatico_pago_search_view" model="ir.ui.view">
+        <field name="name">payment.qr.estatico.pago.search</field>
+        <field name="model">payment.qr.estatico.pago</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="payment_qr_estatico_id"/>
+                <field name="nro_terminal"/>
+                <field name="nro_comprobante"/>
+                <field name="id_referencia_operacion"/>
+                <field name="nro_cliente_empresa"/>
+                <field name="state"/>
+                <filter string="Pendientes" name="pendiente" domain="[('state', '=', 'pendiente')]"/>
+                <filter string="Sincronizados" name="sincronizado" domain="[('state', '=', 'sincronizado')]"/>
+                <filter string="Pagados" name="pagados" domain="[('pagada', '=', True)]"/>
+                <filter string="No Pagados" name="no_pagados" domain="[('pagada', '=', False)]"/>
+                <filter string="Hoy" name="today" domain="[('fechaHora', '>=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="QR Estático" name="group_by_qr" context="{'group_by': 'payment_qr_estatico_id'}"/>
+                    <filter string="Terminal" name="group_by_terminal" context="{'group_by': 'nro_terminal'}"/>
+                    <filter string="Fecha" name="group_by_fecha" context="{'group_by': 'fechaHora:day'}"/>
+                    <filter string="Estado" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Estado de Pago" name="group_by_pagada" context="{'group_by': 'pagada'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_payment_qr_estatico_pago" model="ir.actions.act_window">
+        <field name="name">Pagos QR Estático</field>
+        <field name="res_model">payment.qr.estatico.pago</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay intenciones de pago registradas
+            </p>
+        </field>
+    </record>
+</odoo>

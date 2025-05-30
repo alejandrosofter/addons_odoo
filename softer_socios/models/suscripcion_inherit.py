@@ -7,7 +7,7 @@ class SuscripcionInherited(models.Model):
 
     tieneSocio = fields.Boolean(string="Tiene Socio", default=False)
     idSocio = fields.Many2one(
-        comodel_name="socios.socio",
+        comodel_name="res_partner.socio",
         string="Socio",
         tracking=True,
     )

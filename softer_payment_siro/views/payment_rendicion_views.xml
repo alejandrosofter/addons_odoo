@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista de árbol -->
+    <record id="payment_rendicion_view_tree" model="ir.ui.view">
+        <field name="name">payment.rendicion.tree</field>
+        <field name="model">payment.rendicion</field>
+        <field name="arch" type="xml">
+            <tree string="Rendiciones de Pago" decoration-danger="estado_pago == 'rejected'" decoration-success="estado_pago == 'done'">
+
+                <field name="fecha_pago"/>
+                <field name="fecha_acreditacion"/>
+                <field name="fecha_vto_1"/>
+
+
+                <field name="id_concepto"/>
+                <field name="id_comprobante"/>
+                <field name="canal_cobro"/>
+                <field name="importe_pagado"/>
+                <field name="currency_id" invisible="1"/>
+
+                <field name="order_id" readonly="1"/>
+                <field name="estado_pago" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista de formulario -->
+    <record id="payment_rendicion_view_form" model="ir.ui.view">
+        <field name="name">payment.rendicion.form</field>
+        <field name="model">payment.rendicion</field>
+        <field name="arch" type="xml">
+            <form string="Rendición de Pago">
+                <header>
+                    <button name="action_pagar_facturar" confirm="¿Estás seguro de querer pagar y facturar esta rendición?" type="object" string="Aplicar" class="btn-primary" invisible="not estado == 'pending'"/>
+                </header>
+                <sheet>
+
+                    <group>
+                        <group string="Información de Estado">
+                            <field name="fecha_pago" readonly="1"/>
+                            <field name="fecha_acreditacion" readonly="1"/>
+                            <field name="fecha_vto_1" readonly="1"/>
+
+
+                            <field name="id_comprobante" />
+                            <field name="nro_comprobante_nro"/>
+                            <field name="nro_comprobante_concepto" readonly="1"/>
+                            <field name="nro_comprobante_periodo" />
+                            <field name="estado" />
+                            <field name="payment_pendiente_pago_id" />
+
+                        </group>
+                        <group string="Información de Pago">
+                            <field name="usuario" />
+                            <field name="partner_id" />
+                            <field name="id_concepto" readonly="1"/>
+                            <field name="codigo_barras" readonly="1"/>
+                            <field name="canal_cobro" readonly="1"/>
+                            <field name="importe_pagado" />
+                            <field name="estado_pago" />
+                            <field name="payment_transaction_id" readonly="1"/>
+                            <field name="cuotas" readonly="1"/>
+                            <field name="tarjeta" invisible="canal_cobro not in ('web', 'mobile')" readonly="1"/>
+
+                        </group>
+                    </group>
+
+
+                    <group>
+                        <group string="Información de Rechazo" invisible="not codigo_rechazo">
+
+                            <field name="codigo_rechazo" readonly="1"/>
+                            <field name="descripcion_rechazo" readonly="1"/>
+
+                        </group>
+                        <group string="Datos adicionales SIRO">
+                            <field name="id_pago" readonly="1"/>
+                            <field name="id_resultado" readonly="1"/>
+                            <field name="id_referencia_operacion" readonly="1"/>
+                            <field name="id_cliente_extendido" readonly="1"/>
+                            <field name="nro_terminal" readonly="1"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista de búsqueda -->
+    <record id="payment_rendicion_view_search" model="ir.ui.view">
+        <field name="name">payment.rendicion.search</field>
+        <field name="model">payment.rendicion</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Rendiciones">
+                <field name="id_comprobante"/>
+                <field name="id_concepto"/>
+                <field name="codigo_barras"/>
+                <separator/>
+                <filter string="Con Rechazo" name="con_rechazo" domain="[('codigo_rechazo', '!=', False)]"/>
+                <filter string="Sin Rechazo" name="sin_rechazo" domain="[('codigo_rechazo', '=', False)]"/>
+                <separator/>
+                <filter string="Fecha de Pago" name="fecha_pago" date="fecha_pago"/>
+                <filter string="Fecha de Acreditación" name="fecha_acreditacion" date="fecha_acreditacion"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Usuario" name="group_by_usuario" context="{'group_by': 'usuario'}"/>
+                    <filter string="Canal de Cobro" name="group_by_canal" context="{'group_by': 'canal_cobro'}"/>
+                    <filter string="Fecha de Pago" name="group_by_fecha_pago" context="{'group_by': 'fecha_pago'}"/>
+                    <filter string="Fecha de Acreditación" name="group_by_fecha_acreditacion" context="{'group_by': 'fecha_acreditacion'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción de ventana -->
+    <record id="action_payment_rendicion" model="ir.actions.act_window">
+        <field name="name">Rendiciones de Pago</field>
+        <field name="res_model">payment.rendicion</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="payment_rendicion_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay rendiciones de pago registradas
+            </p>
+            <p>
+                Las rendiciones de pago SIRO se registrarán aquí.
+            </p>
+        </field>
+    </record>
+</odoo>

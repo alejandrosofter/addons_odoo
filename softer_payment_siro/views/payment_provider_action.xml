@@ -1,0 +1,11 @@
+<odoo>
+    <record id="action_payment_providers" model="ir.actions.act_window">
+        <field name="name">Proveedores de Pago</field>
+        <field name="res_model">payment.provider</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>Gestiona los proveedores de pago aquí.</p>
+        </field>
+        <field name="domain">[("name", "ilike", "SIRO")]</field>
+    </record>
+</odoo>

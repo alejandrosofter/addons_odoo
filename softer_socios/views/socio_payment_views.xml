@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_socio_form_inherit_payment" model="ir.ui.view">
+        <field name="name">socios.socio.form.inherit.payment</field>
+        <field name="model">res_partner.socio</field>
+        <field name="inherit_id" ref="softer_socios.view_socios_form"/>
+        <field name="arch" type="xml">
+            <field name="paga_debito_automatico" position="after">
+                <field name="payment_adhesion_id" invisible="not paga_debito_automatico" required="paga_debito_automatico" />
+            </field>
+        </field>
+    </record>
+</odoo>

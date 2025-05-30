@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="payment_provider_siro" model="payment.provider">
+        <field name="name">SIRO</field>
+        <field name="code">siro</field>
+        <field name="redirect_form_view_id" ref="redirect_form"/>
+        <field name="module_state">installed</field>
+        <field name="state">enabled</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="is_published" eval="True"/>
+        <field name="image_128" type="base64" file="softer_payment_siro/static/description/icon.png"/>
+    </record>
+
+
+    <!-- Luego creamos los métodos de pago -->
+    <record id="payment_siro_method_all" model="payment.method">
+        <field name="name">Todas las formas de pago</field>
+        <field name="code">siro_all</field>
+        <field name="active">True</field>
+        <field name="provider_ids" eval="[(4, ref('payment_provider_siro'))]"/>
+        <field name="image" type="base64" file="softer_payment_siro/static/description/credito_debito.png"/>
+    </record>
+
+    <record id="account_journal_siro_bank" model="account.journal">
+        <field name="name">Banco SIRO</field>
+        <field name="code">SIRO</field>
+        <field name="type">bank</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="active" eval="True"/>
+        <field name="currency_id" eval="False"/>
+        <!-- <field name="profit_account_id" ref="account.a_gain"/>
+        <field name="loss_account_id" ref="account.a_loss"/> -->
+        <field name="payment_sequence" eval="True"/>
+    </record>
+
+    <record id="res_partner_siro_not_found" model="res.partner">
+        <field name="name">Cliente Siro no encontrado</field>
+        <field name="company_type">person</field>
+        <field name="is_company" eval="False"/>
+        <field name="customer_rank" eval="1"/>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="product_product_siro_varios" model="product.product">
+        <field name="name">Varios</field>
+        <field name="default_code">SIRO-VARIOS</field>
+        <field name="type">service</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price" eval="0.0"/>
+        <field name="active" eval="True"/>
+    </record>
+
+</odoo>

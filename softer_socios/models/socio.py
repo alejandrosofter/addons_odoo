@@ -8,18 +8,23 @@ _logger = logging.getLogger(__name__)
 
 
 class ClubMember(models.Model):
-    _name = "socios.socio"
+    _name = "res_partner.socio"
     _description = "Socios"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
 
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Contacto Socio",
-        required=True,
-        ondelete="cascade",
-        index=True,
+    fecha_nacimiento = fields.Date(
+        string="Fecha de Nacimiento",
+        help="Fecha de nacimiento del contacto",
+        tracking=True,
+        store=True,
     )
+    genero = fields.Selection(
+        selection=[("M", "Masculino"), ("F", "Femenino")],
+        string="Género",
+        tracking=True,
+    )
+
     cbu_contacto_facturacion = fields.Many2one(
         "res.partner.bank",
         string="CBU Facturación",
@@ -33,18 +38,21 @@ class ClubMember(models.Model):
         string="Facturación",
         required=True,
         store=True,
+        tracking=True,
     )
     contactoPrimario = fields.Many2one(
         "res.partner",
         string="Contacto Primario",
         required=False,
         store=True,
+        tracking=True,
     )
     contactoSecundario = fields.Many2one(
         "res.partner",
         string="Contacto Secundario",
         required=False,
         store=True,
+        tracking=True,
     )
     paga_debito_automatico = fields.Boolean(
         string="Abona Debito Automatico",
@@ -55,6 +63,7 @@ class ClubMember(models.Model):
     categoria_suscripcion = fields.Many2one(
         "softer.suscripcion.categoria",
         string="Categoría de Suscripción",
+        tracking=True,
         help="Categoría que se asignará a las suscripciones generadas",
     )
     product_id = fields.Many2one(
@@ -63,10 +72,18 @@ class ClubMember(models.Model):
         help="Producto que se asignará a la suscripcion generadas",
     )
     name = fields.Char(
-        related="partner_id.name", string="Nombre", store=True, readonly=False
+        related="partner_id.name",
+        string="Nombre",
+        store=True,
+        readonly=False,
+        tracking=True,
     )
     phone = fields.Char(
-        related="partner_id.phone", string="Teléfono", store=True, readonly=False
+        related="partner_id.phone",
+        string="Teléfono",
+        store=True,
+        readonly=False,
+        tracking=True,
     )
     mobile = fields.Char(
         related="partner_id.mobile", string="Móvil", store=True, readonly=False
@@ -75,7 +92,10 @@ class ClubMember(models.Model):
         related="partner_id.email", string="Email", store=True, readonly=False
     )
     street = fields.Char(
-        related="partner_id.street", string="Domicilio", store=True, readonly=False
+        related="partner_id.street",
+        string="Domicilio",
+        store=True,
+        readonly=False,
     )
     dni = fields.Char(
         related="partner_id.vat",
@@ -83,10 +103,14 @@ class ClubMember(models.Model):
         store=True,
         readonly=False,
         help="Documento Nacional de Identidad",
+        tracking=True,
     )
     profesion = fields.Char(string="Profesión", store=True)
     street2 = fields.Char(
-        related="partner_id.street2", string="Domicilio 2", store=True, readonly=False
+        related="partner_id.street2",
+        string="Domicilio 2",
+        store=True,
+        readonly=False,
     )
     zip = fields.Char(
         related="partner_id.zip",
@@ -132,24 +156,24 @@ class ClubMember(models.Model):
         max_height=1920,
         store=True,
         readonly=False,
+        tracking=True,
     )
     member_number = fields.Char(string="Nro de Socio", copy=False, index=True)
     fechaNacimiento = fields.Date(string="Fecha de Nacimiento")
-    genero = fields.Selection(
-        selection=[("M", "Masculino"), ("F", "Femenino")],
-        string="Género",
-    )
+
     tipoSocio = fields.Selection(
         selection=[
             ("participante", "Participante"),
             ("adherente", "Adherente"),
         ],
         string="Tipo de Socio",
+        tracking=True,
     )
     categoria_id = fields.Many2one(
         "socios.categoria",
         string="Categoría",
         required=True,
+        tracking=True,
     )
     estado = fields.Selection(
         selection=[
@@ -167,34 +191,40 @@ class ClubMember(models.Model):
     fechaBaja = fields.Date(string="Fecha de Baja")
 
     esActivo = fields.Boolean(string="Es Socio Activo", default=False)
-    edad = fields.Integer(string="Edad", compute="_compute_edad")
-
-    integrante_ids = fields.One2many(
-        "softer.actividades.integrantes",
-        "cliente_id",
-        string="Actividades",
-        help="Registros de actividades en las que participa este socio",
-    )
-
-    suscripcion_ids = fields.One2many(
-        "softer.suscripcion",
-        "cliente_id",
-        string="Suscripciones",
-        help="Suscripciones asociadas a este socio (por contacto)",
-    )
+    edad = fields.Integer(string="Edad", compute="_compute_edad", store=True)
 
     integrantes_facturacion_ids = fields.Many2many(
         "softer.actividades.integrantes",
         compute="_compute_integrantes_facturacion_ids",
         string="Integrantes (por Cliente Facturación)",
-        help="Integrantes donde el cliente_id es igual al cliente_facturacion del socio",
+        help=(
+            "Integrantes donde el cliente_id es igual al "
+            "cliente_facturacion del socio"
+        ),
     )
 
     suscripciones_facturacion_ids = fields.Many2many(
         "softer.suscripcion",
         compute="_compute_suscripciones_facturacion_ids",
         string="Suscripciones (por Cliente Facturación)",
-        help="Suscripciones donde el cliente_id es igual al cliente_facturacion del socio",
+        help=(
+            "Suscripciones donde el cliente_id es igual al "
+            "cliente_facturacion del socio"
+        ),
+    )
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Contacto",
+        required=True,
+        ondelete="cascade",
+        tracking=True,
+        help="Contacto asociado a este socio",
+    )
+    motivos_cambio_productos = fields.One2many(
+        "softer.suscripcion.motivo_cambio_productos",
+        compute="_compute_motivos_cambio_productos",
+        string="Motivos de Cambio de Productos",
     )
 
     _sql_constraints = [
@@ -207,6 +237,11 @@ class ClubMember(models.Model):
             "dni_uniq",
             "unique(dni)",
             "Ya existe un socio con este DNI.",
+        ),
+        (
+            "partner_id_uniq",
+            "unique(partner_id)",
+            "Cada socio debe estar vinculado a un único contacto.",
         ),
     ]
 
@@ -268,6 +303,47 @@ class ClubMember(models.Model):
         """Limpia el CBU cuando cambia el cliente de facturación"""
         self.cbu_contacto_facturacion = False
 
+    def _sync_partner_fields(self, vals=None):
+        """
+        Sincroniza los datos básicos del socio hacia el partner relacionado.
+        Si se pasa vals, solo actualiza los campos modificados.
+        """
+        campos = [
+            ("name", "name"),
+            ("phone", "phone"),
+            ("mobile", "mobile"),
+            ("email", "email"),
+            ("street", "street"),
+            ("street2", "street2"),
+            ("zip", "zip"),
+            ("city", "city"),
+            ("state_id", "state_id"),
+            ("country_id", "country_id"),
+            ("vat", "dni"),
+            ("fecha_nacimiento", "fecha_nacimiento"),
+            ("genero", "genero"),
+        ]
+        for socio in self:
+            partner_vals = {}
+            if vals:
+                for field_socio, field_partner in campos:
+                    if field_socio in vals:
+                        partner_vals[field_partner] = vals[field_socio]
+            else:
+                for field_socio, field_partner in campos:
+                    partner_vals[field_partner] = getattr(socio, field_socio, False)
+            if partner_vals and socio.partner_id:
+                socio.partner_id.sudo().write(partner_vals)
+            # Sincronizar payment_adhesion_id en cliente_facturacion
+            if vals and "payment_adhesion_id" in vals and socio.cliente_facturacion:
+                socio.cliente_facturacion.sudo().write(
+                    {"payment_adhesion_id": vals["payment_adhesion_id"]}
+                )
+            elif not vals and socio.cliente_facturacion and socio.payment_adhesion_id:
+                socio.cliente_facturacion.sudo().write(
+                    {"payment_adhesion_id": socio.payment_adhesion_id}
+                )
+
     @api.model
     def create(self, vals):
         _logger.info(f"Iniciando creación de socio con valores: {vals}")
@@ -294,6 +370,9 @@ class ClubMember(models.Model):
                 "state_id": vals.get("state_id"),
                 "country_id": vals.get("country_id"),
                 "vat": vals.get("dni"),
+                "socio_id": False,
+                "fecha_nacimiento": vals.get("fecha_nacimiento"),
+                "genero": vals.get("genero"),
             }
             partner = self.env["res.partner"].create(partner_vals)
             vals["partner_id"] = partner.id
@@ -308,15 +387,12 @@ class ClubMember(models.Model):
                 _logger.warning("No se encontró la categoría especificada")
 
         nuevosocio = super(ClubMember, self).create(vals)
+        # Sincronizar socio_id en el partner
+        if nuevosocio.partner_id:
+            nuevosocio.partner_id.sudo().write({"socio_id": nuevosocio.id})
+        # Sincronizar datos básicos al partner
+        nuevosocio._sync_partner_fields()
         _logger.info(f"Socio creado: {nuevosocio.id}")
-
-        # Intentar crear la suscripción
-        try:
-            _logger.info("Iniciando creación de suscripción")
-            nuevosocio.subscription_upsert()
-        except Exception as e:
-            _logger.error(f"Error al crear suscripción: {str(e)}")
-            raise
 
         return nuevosocio
 
@@ -371,100 +447,6 @@ class ClubMember(models.Model):
             },
         }
 
-    def subscription_upsert(self):
-        """Crea o actualiza suscripciones para los socios"""
-        _logger.info(f"Iniciando subscription_upsert para socio {self.id}")
-        _logger.info(f"Estado actual del socio: {self.estado}")
-        _logger.info(
-            f"Producto asignado: {self.product_id.id if self.product_id else 'No'}"
-        )
-
-        # Mapeo de estados del socio a estados de suscripción
-        estado_suscripcion = {
-            "activa": "activa",
-            "suspendida": "suspendida",
-            "baja": "finalizada",
-            "finalizada": "finalizada",
-        }.get(self.estado, "finalizada")
-
-        _logger.info(f"Estado de suscripción mapeado: {estado_suscripcion}")
-
-        # Buscar suscripción existente por idSocio
-        subscription = self.env["softer.suscripcion"].search(
-            [
-                ("idSocio", "=", self.id),
-                ("estado", "in", ["activa", "suspendida"]),
-            ],
-            limit=1,
-        )
-
-        if subscription:
-            _logger.info(f"Suscripción existente encontrada: {subscription.id}")
-            # Actualizar suscripción existente
-            subscription.cambiarEstado(
-                estado_suscripcion,
-                f"Cambio de estado desde socio {self.id}",
-                self.env.user.id,
-            )
-            _logger.info("Suscripción actualizada")
-        elif self.estado == "activa" and self.product_id:
-            _logger.info("Creando nueva suscripción")
-            # Crear nueva suscripción solo si el estado es activa
-            subscription = self.env["softer.suscripcion"].create(
-                {
-                    "cliente_id": self.partner_id.id,
-                    "cliente_facturacion": self.cliente_facturacion.id,
-                    "estado": "activa",
-                    "fecha_inicio": fields.Date.context_today(self),
-                    "idSocio": self.id,
-                    "tieneSocio": True,
-                    "paga_debito_automatico": self.paga_debito_automatico,
-                    "categoria_id": self.categoria_suscripcion.id,
-                    "tipo_temporalidad": "mensual",
-                    "cantidad_recurrencia": 1,
-                    "usoSuscripcion": True,
-                    "line_ids": [
-                        (
-                            0,
-                            0,
-                            {
-                                "product_id": self.product_id.id,
-                                "cantidad": 1,
-                            },
-                        )
-                    ],
-                }
-            )
-            _logger.info(f"Nueva suscripción creada: {subscription.id}")
-            # Registrar el cambio de estado inicial
-            subscription.cambiarEstado(
-                "activa",
-                f"Creación desde socio {self.id}",
-                self.env.user.id,
-            )
-            _logger.info("Estado inicial de suscripción registrado")
-        else:
-            _logger.warning(
-                f"No se creó suscripción. Estado: {self.estado}, "
-                f"Producto: {self.product_id.id if self.product_id else 'No'}"
-            )
-
-        _logger.info(
-            f"Suscripción {'actualizada' if subscription else 'creada'} "
-            f"para socio {self.id}"
-        )
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": "Éxito",
-                "message": "Suscripciones actualizadas correctamente.",
-                "type": "success",
-                "sticky": True,
-            },
-        }
-
     def _calcular_edad(self, fecha_nacimiento):
         today = date.today()
         edad = today.year - fecha_nacimiento.year
@@ -480,7 +462,7 @@ class ClubMember(models.Model):
         for socio in self:
             if socio.cliente_facturacion:
                 integrantes = self.env["softer.actividades.integrantes"].search(
-                    [("cliente_id", "=", socio.cliente_facturacion.id)]
+                    [("cliente_id", "=", socio.partner_id.id)]
                 )
                 socio.integrantes_facturacion_ids = integrantes
             else:
@@ -491,7 +473,7 @@ class ClubMember(models.Model):
         for socio in self:
             if socio.cliente_facturacion:
                 suscripciones = self.env["softer.suscripcion"].search(
-                    [("cliente_id", "=", socio.cliente_facturacion.id)]
+                    [("cliente_facturacion", "=", socio.cliente_facturacion.id)]
                 )
                 socio.suscripciones_facturacion_ids = suscripciones
             else:
@@ -511,3 +493,35 @@ class ClubMember(models.Model):
         if product_id:
             res["product_id"] = int(product_id)
         return res
+
+    def write(self, vals):
+        for socio in self:
+            old_partner = socio.partner_id
+            res = super(ClubMember, socio).write(vals)
+            new_partner = socio.partner_id
+            # Si cambió el partner, limpiar el anterior
+            if vals.get("partner_id") and old_partner and old_partner != new_partner:
+                old_partner.sudo().write({"socio_id": False})
+            # Asegurar que el nuevo partner apunte al socio
+            if new_partner and new_partner.socio_id != socio:
+                new_partner.sudo().write({"socio_id": socio.id})
+            # Sincronizar datos básicos al partner
+            socio._sync_partner_fields(vals)
+        return res
+
+    def unlink(self):
+        for socio in self:
+            if socio.partner_id:
+                socio.partner_id.sudo().write({"socio_id": False})
+        return super(ClubMember, self).unlink()
+
+    @api.depends("partner_id")
+    def _compute_motivos_cambio_productos(self):
+        for socio in self:
+            if socio.partner_id:
+                motivos = self.env["softer.suscripcion.motivo_cambio_productos"].search(
+                    [("cliente_id", "=", socio.partner_id.id)]
+                )
+                socio.motivos_cambio_productos = motivos
+            else:
+                socio.motivos_cambio_productos = False

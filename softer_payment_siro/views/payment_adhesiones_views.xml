@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="payment_adhesiones_view_tree" model="ir.ui.view">
+        <field name="name">payment.adhesiones.tree</field>
+        <field name="model">payment.adhesiones</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="provider_id"/>
+                <field name="numero_adhesion"/>
+                <field name="partner_id"/>
+                <field name="numero_cliente_empresa" readonly="1"/>
+                <field name="tipo_adhesion"/>
+                <field name="fecha_alta"/>
+                <field name="state" decoration-danger="state == 'error'" decoration-success="state == 'confirmed'" decoration-info="state == 'draft'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="payment_adhesiones_view_form" model="ir.ui.view">
+        <field name="name">payment.adhesiones.form</field>
+        <field name="model">payment.adhesiones</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_baja" string="Dar de Baja" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+
+
+                    <group>
+                        <group>
+                            <field name="provider_id" readonly="state != 'draft'"/>
+                            <field name="numero_adhesion" readonly="state != 'draft'"/>
+                            <field name="tipo_adhesion" readonly="state != 'draft'"/>
+                            <field name="partner_id" readonly="state != 'draft'"/>
+                            <field name="numero_cliente_empresa" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Datos de la Adhesión">
+
+
+                            <field name="fecha_alta"/>
+                            <field name="fecha_baja"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="payment_adhesiones_view_search" model="ir.ui.view">
+        <field name="name">payment.adhesiones.search</field>
+        <field name="model">payment.adhesiones</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="provider_id"/>
+                <field name="numero_adhesion"/>
+
+                <field name="tipo_adhesion"/>
+                <separator/>
+
+                <filter string="Confirmado" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Error" name="error" domain="[('state', '=', 'error')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Proveedor" name="provider_id" context="{'group_by': 'provider_id'}"/>
+                    <filter string="Estado" name="state" context="{'group_by': 'state'}"/>
+                    <filter string="Tipo de Adhesión" name="tipo_adhesion" context="{'group_by': 'tipo_adhesion'}"/>
+                    <filter string="Fecha de Alta" name="fecha_alta" context="{'group_by': 'fecha_alta'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_payment_adhesiones" model="ir.actions.act_window">
+        <field name="name">Adhesiones de Pago</field>
+        <field name="res_model">payment.adhesiones</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="payment_adhesiones_view_search"/>
+
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear una nueva adhesión de pago
+            </p>
+            <p>
+                Registre las adhesiones de pago de sus clientes para débitos
+                automáticos y tarjetas de crédito.
+            </p>
+        </field>
+    </record>
+</odoo>

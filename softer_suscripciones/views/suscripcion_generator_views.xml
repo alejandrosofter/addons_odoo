@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_softer_suscripcion_generator_tree" model="ir.ui.view">
+        <field name="name">softer.suscripcion.generator.tree</field>
+        <field name="model">softer.suscripcion.generator</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="fecha"/>
+                <field name="item_ids"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_softer_suscripcion_generator_form" model="ir.ui.view">
+        <field name="name">softer.suscripcion.generator.form</field>
+        <field name="model">softer.suscripcion.generator</field>
+        <field name="arch" type="xml">
+            <form string="Generador de Suscripciones">
+                <sheet>
+                    <group>
+                        <field name="fecha"/>
+                        <field name="forzar_generacion"/>
+                    </group>
+                    <notebook>
+                        <page string="Items de Suscripción">
+                            <field name="item_ids">
+                                <tree editable="bottom">
+                                    <field name="suscripcion_id"/>
+                                    <field name="order_id"/>
+
+                                    <field name="partner_id"/>
+                                    <field name="importe"/>
+                                </tree>
+                                <form string="Item de Suscripción">
+                                    <group>
+                                        <field name="suscripcion_id"/>
+                                        <field name="order_id"/>
+
+                                        <field name="partner_id"/>
+                                        <field name="importe"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Log de generación">
+                            <field name="log" readonly="1" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_softer_suscripcion_generator" model="ir.actions.act_window">
+        <field name="name">Generador de Suscripciones</field>
+        <field name="res_model">softer.suscripcion.generator</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>Cree y gestione generadores de suscripciones.</p>
+        </field>
+    </record>
+</odoo>

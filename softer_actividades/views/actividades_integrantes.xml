@@ -6,6 +6,7 @@
         <field name="arch" type="xml">
             <form string="Integrante">
                 <header>
+
                     <field name="estado" widget="statusbar" statusbar_visible="activa,suspendida,baja"/>
                     <button name="action_view_estados" class="oe_highlight" type="object" string="Dar de Alta" icon="fa-play" invisible="estado == 'activa'" context="{'default_estado': 'activa'}"/>
                     <button name="action_view_estados" class="oe_highlight" type="object" string="Suspender" icon="fa-pause" invisible="estado == 'suspendida'" context="{'default_estado': 'suspendida'}"/>
@@ -20,29 +21,34 @@
                     <notebook>
                         <page string="Datos Generales" name="gral">
                             <group>
-                                <group>
+                                <group string="Facturacion">
                                     <field name="actividad_id" readonly="1"/>
                                     <field name="cliente_contacto"/>
-                                    <field name="apodo"/>
-                                    <field name="es_debito_automatico"/>
-                                    <field name="telefono_whatsapp"/>
-                                    <field name="excluir_socio"/>
+                                    <field name="suscripcion_id" context="{'default_cliente_id': cliente_id}"/>
+                                    <!-- <field name="es_debito_automatico"/>
+                                    <field name="payment_adhesion_id" invisible="not es_debito_automatico" required="es_debito_automatico" domain="[('state', '=', 'confirmed')]"/> -->
+
+                                    <!-- <field name="excluir_socio"/>
                                     <field name="tieneBeneficio"/>
-                                    <field name="motivoBeneficio" invisible="not tieneBeneficio"/>
+                                    <field name="motivoBeneficio" invisible="not tieneBeneficio"/> -->
                                 </group>
-                                <group>
-                                    <field name="porcentajeAsistenciaMensual"/>
-                                    <field name="porcentajeAsistenciaGlobal"/>
+                                <group string="Datos Personales">
                                     <field name="numero_documento"/>
                                     <field name="fechaNacimiento"/>
-
+                                    <field name="apodo"/>
+                                    <field name="telefono_whatsapp"/>
                                 </group>
+                                <group string="Asistencias">
+                                    <field name="porcentajeAsistenciaMensual"/>
+                                    <field name="porcentajeAsistenciaGlobal"/>
+                                </group>
+
                             </group>
                         </page>
-                        <page string="Suscripciones" name="suscripciones">
+
+                        <!-- <page string="Suscripciones" name="suscripciones">
                             <field name="suscripcion_ids">
                                 <tree>
-
                                     <field name="cliente_facturacion"/>
                                     <field name="nombres_productos"/>
                                     <field name="fecha_inicio"/>
@@ -52,10 +58,10 @@
                                     <field name="importeTotal"/>
                                 </tree>
                             </field>
-                        </page>
+                        </page> -->
                         <page string="Historial de Estados" name="historial_estados">
                             <field name="estado_ids" nolabel="1">
-                                <tree >
+                                <tree>
                                     <field name="fecha"/>
                                     <field name="estado"/>
                                     <field name="motivo"/>
@@ -82,6 +88,8 @@
                 <field name="cliente_id"/>
                 <field name="cliente_contacto"/>
                 <field name="estado"/>
+                <field name="suscripcion_plan_id"/>
+                <field name="suscripcion_id"/>
                 <field name="porcentajeAsistenciaMensual"/>
                 <field name="porcentajeAsistenciaGlobal"/>
                 <field name="tiene_acceso_sistema"/>
@@ -98,6 +106,7 @@
                 <field name="cliente_contacto"/>
                 <field name="estado"/>
                 <field name="numero_documento"/>
+                <field name="suscripcion_plan_id"/>
                 <separator/>
                 <filter string="Activos" name="activos" domain="[('estado','=','activa')]"/>
                 <filter string="Suspendidos" name="suspendidos" domain="[('estado','=','suspendida')]"/>
@@ -105,6 +114,7 @@
                 <group expand="0" string="Agrupar Por">
                     <filter string="Estado" name="group_by_estado" context="{'group_by':'estado'}"/>
                     <filter string="Actividad" name="group_by_actividad" context="{'group_by':'actividad_id'}"/>
+                    <filter string="Plan" name="group_by_plan" context="{'group_by':'suscripcion_plan_id'}"/>
                 </group>
             </search>
         </field>

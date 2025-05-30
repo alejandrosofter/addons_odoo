@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 class Actividades(models.Model):
     _name = "softer.actividades"
     _description = "Modelo de Actividades"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
 
     name = fields.Char(
         string="Nombre",
@@ -31,6 +32,7 @@ class Actividades(models.Model):
             ("finalizada", "Finalizada"),
         ],
         string="Estado",
+        tracking=True,
     )
     fechaFin = fields.Date(
         string="Fecha de Fin",
@@ -50,8 +52,10 @@ class Actividades(models.Model):
         string="Categoría de Suscripción",
         help="Categoría que se asignará a las suscripciones generadas",
     )
-    entrenador = fields.Many2one("res.partner", string="Entrenador")
-    administrador = fields.Many2one("res.partner", string="Administrador")
+    entrenador = fields.Many2one("res.partner", string="Entrenador", tracking=True)
+    administrador = fields.Many2one(
+        "res.partner", string="Administrador", tracking=True
+    )
     tipoRangos = fields.Selection(
         [
             ("porFechaNacimiento", "Por Fecha Nacimiento"),
@@ -63,7 +67,10 @@ class Actividades(models.Model):
     fechaDesde = fields.Date(string="Rango Desde", tracking=True)
     fechaHasta = fields.Date(string="Rango Hasta", tracking=True)
     integrantes = fields.One2many(
-        "softer.actividades.integrantes", "actividad_id", string="Integrantes"
+        "softer.actividades.integrantes",
+        "actividad_id",
+        string="Integrantes",
+        tracking=True,
     )
     horarios = fields.One2many(
         "softer.actividades.horarios", "actividad_id", string="Horarios"
@@ -88,7 +95,7 @@ class Actividades(models.Model):
         help="Registro histórico de suscripciones generadas",
     )
     mensajes = fields.One2many(
-        "softer.actividades.mensajes", "actividad_id", string="Mensajes"
+        "softer.actividades.mensajes", "actividad_id", string="Mensajes", tracking=True
     )
 
     def _check_suscripciones(self):

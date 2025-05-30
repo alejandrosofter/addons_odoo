@@ -21,9 +21,9 @@
             <form string="Actividades">
                 <header>
                     <field name="estado" widget="statusbar" statusbar_visible="activa,finalizada"/>
-                    <button name="action_alta" class="oe_highlight" type="object" string="Dar de Alta" icon="fa-play" invisible="estado == 'activa'" context="{'default_estado': 'activa'}"/>
+                    <!-- <button name="action_alta" class="oe_highlight" type="object" string="Dar de Alta" icon="fa-play" invisible="estado == 'activa'" context="{'default_estado': 'activa'}"/>
                     <button name="action_generar" type="object" string="Regenerar Suscripciones" icon="fa-refresh" invisible="estado == 'baja'" context="{'default_estado': 'baja'}"/>
-                    <button name="action_baja" type="object" string="Finalizar" icon="fa-flag-checkered" invisible="estado == 'finalizada'" context="{'default_estado': 'finalizada'}"/>
+                    <button name="action_baja" type="object" string="Finalizar" icon="fa-flag-checkered" invisible="estado == 'finalizada'" context="{'default_estado': 'finalizada'}"/> -->
 
                 </header>
                 <sheet>
@@ -57,21 +57,14 @@
                                     <field name="telefono_whatsapp"/>
                                     <field name="numero_documento"/>
                                     <field name="fechaNacimiento"/>
-                                    <field name="excluir_socio"/>
-                                    <field name="tieneBeneficio"/>
                                     <field name="estado"/>
-                                    <button name="action_view_suscripciones" type="object" icon="fa-list" title="Ver Suscripciones"/>
+                                    <!-- <button name="action_view_suscripciones" type="object" icon="fa-list" title="Ver Suscripciones"/>
                                     <button name="action_grant_system_access" type="object" icon="fa-key" title="Otorgar Acceso" attrs="{'invisible': [('tiene_acceso_sistema', '=', True)]}"/>
-                                    <button name="action_revoke_system_access" type="object" icon="fa-ban" title="Revocar Acceso" attrs="{'invisible': [('tiene_acceso_sistema', '=', False)]}"/>
+                                    <button name="action_revoke_system_access" type="object" icon="fa-ban" title="Revocar Acceso" attrs="{'invisible': [('tiene_acceso_sistema', '=', False)]}"/> -->
                                 </tree>
                             </field>
                         </page>
-                        <page string="Condiciones de la Actividad">
 
-                            <field name="productos"/>
-
-                            <field name="condiciones_actividad" nolabel="1" placeholder="Ingrese las condiciones y reglas de la actividad..."/>
-                        </page>
                         <page string="Horarios">
                             <field name="horarios">
                                 <tree editable="bottom">
@@ -98,23 +91,10 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div colspan="2" class="alert alert-info" role="alert">
-                    <strong>Generar Suscripciones:</strong>
-                    <ul>
-                        <li>Se generarán suscripciones para todos los integrantes activos de la actividad.</li>
-                        <li>Para cada producto asociado:</li>
-                        <ul>
-                            <li>Si es único: solo se creará una suscripción por cliente y producto.</li>
-                            <li>Si es indefinido: la suscripción no tendrá fecha de fin.</li>
-                            <li>Se usará la fecha de inicio y fin configurada en el producto.</li>
-                        </ul>
-                        <li>Las suscripciones se crearán directamente en estado activo.</li>
-                        <li>Si ya existe una suscripción activa para un cliente y producto:</li>
-                        <ul>
-                            <li>Si el producto es único: se omitirá la creación.</li>
-                            <li>Si el producto no es único: se creará una nueva suscripción.</li>
-                        </ul>
-                    </ul>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
                 </div>
             </form>
         </field>
@@ -126,12 +106,12 @@
         <field name="arch" type="xml">
             <tree string="Actividades">
                 <field name="name"/>
-                <field name="estado"/>
-                <field name="fechaFin"/>
+
                 <field name="entrenador"/>
                 <field name="administrador"/>
                 <field name="tipoRangos"/>
                 <field name="categoria_suscripcion"/>
+                <field name="estado"/>
             </tree>
         </field>
     </record>

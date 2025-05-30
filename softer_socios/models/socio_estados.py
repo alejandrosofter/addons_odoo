@@ -12,7 +12,11 @@ class SocioEstados(models.Model):
     _order = "fecha desc"
 
     socio_id = fields.Many2one(
-        "socios.socio", string="Socio", required=True, ondelete="cascade", index=True
+        "res_partner.socio",
+        string="Socio",
+        required=True,
+        ondelete="cascade",
+        index=True,
     )
     fecha = fields.Date(
         string="Fecha", required=True, default=fields.Date.context_today

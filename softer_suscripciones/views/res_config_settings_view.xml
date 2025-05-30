@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Hereda la vista del formulario de configuración general -->
+        <record id="view_res_config_settings_inherit" model="ir.ui.view">
+            <field name="name">res.config.settings.inherit</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form[@class='oe_form_configuration']" position="inside">
+                    <app data-string="Suscripciones" string="Suscripciones" logo="/softer_suscripciones/static/description/icon.png" name="softer_suscripciones_settings">
+                        <div id="softer_suscripciones_settings_container">
+                            <block title="Configuración de ejecución de cron" name="suscripciones_cron_configuration">
+                                <group>
+                                    <field name="dias_ejecutar_cron"/>
+                                    <field name="meses_ejecutar_cron"/>
+                                </group>
+                            </block>
+                        </div>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+
+
+        <!-- Acción para abrir la configuración -->
+        <record id="action_socios_config_settings" model="ir.actions.act_window">
+            <field name="name">Configuración de Socios</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+            <field name="context">{
+                'module' : 'softer_socios_settings',
+                'bin_size' : 'False',
+            }</field>
+
+        </record>
+    </data>
+</odoo>

@@ -28,6 +28,20 @@ class Integrantes(models.Model):
         help="Al seleccionar no sera incluido la busqueda de socios pendientes.",
         default=False,
     )
+    payment_adhesion_id = fields.Many2one(
+        "payment.adhesiones",
+        string="Adhesión SIRO",
+        help="Adhesión de SIRO relacionada con esta suscripción",
+        tracking=True,
+        create=False,
+    )
+
+    suscripcion_plan_id = fields.Many2one(
+        "softer.suscripcion.plan",
+        string="Plan de Suscripción",
+        help="Plan de suscripción asociado al integrante",
+        tracking=True,
+    )
 
     apodo = fields.Char(
         string="Apodo",
@@ -68,16 +82,28 @@ class Integrantes(models.Model):
         default=0,
     )
     cliente_contacto = fields.Many2one(
-        "res.partner", string="Facturacion", required=True, tracking=True
+        "res.partner",
+        string="Facturación",
+        required=True,
+        tracking=True,
+        ondelete="restrict",
     )
     actividad_id = fields.Many2one("softer.actividades", string="Actividad")
-    suscripcion_ids = fields.One2many(
+    suscripcion_id = fields.Many2one(
         "softer.suscripcion",
-        "integrante_id",
-        string="Suscripciones",
-        domain=[("tieneActividad", "=", True)],
-        help="Suscripciones asociadas al integrante",
+        string="Suscripción",
+        help="Suscripción asociada al integrante",
+        ondelete="cascade",
+        required=True,
     )
+    # suscripcion_ids = fields.One2many(
+    #     "softer.suscripcion",
+    #     "integrante_id",
+    #     string="Suscripciones",
+    #     domain=[("tieneActividad", "=", True)],
+    #     help="Suscripciones asociadas al integrante",
+    # )
+
     fechaNacimiento = fields.Date(
         string="Fecha de Nacimiento",
         compute="_compute_fecha_nacimiento",
@@ -90,9 +116,7 @@ class Integrantes(models.Model):
         default=False,
         help="Indica si el integrante tiene acceso al sistema",
     )
-    usuario_id = fields.Many2one(
-        "res.users", string="Usuario del Sistema", readonly=True
-    )
+
     telefono_whatsapp = fields.Char(
         string=" WhatsApp",
         related="cliente_contacto.phone",
@@ -175,8 +199,15 @@ class Integrantes(models.Model):
         # Generar contraseña amigable
         password = self._generate_friendly_password()
 
+        # Buscar si ya existe un usuario para este contacto
+        usuario_existente = (
+            self.env["res.users"]
+            .sudo()
+            .search([("partner_id", "=", self.cliente_contacto.id)], limit=1)
+        )
+
         # Crear usuario si no existe
-        if not self.usuario_id:
+        if not usuario_existente:
             valores_usuario = {
                 "name": self.cliente_contacto.name,
                 "login": self.cliente_contacto.vat,  # Usar número de documento como login
@@ -186,17 +217,18 @@ class Integrantes(models.Model):
                     (6, 0, [self.env.ref("base.group_portal").id])
                 ],  # Grupo portal
             }
-            usuario = self.env["res.users"].sudo().create(valores_usuario)
-            self.usuario_id = usuario.id
+            self.env["res.users"].sudo().create(valores_usuario)
         else:
             # Si el usuario existe, activarlo y cambiar la contraseña
-            self.usuario_id.sudo().active = True
-            self.usuario_id.sudo().password = password
+            usuario_existente.sudo().write({"active": True, "password": password})
 
         # Enviar credenciales por WhatsApp si hay teléfono
         if self.cliente_contacto.phone:
-            url_sistema = f"{self.env['ir.config_parameter'].sudo().get_param('web.base.url')}/web/login"
-            if not self.usuario_id:
+            url_sistema = (
+                f"{self.env['ir.config_parameter'].sudo().get_param('web.base.url')}"
+                f"/web/login"
+            )
+            if not usuario_existente:
                 mensaje = f"""¡Hola {self.cliente_contacto.name}!
 
 Te hemos creado un nuevo acceso al sistema:
@@ -234,7 +266,12 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
                     "tag": "display_notification",
                     "params": {
                         "title": "Advertencia",
-                        "message": f"Se ha creado el acceso al sistema para {self.cliente_contacto.name}, pero no se pudo enviar las credenciales por WhatsApp porque no hay instancias activas.",
+                        "message": (
+                            f"Se ha creado el acceso al sistema para "
+                            f"{self.cliente_contacto.name}, pero no se pudo enviar "
+                            f"las credenciales por WhatsApp porque no hay "
+                            f"instancias activas."
+                        ),
                         "type": "warning",
                         "sticky": True,
                     },
@@ -247,7 +284,12 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
                 "tag": "display_notification",
                 "params": {
                     "title": "Advertencia",
-                    "message": f"Se ha creado el acceso al sistema para {self.cliente_contacto.name}, pero no se pudo enviar las credenciales por WhatsApp porque no tiene número de teléfono configurado.",
+                    "message": (
+                        f"Se ha creado el acceso al sistema para "
+                        f"{self.cliente_contacto.name}, pero no se pudo enviar "
+                        f"las credenciales por WhatsApp porque no tiene número "
+                        f"de teléfono configurado."
+                    ),
                     "type": "warning",
                     "sticky": True,
                 },
@@ -260,7 +302,10 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
             "tag": "display_notification",
             "params": {
                 "title": "Éxito",
-                "message": f"Se ha creado el acceso al sistema para {self.cliente_contacto.name}",
+                "message": (
+                    f"Se ha creado el acceso al sistema para "
+                    f"{self.cliente_contacto.name}"
+                ),
                 "type": "success",
             },
         }
@@ -303,15 +348,24 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
         """Revoca el acceso al sistema del integrante"""
         self.ensure_one()
 
-        if self.usuario_id:
-            self.usuario_id.sudo().active = False
+        # Buscar usuario asociado al contacto
+        usuario = (
+            self.env["res.users"]
+            .sudo()
+            .search([("partner_id", "=", self.cliente_contacto.id)], limit=1)
+        )
+
+        if usuario:
+            usuario.sudo().write({"active": False})
             self.tiene_acceso_sistema = False
 
             # Notificar por WhatsApp si hay teléfono
             if self.cliente_contacto.phone:
-                mensaje = f"""Hola {self.cliente_contacto.name},
-
-Tu acceso al sistema ha sido desactivado. Si crees que esto es un error, por favor contacta al administrador."""
+                mensaje = (
+                    f"Hola {self.cliente_contacto.name},\n\n"
+                    f"Tu acceso al sistema ha sido desactivado. Si crees que "
+                    f"esto es un error, por favor contacta al administrador."
+                )
 
                 # Buscar la primera instancia de WhatsApp activa
                 instance = self.env["evolution.api.numbers"].search(
@@ -333,7 +387,10 @@ Tu acceso al sistema ha sido desactivado. Si crees que esto es un error, por fav
                 "tag": "display_notification",
                 "params": {
                     "title": "Éxito",
-                    "message": f"Se ha revocado el acceso al sistema para {self.cliente_contacto.name}",
+                    "message": (
+                        f"Se ha revocado el acceso al sistema para "
+                        f"{self.cliente_contacto.name}"
+                    ),
                     "type": "success",
                 },
             }
@@ -365,15 +422,43 @@ Tu acceso al sistema ha sido desactivado. Si crees que esto es un error, por fav
         if self.cliente_contacto and self.numero_documento:
             self.cliente_contacto.vat = self.numero_documento
 
+    @api.onchange("suscripcion_plan_id")
+    def _onchange_suscripcion_plan_id(self):
+        if self.suscripcion_plan_id:
+            return {
+                "warning": {
+                    "title": "Atención",
+                    "message": (
+                        "Cambiaste el plan de suscripciones y al guardar "
+                        "cambiará el esquema de suscripciones del inscripto."
+                    ),
+                }
+            }
+
+    def agregar_suscripciones_plan(self, vals):
+        """Agrega las suscripciones del plan a la suscripción del integrante"""
+        print(f"AGREGANDO SUSCRIPCIONES DEL PLAN {vals['suscripcion_plan_id']}")
+
+    def check_suscripcion_plan(self, vals):
+        """Verifica si el plan de suscripciones es válido"""
+        if self.suscripcion_plan_id:
+            if "suscripcion_plan_id" in vals:
+                self.agregar_suscripciones_plan(vals)
+
+        return False
+
     def write(self, vals):
         """Sobrescribe el método write para verificar suscripciones después de cambios"""
-        result = super().write(vals)
-        # if "estado" in vals:
-        #     # Verificar suscripciones para todos los registros modificados
-        #     for record in self:
-        #         if record.actividad_id.productos:
-        #             record.actividad_id.subscription_upsert()
-        return result
+        for rec in self:
+            old_suscripcion = rec.suscripcion_id
+            res = super().write(vals)
+            new_suscripcion = self.suscripcion_id
+            if "suscripcion_id" in vals:
+                if old_suscripcion and old_suscripcion != new_suscripcion:
+                    old_suscripcion.sudo().write({"integrante_id": False})
+                if new_suscripcion:
+                    new_suscripcion.sudo().write({"integrante_id": rec.id})
+        return res
 
     def _actualizar_estados_por_defecto(self):
         """Actualiza los registros existentes con estados incorrectos"""
@@ -398,3 +483,16 @@ Tu acceso al sistema ha sido desactivado. Si crees que esto es un error, por fav
         """Método llamado al instalar/actualizar el módulo"""
         super().init()
         self._actualizar_estados_por_defecto()
+
+    @api.onchange("cliente_id")
+    def _onchange_cliente_id(self):
+        if self.cliente_id:
+            self.cliente_contacto = self.cliente_id
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for record in records:
+            if record.suscripcion_id:
+                record.suscripcion_id.sudo().write({"integrante_id": record.id})
+        return records

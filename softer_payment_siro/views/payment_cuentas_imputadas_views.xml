@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_payment_cuentas_imputadas_tree" model="ir.ui.view">
+        <field name="name">payment.cuentas.imputadas.tree</field>
+        <field name="model">payment.cuentas.imputadas</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="fecha_alta"/>
+                <field name="cuenta"/>
+                <field name="cbu"/>
+                <field name="alias"/>
+                <field name="ref_cliente"/>
+                <field name="estado" widget="badge" decoration-success="estado == 'disponible'" decoration-warning="estado == 'no_disponible'" decoration-danger="estado == 'baja'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_payment_cuentas_imputadas_form" model="ir.ui.view">
+        <field name="name">payment.cuentas.imputadas.form</field>
+        <field name="model">payment.cuentas.imputadas</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="estado" widget="statusbar"/>
+                </header>
+                <sheet>
+
+                    <group>
+                        <group>
+                            <field name="fecha_alta"/>
+                            <field name="cuenta"/>
+                            <field name="ref_cliente"/>
+                        </group>
+                        <group>
+                            <field name="cbu"/>
+                            <field name="alias"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_payment_cuentas_imputadas_search" model="ir.ui.view">
+        <field name="name">payment.cuentas.imputadas.search</field>
+        <field name="model">payment.cuentas.imputadas</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="cuenta"/>
+                <field name="cbu"/>
+                <field name="alias"/>
+                <field name="ref_cliente"/>
+                <separator/>
+                <filter string="Disponibles" name="disponible" domain="[('estado', '=', 'disponible')]"/>
+                <filter string="No Disponibles" name="no_disponible" domain="[('estado', '=', 'no_disponible')]"/>
+                <filter string="Bajas" name="baja" domain="[('estado', '=', 'baja')]"/>
+                <separator/>
+                <filter string="Archivado" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Estado" name="estado" context="{'group_by': 'estado'}"/>
+                    <filter string="Fecha Alta" name="fecha_alta" context="{'group_by': 'fecha_alta'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_payment_cuentas_imputadas" model="ir.actions.act_window">
+        <field name="name">Cuentas Imputadas</field>
+        <field name="res_model">payment.cuentas.imputadas</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_payment_cuentas_imputadas_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear una nueva cuenta imputada
+            </p>
+        </field>
+    </record>
+</odoo>

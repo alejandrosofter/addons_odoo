@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Acción de ventana para suscripciones -->
     <record id="action_suscripcion" model="ir.actions.act_window">
         <field name="name">Suscripciones</field>
         <field name="type">ir.actions.act_window</field>
@@ -19,25 +17,19 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_generar" string="Generar Orden de Venta" type="object" invisible="estado != 'activa'" class="oe_highlight"/>
-
-                    <button name="action_activar" string="Activar" type="object" invisible="estado == 'activa'" class="oe_highlight"/>
-                    <button name="action_suspender" string="Suspender" type="object" invisible="estado == 'suspendida'" class="oe_highlight"/>
-                    <button name="action_baja" string="Dar de Baja" type="object" invisible="estado == 'baja'"/>
-                    <button name="action_finalizar" string="Finalizar" type="object" invisible="estado == 'finalizada'"/>
-                    <field name="estado" widget="statusbar" statusbar_visible="activa,suspendida,baja,finalizada"/>
+                    <!-- <button name="action_generar" string="Generar Orden de Venta" type="object" invisible="estado != 'activa'" class="oe_highlight"/> -->
+                    <button name="action_cambiar_estado" string="Activar" type="object" context="{'default_estado': 'activa'}" invisible="estado == 'activa'" class="oe_highlight"/>
+                    <button name="action_cambiar_estado" string="Suspender" type="object" context="{'default_estado': 'suspendida'}" invisible="estado == 'suspendida'" />
+                    <button name="action_cambiar_estado" string="Dar de Baja" type="object" context="{'default_estado': 'baja'}" invisible="estado == 'baja'"/>
+                    <button name="action_aplicar_plan" string="Aplicar Plan de Suscripción" type="object" invisible="not pendiente_cambio_plan" class="btn-primary" context="{'aplicando_plan': True}"/>
+                    <field name="estado" widget="statusbar" statusbar_visible="activa,suspendida,baja"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_sales" type="object" class="oe_stat_button" icon="fa-usd" invisible="sale_order_count == 0">
                             <field name="sale_order_count" widget="statinfo" string="Ventas"/>
                         </button>
-                        <button name="print_adhesion" type="object" class="oe_stat_button" icon="fa-print" string="Imprimir Adhesión"/>
-                    </div>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" readonly="1"/>
-                        </h1>
+                        <button name="print_adhesion" type="object" class="oe_stat_button" icon="fa-print" string="Imprimir Adhesión" invisible="not paga_debito_automatico"/>
                     </div>
 
                     <notebook>
@@ -45,46 +37,89 @@
                             <group>
                                 <group string="Datos Generales">
                                     <field name="cliente_id"/>
+
                                     <field name="cliente_facturacion"/>
-                                    <field name="fecha"/>
-                                    <field name="fecha_inicio"/>
-                                    <field name="fecha_fin"/>
-                                    <field name="ultima_factura" readonly="1"/>
+                                    <field name="suscripcion_plan_id"/>
                                     <field name="categoria_id"/>
-                                    <!-- <field name="integrante_id" domain="[('cliente_contacto', '=', cliente_facturacion)]"/> -->
+                                    <field name="pendiente_cambio_plan" invisible="1"/>
+                                </group>
+                                <group string="Fechas">
+                                    <field name="fecha_inicio"/>
+                                    <!-- <field name="proxima_factura"/> -->
+                                    <field name="ultima_factura" readonly="1"/>
+
                                 </group>
                                 <group string="Datos de Pago">
-                                    <field name="tipo_temporalidad"/>
-                                    <field name="cantidad_recurrencia"/>
-                                    <field name="proxima_factura"/>
-                                    <field name="termino_pago"/>
                                     <field name="paga_debito_automatico"/>
-                              
-
-                                </group>
-                                <group string="Importante">
-                                    <field name="usoSuscripcion"/>
-
+                                    <field name="payment_adhesion_id" invisible="not paga_debito_automatico" required="paga_debito_automatico" options="{'no_create': True, 'no_open': True}" domain="[('state', '=', 'confirmed')]"/>
                                 </group>
                             </group>
                         </page>
                         <page string="Productos Suscritos" name="productos">
                             <field name="line_ids">
-                                <tree editable="bottom">
+                                <tree decoration-danger="esta_suspendida">
                                     <field name="product_id"/>
                                     <field name="cantidad"/>
-                                    <field name="anotacion"/>
+                                    <field name="periodicidad"/>
+
+
+                                    <field name="meses_excluir" />
+                                    <field name="dia_facturacion"/>
+                                    <field name="esta_suspendida"/>
                                 </tree>
                                 <form>
                                     <group>
                                         <group>
                                             <field name="product_id"/>
                                             <field name="cantidad"/>
+                                            <field name="esta_suspendida"/>
+                                            <field name="periodicidad"/>
+                                            <field name="meses_excluir" widget="many2many_tags"/>
+                                            <field name="dia_facturacion" />
+                                            <field name="mes_facturacion" invisible="periodicidad != 'anual'"/>
                                         </group>
-                                        <group>
-                                            <field name="anotacion"/>
+                                        <group string="Estados (al ejecutar la acción)">
+                                            <field name="en_activa"/>
+                                            <field name="en_suspension"/>
+                                            <field name="en_baja"/>
                                         </group>
                                     </group>
+                                </form>
+                            </field>
+                        </page>
+
+                        <page string="Ajustes Ocasionales" name="ajustes">
+                            <field name="ajuste_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="tipo"/>
+                                    <field name="producto_id"/>
+                                    <field name="importe" sum="Total"/>
+                                    <field name="porcentaje"/>
+                                    <field name="mes"/>
+                                    <field name="anio"/>
+                                    <field name="aplicado"/>
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="name" placeholder="ej: Compra de pelotas, Descuento promocional"/>
+                                                <field name="tipo"/>
+                                                <field name="producto_id"/>
+                                                <field name="importe" attrs="{'invisible': [('tipo', '=', 'descuento_porcentaje')]}"/>
+                                                <field name="porcentaje" attrs="{'invisible': [('tipo', '!=', 'descuento_porcentaje')]}"/>
+                                            </group>
+                                            <group>
+                                                <field name="mes"/>
+                                                <field name="anio"/>
+                                                <field name="aplicado"/>
+                                            </group>
+                                        </group>
+                                        <group string="Notas">
+                                            <field colspan="2" name="notas" nolabel="1" placeholder="Notas adicionales sobre el ajuste..."/>
+                                        </group>
+                                    </sheet>
                                 </form>
                             </field>
                         </page>
@@ -115,16 +150,14 @@
         <field name="arch" type="xml">
             <tree decoration-danger="estado=='cancelada'" decoration-warning="estado=='suspendida'">
                 <field name="cliente_id"/>
-       
-                <field name="fecha_inicio"/>
-                <field name="nombre_temporalidad"/>
+                <field name="suscripcion_plan_id"/>
+
                 <field name="proxima_factura"/>
-                <field name="nombres_productos"/>
-                <field name="termino_pago"/>
+
                 <field name="importeTotal"/>
                 <field name="categoria_id"/>
                 <field name="estado"/>
-                <field name="usoSuscripcion"/>
+
             </tree>
         </field>
     </record>
@@ -137,7 +170,7 @@
             <search>
                 <field name="name"/>
                 <field name="cliente_id"/>
-
+                <field name="suscripcion_plan_id"/>
                 <field name="estado"/>
                 <field name="tipo_temporalidad"/>
                 <filter string="Borradores" name="borradores" domain="[('estado','=','borrador')]"/>
@@ -146,6 +179,7 @@
                 <filter string="Bajas" name="bajas" domain="[('estado','=','baja')]"/>
                 <group expand="0" string="Agrupar Por">
                     <filter string="Cliente" name="cliente" context="{'group_by':'cliente_id'}"/>
+                    <filter string="Plan" name="plan" context="{'group_by':'suscripcion_plan_id'}"/>
                     <filter string="Estado" name="estado" context="{'group_by':'estado'}"/>
                     <filter string="Producto" name="nombres_productos" context="{'group_by':'nombres_productos'}"/>
                     <filter string="Tipo Temporalidad" name="tipo_temporalidad" context="{'group_by':'tipo_temporalidad'}"/>

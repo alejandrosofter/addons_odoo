@@ -3,9 +3,9 @@
     <!-- Tree View -->
     <record id="view_socios_tree" model="ir.ui.view">
         <field name="name">socios.tree</field>
-        <field name="model">socios.socio</field>
+        <field name="model">res_partner.socio</field>
         <field name="arch" type="xml">
-            <tree decoration-warning="estado=='suspendida'" decoration-danger="estado=='baja'">
+            <tree >
                 <field name="member_number"/>
 
                 <field name="name"/>
@@ -13,11 +13,11 @@
                 <field name="dni"/>
                 <field name="cliente_facturacion"/>
                 <field name="genero"/>
-                <field name="tipoSocio"/>
                 <field name="categoria_id"/>
-                <field name="estado"/>
                 <field name="phone"/>
                 <field name="email"/>
+                <field name="fechaNacimiento"/>
+                <field name="edad"/>
             </tree>
         </field>
     </record>
@@ -25,15 +25,15 @@
     <!-- Form View -->
     <record id="view_socios_form" model="ir.ui.view">
         <field name="name">socios.form</field>
-        <field name="model">socios.socio</field>
+        <field name="model">res_partner.socio</field>
         <field name="arch" type="xml">
             <form string="Socio">
-                <header>
+                <!-- <header>
                     <field name="estado" widget="statusbar" invisible="not id" statusbar_visible="activa,suspendida,baja"/>
                     <button name="action_view_estados" class="oe_highlight" type="object" string="Dar de Alta" icon="fa-play" invisible="estado == 'activa' or not id" context="{'default_estado': 'activa'}"/>
                     <button name="action_view_estados" class="oe_highlight" type="object" string="Suspender" icon="fa-pause" invisible="estado == 'suspendida' or not id" context="{'default_estado': 'suspendida'}"/>
                     <button name="action_view_estados" type="object" string="Dar de Baja" icon="fa-stop" invisible="estado == 'baja' or not id" context="{'default_estado': 'baja'}"/>
-                </header>
+                </header> -->
                 <sheet>
 
 
@@ -56,36 +56,17 @@
                                     <field name="genero"/>
                                     <field name="esActivo"/>
                                     <field name="fechaNacimiento"/>
-                                    <field name="tipoSocio"/>
                                 </group>
-                                <div>
-                                    <group string="Datos de la Suscripción">
-
-
-                                        <field name="categoria_suscripcion"/>
-
-
-                                        <field name="product_id"/>
-                                    </group>
-                                    <group string="Contactos">
-                                        <field name="contactoPrimario" />
-                                        <field name="contactoSecundario" />
-                                    </group>
-                                </div>
+                                <group string="Contactos">
+                                    <field name="contactoPrimario" />
+                                    <field name="contactoSecundario" />
+                                </group>
+                                <group string="Facturación">
+                                    <field name="cliente_facturacion" />
+                                    <field name="paga_debito_automatico"/>
+                                </group>
 
                             </group>
-                        </page>
-                        <page string="Datos para Facturacion">
-                            <group >
-                                <field name="cliente_facturacion" />
-                            </group>
-                            <group string="Datos Bancarios">
-                                <field name="paga_debito_automatico"/>
-                                <field name="cbu_contacto_facturacion" context="{'default_partner_id': cliente_facturacion}" invisible="paga_debito_automatico == False"/>
-
-                            </group>
-
-
                         </page>
                         <page string="Actividades">
                             <field name="integrantes_facturacion_ids">
@@ -97,37 +78,29 @@
                             </field>
                         </page>
 
-                        <page string="Suscripciones">
+                        <page string="Facturación">
                             <field name="suscripciones_facturacion_ids">
                                 <tree>
                                     <field name="name"/>
                                     <field name="fecha_inicio"/>
-                                    <field name="fecha_fin"/>
-                                    <field name="estado"/>
+
+
                                     <field name="categoria_id"/>
                                     <field name="paga_debito_automatico"/>
+                                    <field name="estado"/>
                                 </tree>
                             </field>
                         </page>
-                        <page string="Historial de Estados">
-                            <field name="estado_ids">
-                                <tree decoration-warning="estado=='suspendida'" decoration-danger="estado=='baja'">
-
+                        <page string="Registro de Actividad">
+                            <field readonly="1" name="motivos_cambio_productos">
+                                <tree>
                                     <field name="fecha"/>
-                                    <field name="estado"/>
+                                    <field name="product_id"/>
+                                    <field name="periodicidad"/>
+
                                     <field name="motivo"/>
+                                    <field name="esta_suspendida"/>
                                 </tree>
-                                <form>
-                                    <group>
-                                        <group>
-                                            <field name="fecha"/>
-                                            <field name="estado"/>
-                                        </group>
-                                        <group>
-                                            <field name="motivo" placeholder="Describa el motivo del cambio de estado..."/>
-                                        </group>
-                                    </group>
-                                </form>
                             </field>
                         </page>
 
@@ -146,7 +119,7 @@
     <!-- Search View -->
     <record id="view_socios_search" model="ir.ui.view">
         <field name="name">socios.search</field>
-        <field name="model">socios.socio</field>
+        <field name="model">res_partner.socio</field>
         <field name="arch" type="xml">
             <search string="Buscar Socios">
                 <field name="name"/>
@@ -170,7 +143,7 @@
     <record id="action_socios" model="ir.actions.act_window">
         <field name="name">Socios</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">socios.socio</field>
+        <field name="res_model">res_partner.socio</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

@@ -1,13 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <record id="view_softer_suscripcion_form_inherit" model="ir.ui.view">
         <field name="name">softer.suscripcion.form.inherit</field>
         <field name="model">softer.suscripcion</field>
         <field name="inherit_id" ref="softer_suscripciones.view_suscripcion_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='termino_pago']" position="after">
-                <field name="tieneActividad" />
-                <field name="idActividad" invisible="not tieneActividad" />
-                <field name="integrante_id" domain="[('cliente_contacto', '=', cliente_facturacion)]" />
+            <xpath expr="//field[@name='categoria_id']" position="after">
+
+                <field name="integrante_id"/>
             </xpath>
         </field>
     </record>

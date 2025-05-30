@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menú principal -->
+    <menuitem id="menu_siro_root" name="SIRO" sequence="10" web_icon="softer_payment_siro,static/description/icon.png"/>
+
+    <!-- Submenú para Cuentas Imputadas -->
+    <menuitem id="menu_payment_cuentas_imputadas" name="Cuentas Imputadas" action="action_payment_cuentas_imputadas" parent="menu_siro_root" sequence="10"/>
+
+    <!-- Menú principal de SIRO -->
+    <menuitem id="menu_payment_siro_root" name="SIRO" parent="account.menu_finance" sequence="20"/>
+
+    <!-- Menú QR Presencial -->
+    <menuitem id="menu_qr_presencial" name="QR Presencial" parent="menu_siro_root" sequence="10"/>
+
+    <!-- Submenú para QR Estático -->
+    <menuitem id="menu_payment_qr_estatico" name="QR Estático" action="softer_payment_siro.action_payment_qr_estatico" parent="menu_qr_presencial" sequence="10"/>
+
+    <!-- Submenú para Pagos QR -->
+    <menuitem id="menu_payment_qr_estatico_pago" name="Pagos QR" action="softer_payment_siro.action_payment_qr_estatico_pago" parent="menu_qr_presencial" sequence="15"/>
+
+    <menuitem id="menu_payment_adhesiones" name="Adhesiones de Pago" parent="menu_siro_root" action="action_payment_adhesiones" sequence="20"/>
+
+    <menuitem id="menu_payment_deudas" name="Deudas" parent="menu_siro_root" sequence="30"/>
+    <menuitem id="menu_payment_deudas_ordenes" name="Pendientes de Pago" parent="menu_payment_deudas" action="softer_payment_siro.action_payment_pendientes_de_pago" sequence="10"/>
+
+    <menuitem id="menu_payment_lote_deuda" name="Lotes de Deuda" parent="menu_payment_deudas" action="action_payment_lote_deuda" sequence="20"/>
+
+
+    <menuitem id="menu_payment_rendicion" name="Rendiciones de Pago" parent="menu_siro_root" action="action_payment_rendicion" sequence="40"/>
+
+    <!-- Submenú para configuración -->
+    <menuitem id="menu_siro_config" name="Configuración" parent="menu_siro_root" sequence="100"/>
+
+    <menuitem id="menu_payment_providers" name="Proveedores de Pago" parent="menu_siro_config" action="softer_payment_siro.action_payment_providers" sequence="25"/>
+
+    <menuitem id="menu_siro_payment_transaction" name="Transacciones " parent="menu_siro_config" action="softer_payment_siro.action_siro_payment_transaction" sequence="30"/>
+
+</odoo>

@@ -1,7 +1,11 @@
 from . import suscripcion
 from . import suscripcion_line
-from . import suscripcion_report
 from . import sale_order_inherith
-from . import alta
 from . import categoria
-
+from . import suscripcion_ajuste
+from . import suscripciones_planes
+from . import motivo_cambio
+from . import motivo_cambio_productos
+from . import mes_habilitado
+from . import suscripcion_generator
+from . import res_config_settings

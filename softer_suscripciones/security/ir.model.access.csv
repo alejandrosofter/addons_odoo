@@ -2,7 +2,12 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_softer_suscripcion_user,softer.suscripcion.user,model_softer_suscripcion,base.group_user,1,1,1,1
 access_softer_sale_order_user,sale.order.user,sale.model_sale_order,base.group_user,1,1,1,1
 access_softer_suscripcion_line_user,softer.suscripcion.line.user,model_softer_suscripcion_line,base.group_user,1,1,1,1
-access_softer_suscripcion_alta_user,softer.suscripcion.alta.user,model_softer_suscripcion_alta,base.group_user,1,1,1,1
-access_softer_suscripcion_alta_product_line_user,softer.suscripcion.alta.product.line.user,model_softer_suscripcion_alta_product_line,base.group_user,1,1,1,1
-access_softer_suscripcion_categoria,softer.suscripcion.categoria,model_softer_suscripcion_categoria,base.group_user,1,1,1,1
+ccess_softer_suscripcion_categoria,softer.suscripcion.categoria,model_softer_suscripcion_categoria,base.group_user,1,1,1,1
 access_softer_suscripcion_motivo_cambio_user,softer.suscripcion.motivo_cambio.user,model_softer_suscripcion_motivo_cambio,base.group_user,1,1,1,1
+access_softer_suscripcion_plan_user,softer.suscripcion.plan.user,model_softer_suscripcion_plan,base.group_user,1,1,1,1
+access_softer_suscripcion_plan_item_user,softer.suscripcion.plan.item.user,model_softer_suscripcion_plan_item,base.group_user,1,1,1,1
+access_softer_mes_habilitado_user,softer.mes_habilitado.user,model_softer_mes_habilitado,base.group_user,1,0,0,0
+access_softer_suscripcion_ajuste_user,softer.suscripcion.ajuste.user,model_softer_suscripcion_ajuste,base.group_user,1,1,1,1
+access_softer_suscripcion_motivo_cambio_productos_user,softer.suscripcion.motivo_cambio_productos.user,model_softer_suscripcion_motivo_cambio_productos,base.group_user,1,1,1,1
+access_softer_suscripcion_generator_user,softer.suscripcion.generator.user,model_softer_suscripcion_generator,base.group_user,1,1,1,1
+access_softer_suscripcion_generator_item_user,softer.suscripcion.generator.item.user,model_softer_suscripcion_generator_item,base.group_user,1,1,1,1

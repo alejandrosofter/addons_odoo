@@ -6,10 +6,12 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='category_id']" position="after">
+            <xpath expr="//field[@name='vat']" position="after">
 
-                <field name="fecha_nacimiento" widget="date"/>
-                <field name="genero"/>
+
+                <field name="socio_id" context="{'default_partner_id': id,'default_dni':vat,'default_cliente_facturacion':id}"/>
+
+                <field name="payment_adhesion_id" />
 
             </xpath>
         </field>
