@@ -649,6 +649,9 @@ class Suscripcion(models.Model):
                     "dia_facturacion": item.dia_facturacion,
                     "mes_facturacion": item.mes_facturacion,
                     "meses_excluir": item.meses_excluir,
+                    "tiene_ajuste": item.tiene_ajuste,
+                    "importe": item.importe,
+                    "porcentaje": item.porcentaje,
                 }
             )
         self.pendiente_cambio_plan = False

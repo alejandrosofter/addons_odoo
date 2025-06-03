@@ -12,7 +12,11 @@ class SuscripcionesPlanItem(models.Model):
         required=True,
         ondelete="cascade",
     )
-    product_id = fields.Many2one("product.product", string="Producto", required=True)
+    product_id = fields.Many2one(
+        "product.product",
+        string="Producto",
+        required=True,
+    )
     cantidad = fields.Float(string="Cantidad", default=1.0, required=True)
     tipo_temporalidad = fields.Selection(
         [
@@ -121,6 +125,11 @@ class SuscripcionesPlanItem(models.Model):
         help="Porcentaje para descuentos porcentuales",
         default=0.0,
     )
+    tiene_ajuste = fields.Boolean(
+        string="Tiene Ajuste",
+        help=("Indica si este ítem del plan tiene un cargo o descuento aplicado"),
+        default=False,
+    )
 
     @api.model
     def write(self, vals):
@@ -153,7 +162,8 @@ class SuscripcionPlan(models.Model):
         #     raise UserError(
         #         _(
         #             "¡Atención! Al guardar, todas las suscripciones asociadas a "
-        #             "este plan serán marcadas como pendientes de aplicar el nuevo plan."
+        #             "este plan serán marcadas como pendientes de aplicar el "
+        #             "nuevo plan."
         #         )
         #     )
         return super().write(vals)

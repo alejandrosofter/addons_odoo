@@ -60,9 +60,11 @@
                                             <field name="en_baja"/>
                                         </group>
                                         <group string="Ajustes">
-                                            <field name="tipo_ajuste"/>
+                                            <field name="tiene_ajuste"/>
 
-                                            <field name="porcentaje" />
+                                            <field name="tipo_ajuste" invisible="not tiene_ajuste"/>
+
+                                            <field name="porcentaje" invisible="not tiene_ajuste" />
                                         </group>
                                     </sheet>
                                 </form>
