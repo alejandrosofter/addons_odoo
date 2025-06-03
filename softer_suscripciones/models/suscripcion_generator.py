@@ -171,6 +171,13 @@ class SuscripcionGeneratorItem(models.Model):
         store=True,
         readonly=True,
     )
+    partner_facturacion_id = fields.Many2one(
+        "res.partner",
+        string="Cliente Facturación",
+        compute="_compute_partner_facturacion_id",
+        store=True,
+        readonly=True,
+    )
     importe = fields.Float(
         string="Importe",
         compute="_compute_importe",
@@ -182,6 +189,11 @@ class SuscripcionGeneratorItem(models.Model):
     def _compute_partner_id(self):
         for record in self:
             record.partner_id = record.suscripcion_id.cliente_id
+
+    @api.depends("suscripcion_id")
+    def _compute_partner_facturacion_id(self):
+        for record in self:
+            record.partner_facturacion_id = record.suscripcion_id.cliente_facturacion
 
     @api.depends("suscripcion_id")
     def _compute_importe(self):

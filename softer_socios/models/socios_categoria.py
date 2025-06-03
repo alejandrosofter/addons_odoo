@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields
 
 
 class SociosCategoria(models.Model):
@@ -12,6 +12,10 @@ class SociosCategoria(models.Model):
         string="Próximo Número de Socio", default=1, required=True
     )
     descripcion = fields.Text(string="Descripción")
+
+    # en_activo = fields.Boolean(string="En Activo", default=True)
+    # en_suspencion = fields.Boolean(string="En Suspensión", default=False)
+    # en_baja = fields.Boolean(string="En Baja", default=False)
 
     def next_nroSocio(self):
         """Busca el próximo número de socio disponible para esta categoría"""

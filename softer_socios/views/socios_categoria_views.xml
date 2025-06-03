@@ -8,6 +8,9 @@
             <tree string="Categorías de Socios">
                 <field name="name"/>
                 <field name="proximoNroSocio"/>
+                <!-- <field name="en_activo"/>
+                <field name="en_suspencion"/>
+                <field name="en_baja"/> -->
             </tree>
         </field>
     </record>
@@ -28,6 +31,9 @@
                         <group>
                             <field name="proximoNroSocio"/>
                             <field name="descripcion"/>
+                            <!-- <field name="en_activo"/>
+                            <field name="en_suspencion"/>
+                            <field name="en_baja"/> -->
                         </group>
                     </group>
                 </sheet>

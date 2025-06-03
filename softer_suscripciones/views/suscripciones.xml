@@ -61,8 +61,7 @@
                                     <field name="product_id"/>
                                     <field name="cantidad"/>
                                     <field name="periodicidad"/>
-
-
+                                    <field name="tipo_ajuste"/>
                                     <field name="meses_excluir" />
                                     <field name="dia_facturacion"/>
                                     <field name="esta_suspendida"/>
@@ -73,6 +72,18 @@
                                             <field name="product_id"/>
                                             <field name="cantidad"/>
                                             <field name="esta_suspendida"/>
+
+
+
+                                        </group>
+                                        <group string="Descuento o Interes">
+                                            <field name="ajuste" />
+                                            <field name="tipo_ajuste" invisible="not ajuste"/>
+                                            <field name="porcentaje" invisible="not ajuste"/>
+
+                                        </group>
+
+                                        <group string="Fechas">
                                             <field name="periodicidad"/>
                                             <field name="meses_excluir" widget="many2many_tags"/>
                                             <field name="dia_facturacion" />

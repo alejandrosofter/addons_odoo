@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
-from odoo.exceptions import ValidationError
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import random
@@ -25,7 +25,7 @@ class Integrantes(models.Model):
     )
     excluir_socio = fields.Boolean(
         string="Excluir Socio",
-        help="Al seleccionar no sera incluido la busqueda de socios pendientes.",
+        help="Al seleccionar no sera incluido la busqueda de socios " "pendientes.",
         default=False,
     )
     payment_adhesion_id = fields.Many2one(
@@ -45,12 +45,27 @@ class Integrantes(models.Model):
 
     apodo = fields.Char(
         string="Apodo",
-        help="Apodo o sobrenombre del integrante, en caso de no colocarlo, se mostrará el nombre del cliente",
+        help="Apodo o sobrenombre del integrante, en caso de no colocarlo, "
+        "se mostrará el nombre del cliente",
         tracking=True,
     )
 
+    socio_id = fields.Many2one(
+        "res_partner.socio",
+        string="Socio",
+        required=True,
+        tracking=True,
+        ondelete="restrict",
+        help="Socio que consume el servicio",
+    )
     cliente_id = fields.Many2one(
-        "res.partner", string="Integrante", required=True, tracking=True
+        "res.partner",
+        string="Integrante",
+        required=True,
+        tracking=True,
+        compute="_compute_cliente_id",
+        store=True,
+        readonly=False,  # Allow manual override if needed
     )
     estado = fields.Selection(
         [
@@ -147,6 +162,15 @@ class Integrantes(models.Model):
         help="Descripción del motivo por el cual tiene el beneficio",
         tracking=True,
     )
+
+    @api.depends("socio_id")
+    def _compute_cliente_id(self):
+        """Calcula el cliente_id basado en el socio_id seleccionado"""
+        for record in self:
+            if record.socio_id:
+                record.cliente_id = record.socio_id.partner_id
+            # else:
+            #     record.cliente_id = False # Decide if cliente_id should be cleared when socio_id is cleared
 
     @api.depends("cliente_id.name", "apodo")
     def _compute_name(self):
@@ -448,7 +472,19 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
         return False
 
     def write(self, vals):
-        """Sobrescribe el método write para verificar suscripciones después de cambios"""
+        """Sobrescribe el método write para verificar estado de socio y suscripciones después de cambios"""
+        # Validar estado del socio si socio_id está en vals o ya está seteado
+        if "socio_id" in vals and vals["socio_id"]:
+            socio = self.env["res_partner.socio"].browse(vals["socio_id"])
+            if socio and socio.estado != "activa":
+                raise UserError(
+                    _("No se puede asignar un socio con estado distinto de activo.")
+                )
+        elif self.socio_id and self.socio_id.estado != "activa":
+            raise UserError(
+                _("No se puede modificar un integrante con un socio no activo.")
+            )
+
         for rec in self:
             old_suscripcion = rec.suscripcion_id
             res = super().write(vals)

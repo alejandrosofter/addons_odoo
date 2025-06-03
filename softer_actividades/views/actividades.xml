@@ -52,7 +52,6 @@
                                 <tree decoration-warning="estado == 'suspendida'" decoration-danger="estado == 'cancelada'">
                                     <field name="cliente_id"/>
                                     <field name="cliente_contacto"/>
-
                                     <field name="es_debito_automatico"/>
                                     <field name="telefono_whatsapp"/>
                                     <field name="numero_documento"/>

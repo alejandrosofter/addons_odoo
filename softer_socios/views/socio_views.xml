@@ -5,7 +5,7 @@
         <field name="name">socios.tree</field>
         <field name="model">res_partner.socio</field>
         <field name="arch" type="xml">
-            <tree >
+            <tree decoration-warning="estado == 'suspendida'" decoration-danger="estado == 'baja'">
                 <field name="member_number"/>
 
                 <field name="name"/>
@@ -18,6 +18,7 @@
                 <field name="email"/>
                 <field name="fechaNacimiento"/>
                 <field name="edad"/>
+                <field name="estado"/>
             </tree>
         </field>
     </record>
@@ -28,12 +29,12 @@
         <field name="model">res_partner.socio</field>
         <field name="arch" type="xml">
             <form string="Socio">
-                <!-- <header>
+                <header>
                     <field name="estado" widget="statusbar" invisible="not id" statusbar_visible="activa,suspendida,baja"/>
                     <button name="action_view_estados" class="oe_highlight" type="object" string="Dar de Alta" icon="fa-play" invisible="estado == 'activa' or not id" context="{'default_estado': 'activa'}"/>
                     <button name="action_view_estados" class="oe_highlight" type="object" string="Suspender" icon="fa-pause" invisible="estado == 'suspendida' or not id" context="{'default_estado': 'suspendida'}"/>
                     <button name="action_view_estados" type="object" string="Dar de Baja" icon="fa-stop" invisible="estado == 'baja' or not id" context="{'default_estado': 'baja'}"/>
-                </header> -->
+                </header>
                 <sheet>
 
 
@@ -52,14 +53,20 @@
                                 <group string="Datos Personales">
                                     <field name="dni" placeholder="D.N.I"/>
                                     <field name="categoria_id"/>
-                                    <field name="member_number"/>
+                                    <field name="member_number" readonly="1"/>
                                     <field name="genero"/>
-                                    <field name="esActivo"/>
+                                    <!-- <field name="esActivo"/> -->
                                     <field name="fechaNacimiento"/>
                                 </group>
                                 <group string="Contactos">
                                     <field name="contactoPrimario" />
                                     <field name="contactoSecundario" />
+                                </group>
+                                <group string="Datos de Suscripción">
+                                    <field name="suscripcion_id" readonly="1"/>
+                                    <field name="suscripcion_plan_id"/>
+
+                                    <field name="suscripcion_categoria_id"/>
                                 </group>
                                 <group string="Facturación">
                                     <field name="cliente_facturacion" />
@@ -102,6 +109,10 @@
                                     <field name="esta_suspendida"/>
                                 </tree>
                             </field>
+                        </page>
+
+                        <page string="Historial de Estados">
+                            <field name="estado_ids" readonly="1"/>
                         </page>
 
 

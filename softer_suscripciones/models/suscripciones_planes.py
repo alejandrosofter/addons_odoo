@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo import models, fields, api
 
 
 class SuscripcionesPlanItem(models.Model):
@@ -49,19 +48,43 @@ class SuscripcionesPlanItem(models.Model):
         help="Si es verdadero, el servicio está activo",
         default=True,
     )
-    dia_facturacion = fields.Integer(
+    dia_facturacion = fields.Selection(
+        [(str(i), str(i)) for i in range(1, 32)],
         string="Día de Facturación",
-        help="Día del mes en el que se realiza la facturación en caso de que el tipo de temporalidad sea mensual",
-        default=1,
+        help=(
+            "Día del mes en el que se realiza la facturación en caso de que el "
+            "tipo de temporalidad sea mensual"
+        ),
+        default="1",
     )
-    mes_facturacion = fields.Integer(
+    mes_facturacion = fields.Selection(
+        [
+            ("1", "Enero"),
+            ("2", "Febrero"),
+            ("3", "Marzo"),
+            ("4", "Abril"),
+            ("5", "Mayo"),
+            ("6", "Junio"),
+            ("7", "Julio"),
+            ("8", "Agosto"),
+            ("9", "Septiembre"),
+            ("10", "Octubre"),
+            ("11", "Noviembre"),
+            ("12", "Diciembre"),
+        ],
         string="Mes de Facturación",
-        help="Mes en el que se realiza la facturación en caso de que el tipo de temporalidad sea anual",
-        default=1,
+        help=(
+            "Mes en el que se realiza la facturación en caso de que el tipo de "
+            "temporalidad sea anual"
+        ),
+        default="1",
     )
     suscripcion_individual = fields.Boolean(
         string="Suscripción Individual",
-        help="Si es verdadero, la suscripción es individual. En caso contrario, se crea una suscripción con varios productos",
+        help=(
+            "Si es verdadero, la suscripción es individual. En caso contrario, "
+            "se crea una suscripción con varios productos"
+        ),
         default=False,
     )
     cantidad_recurrencia = fields.Integer(
@@ -74,6 +97,29 @@ class SuscripcionesPlanItem(models.Model):
         "softer.mes_habilitado",
         string="Excluir Meses",
         help="Meses en los que este ítem estará excluido",
+    )
+
+    tipo_ajuste = fields.Selection(
+        [
+            ("cargo", "Cargo %"),
+            ("descuento_porcentual", "Descuento %"),
+        ],
+        string="Tipo de Ajuste",
+        default="cargo",
+        help=(
+            "Indica si la línea es un cargo, un descuento fijo o un descuento "
+            "porcentual"
+        ),
+    )
+    importe = fields.Float(
+        string="Importe",
+        help="Importe fijo para cargos o descuentos fijos",
+        default=0.0,
+    )
+    porcentaje = fields.Float(
+        string="Porcentaje",
+        help="Porcentaje para descuentos porcentuales",
+        default=0.0,
     )
 
     @api.model
@@ -106,7 +152,8 @@ class SuscripcionPlan(models.Model):
         # if vals:
         #     raise UserError(
         #         _(
-        #             "¡Atención! Al guardar, todas las suscripciones asociadas a este plan serán marcadas como pendientes de aplicar el nuevo plan."
+        #             "¡Atención! Al guardar, todas las suscripciones asociadas a "
+        #             "este plan serán marcadas como pendientes de aplicar el nuevo plan."
         #         )
         #     )
         return super().write(vals)

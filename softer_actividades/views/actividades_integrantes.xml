@@ -15,8 +15,10 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="cliente_id" placeholder="Seleccione el integrante"/>
+                            <field name="socio_id" placeholder="Seleccione el integrante"/>
+
                         </h1>
+                        <field name="cliente_id" readonly="1"/>
                     </div>
                     <notebook>
                         <page string="Datos Generales" name="gral">

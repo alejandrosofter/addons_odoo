@@ -40,7 +40,9 @@
 
                                     <field name="en_suspension"/>
                                     <field name="en_baja"/>
-
+                                    <field name="tipo_ajuste"/>
+                                    <field name="importe"/>
+                                    <field name="porcentaje"/>
                                 </tree>
                                 <form string="Items">
                                     <sheet>
@@ -54,9 +56,13 @@
                                         </group>
                                         <group string="Estados">
                                             <field name="en_activo"/>
-
                                             <field name="en_suspension"/>
                                             <field name="en_baja"/>
+                                        </group>
+                                        <group string="Ajustes">
+                                            <field name="tipo_ajuste"/>
+
+                                            <field name="porcentaje" />
                                         </group>
                                     </sheet>
                                 </form>

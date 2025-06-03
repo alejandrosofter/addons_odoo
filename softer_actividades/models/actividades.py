@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
-from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
 import logging
 
 _logger = logging.getLogger(__name__)

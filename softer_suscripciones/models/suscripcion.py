@@ -316,7 +316,7 @@ class Suscripcion(models.Model):
         """Prepara los valores para crear una orden de venta"""
         self.ensure_one()
         return {
-            "partner_id": self.cliente_id.id,
+            "partner_id": self.cliente_facturacion.id,
             "subscription_id": self.id,
             "payment_term_id": (self.termino_pago.id if self.termino_pago else False),
             "date_order": fields.Datetime.now(),

@@ -20,16 +20,20 @@
         <field name="arch" type="xml">
             <form string="Estado de Socio">
                 <sheet>
-                    <group>
-                        <group>
-                            <field name="socio_id" options="{'no_create': True}"/>
-                            <field name="fecha"/>
-                            <field name="estado"/>
-                        </group>
-                        <group>
-                            <field name="motivo" placeholder="Describa el motivo del cambio de estado..."/>
-                        </group>
-                    </group>
+                    <notebook>
+                        <page string="Detalles del Estado">
+                            <group>
+                                <group>
+                                    <field name="socio_id" options="{'no_create': True}"/>
+                                    <field name="fecha"/>
+                                    <field name="estado"/>
+                                </group>
+                                <group>
+                                    <field name="motivo" placeholder="Describa el motivo del cambio de estado..."/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
