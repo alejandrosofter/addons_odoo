@@ -22,7 +22,7 @@
         "views/actividades_mensajes.xml",
         "views/asistencias.xml",
         "views/recursos.xml",
-        "views/suscripciones_inherit.xml",
+        # "views/suscripciones_inherit.xml",
     ],
     "installable": True,
     "application": True,
