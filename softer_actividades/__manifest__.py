@@ -13,7 +13,7 @@
     """,
     "author": "Softer",
     "website": "https://www.softer.com",
-    "depends": ["base", "mail", "softer_suscripciones"],
+    "depends": ["base", "mail", "softer_suscripciones", "softer_socios"],
     "data": [
         "security/groups.xml",
         "security/ir.model.access.csv",
