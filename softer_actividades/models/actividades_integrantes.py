@@ -55,7 +55,7 @@ class Integrantes(models.Model):
         string="Socio",
         required=True,
         tracking=True,
-        ondelete="restrict",
+        # ondelete="restrict",
         help="Socio que consume el servicio",
     )
     cliente_id = fields.Many2one(
@@ -63,7 +63,7 @@ class Integrantes(models.Model):
         string="Integrante",
         required=True,
         tracking=True,
-        compute="_compute_cliente_id",
+        # compute="_compute_cliente_id",
         store=True,
         readonly=False,  # Allow manual override if needed
     )
