@@ -522,8 +522,14 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
 
     @api.onchange("cliente_id")
     def _onchange_cliente_id(self):
-        if self.cliente_id:
-            self.cliente_contacto = self.cliente_id
+        """Actualiza campos relacionados cuando cambia el cliente_id"""
+        for record in self:
+            if record.cliente_id:
+                record.fechaNacimiento = record.cliente_id.fechaNacimiento
+                record.cliente_contacto = record.cliente_id.id
+            # else:
+            #     record.fechaNacimiento = False # Considerar limpiar los campos si cliente_id se vacía
+            #     record.cliente_contacto = False
 
     @api.model_create_multi
     def create(self, vals_list):
