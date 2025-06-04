@@ -163,14 +163,14 @@ class Integrantes(models.Model):
         tracking=True,
     )
 
-    @api.depends("socio_id")
-    def _compute_cliente_id(self):
-        """Calcula el cliente_id basado en el socio_id seleccionado"""
-        for record in self:
-            if record.socio_id:
-                record.cliente_id = record.socio_id.partner_id
-            # else:
-            #     record.cliente_id = False # Decide if cliente_id should be cleared when socio_id is cleared
+    # @api.depends("socio_id")
+    # def _compute_cliente_id(self):
+    #     """Calcula el cliente_id basado en el socio_id seleccionado"""
+    #     for record in self:
+    #         if record.socio_id:
+    #             record.cliente_id = record.socio_id.partner_id
+    # else:
+    #     record.cliente_id = False # Decide if cliente_id should be cleared when socio_id is cleared
 
     @api.depends("cliente_id.name", "apodo")
     def _compute_name(self):
