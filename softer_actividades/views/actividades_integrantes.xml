@@ -5,7 +5,7 @@
         <field name="model">softer.actividades.integrantes</field>
         <field name="arch" type="xml">
             <form string="Integrante">
-                <header>
+                <header invisible="not id">
 
                     <field name="estado" widget="statusbar" statusbar_visible="activa,suspendida,baja"/>
                     <button name="action_view_estados" class="oe_highlight" type="object" string="Dar de Alta" icon="fa-play" invisible="estado == 'activa'" context="{'default_estado': 'activa'}"/>

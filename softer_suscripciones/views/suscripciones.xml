@@ -16,7 +16,7 @@
         <field name="model">softer.suscripcion</field>
         <field name="arch" type="xml">
             <form>
-                <header>
+                <header invisible="not id">
                     <!-- <button name="action_generar" string="Generar Orden de Venta" type="object" invisible="estado != 'activa'" class="oe_highlight"/> -->
                     <button name="action_cambiar_estado" string="Activar" type="object" context="{'default_estado': 'activa'}" invisible="estado == 'activa'" class="oe_highlight"/>
                     <button name="action_cambiar_estado" string="Suspender" type="object" context="{'default_estado': 'suspendida'}" invisible="estado == 'suspendida'" />

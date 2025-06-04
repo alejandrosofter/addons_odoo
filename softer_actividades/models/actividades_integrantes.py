@@ -605,8 +605,8 @@ class Integrantes(models.Model):
                 if actividad_id:
                     actividad = self.env["softer.actividades"].browse(actividad_id)
                     # Asegurarse de que el campo existe
-                    if actividad and hasattr(actividad, "categoria_id"):
-                        categoria_id = actividad.categoria_id.id
+                    if actividad and hasattr(actividad, "categoria_suscripcion"):
+                        categoria_id = actividad.categoria_suscripcion.id
 
                 if not cliente_id:
                     raise ValidationError(
@@ -624,6 +624,10 @@ class Integrantes(models.Model):
                     "paga_debito_automatico": es_debito_automatico,
                     "payment_adhesion_id": payment_adhesion_id,
                 }
+                print("SUSC VALS")
+                print(suscripcion_vals)
+                print("ACT ID")
+                print(actividad_id)
 
                 # Si hay un plan asociado, asignarlo a la suscripción
                 if suscripcion_plan_id:
