@@ -524,7 +524,7 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
         """Actualiza campos relacionados cuando cambia el cliente_id"""
         for record in self:
             if record.cliente_id:
-                record.fechaNacimiento = record.cliente_id.fechaNacimiento
+                # record.fechaNacimiento = record.cliente_id.fechaNacimiento
                 # Assign the recordset directly to the Many2one field
                 record.cliente_contacto = record.cliente_id
 
