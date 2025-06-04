@@ -14,7 +14,14 @@
     """,
     "author": "Softer",
     "website": "https://www.softer.com",
-    "depends": ["base", "sale", "softer_payment_siro", "sale_management", "contacts"],
+    "depends": [
+        "base",
+        "sale",
+        "softer_payment_siro",
+        "sale_management",
+        "contacts",
+        "softer_socios",
+    ],
     "data": [
         "security/ir.model.access.csv",
         "data/sequence.xml",
