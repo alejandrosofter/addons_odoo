@@ -63,9 +63,8 @@ class Integrantes(models.Model):
         string="Integrante",
         required=True,
         tracking=True,
-        compute="_compute_cliente_id",
+        # compute="_compute_cliente_id",
         store=True,
-        readonly=False,  # Allow manual override if needed
     )
     estado = fields.Selection(
         [
