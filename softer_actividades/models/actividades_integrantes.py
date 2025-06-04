@@ -23,6 +23,11 @@ class Integrantes(models.Model):
         store=True,
         readonly=True,
     )
+    fecha_comienzo = fields.Date(
+        string="Fecha de Comienzo",
+        help="Fecha en la que el integrante comenzó la actividad o " "suscripción.",
+        tracking=True,
+    )
     excluir_socio = fields.Boolean(
         string="Excluir Socio",
         help="Al seleccionar no sera incluido la busqueda de socios " "pendientes.",
@@ -61,7 +66,7 @@ class Integrantes(models.Model):
     cliente_id = fields.Many2one(
         "res.partner",
         string="Integrante",
-        required=True,
+        # required=True,
         tracking=True,
         compute="_compute_cliente_id",
         store=True,
@@ -95,6 +100,7 @@ class Integrantes(models.Model):
         help="Porcentaje de asistencia del integrante desde su ingreso",
         default=0,
     )
+
     cliente_contacto = fields.Many2one(
         "res.partner",
         string="Facturación",
@@ -108,7 +114,7 @@ class Integrantes(models.Model):
         string="Suscripción",
         help="Suscripción asociada al integrante",
         ondelete="cascade",
-        required=True,
+        # required=True,
     )
     # suscripcion_ids = fields.One2many(
     #     "softer.suscripcion",
@@ -169,7 +175,7 @@ class Integrantes(models.Model):
             if record.socio_id:
                 record.cliente_id = record.socio_id.partner_id
             else:
-                record.cliente_id = False  # Decide if cliente_id should be cleared when socio_id is cleared
+                record.cliente_id = False
 
     @api.depends("cliente_id.name", "apodo")
     def _compute_name(self):
@@ -233,7 +239,7 @@ class Integrantes(models.Model):
         if not usuario_existente:
             valores_usuario = {
                 "name": self.cliente_contacto.name,
-                "login": self.cliente_contacto.vat,  # Usar número de documento como login
+                "login": self.cliente_contacto.vat,
                 "password": password,
                 "partner_id": self.cliente_contacto.id,
                 "groups_id": [
@@ -252,21 +258,18 @@ class Integrantes(models.Model):
                 f"/web/login"
             )
             if not usuario_existente:
-                mensaje = f"""¡Hola {self.cliente_contacto.name}!
-
-Te hemos creado un nuevo acceso al sistema:
-*Usuario:* {self.cliente_contacto.vat}
-*Contraseña:* {password}
-
-*Para acceder al sistema:* {url_sistema}"""
+                mensaje = f"""¡Hola {self.cliente_contacto.name}!\n\n"
+                f"Te hemos creado un nuevo acceso al sistema:\n"
+                f"*Usuario:* {self.cliente_contacto.vat}\n"
+                f"*Contraseña:* {password}\n\n"
+                f"*Para acceder al sistema:* {url_sistema}"""
             else:
-                mensaje = f"""¡Hola {self.cliente_contacto.name}!
-
-Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
-*Usuario:* {self.cliente_contacto.vat}
-*Contraseña:* {password}
-
-*Para acceder al sistema:* {url_sistema}"""
+                mensaje = f"""¡Hola {self.cliente_contacto.name}!\n\n"
+                f"Ya tenías un usuario en el sistema y te hemos enviado nuevas "
+                f"credenciales:\n"
+                f"*Usuario:* {self.cliente_contacto.vat}\n"
+                f"*Contraseña:* {password}\n\n"
+                f"*Para acceder al sistema:* {url_sistema}"""
 
             # Buscar la primera instancia de WhatsApp activa
             instance = self.env["evolution.api.numbers"].search(
@@ -362,7 +365,8 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
             "tag": "display_notification",
             "params": {
                 "title": "Éxito",
-                "message": f"Se han creado {len(integrantes_sin_acceso)} accesos al sistema para el equipo",
+                "message": f"Se han creado {len(integrantes_sin_acceso)} "
+                f"accesos al sistema para el equipo",
                 "type": "success",
             },
         }
@@ -493,6 +497,36 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
                     old_suscripcion.sudo().write({"integrante_id": False})
                 if new_suscripcion:
                     new_suscripcion.sudo().write({"integrante_id": rec.id})
+
+            # Sincronizar campos con la suscripción si existe
+            if rec.suscripcion_id:
+                suscripcion_update_vals = {}
+                if "cliente_contacto" in vals:
+                    suscripcion_update_vals["cliente_facturacion"] = vals[
+                        "cliente_contacto"
+                    ]
+                if "suscripcion_plan_id" in vals:
+                    suscripcion_update_vals["suscripcion_plan_id"] = vals[
+                        "suscripcion_plan_id"
+                    ]
+                if "es_debito_automatico" in vals:
+                    suscripcion_update_vals["paga_debito_automatico"] = vals[
+                        "es_debito_automatico"
+                    ]
+                if "payment_adhesion_id" in vals:
+                    suscripcion_update_vals["payment_adhesion_id"] = vals[
+                        "payment_adhesion_id"
+                    ]
+                if "fecha_comienzo" in vals:
+                    suscripcion_update_vals["fecha_inicio"] = vals["fecha_comienzo"]
+
+                if suscripcion_update_vals:
+                    rec.suscripcion_id.sudo().write(suscripcion_update_vals)
+
+                # Si se cambió el plan, aplicar el nuevo plan a la suscripción
+                if "suscripcion_plan_id" in vals and vals["suscripcion_plan_id"]:
+                    rec.suscripcion_id.sudo().action_aplicar_plan()
+
         return res
 
     def _actualizar_estados_por_defecto(self):
@@ -510,7 +544,8 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
         if registros_a_actualizar:
             registros_a_actualizar.write({"estado": "activa"})
             _logger.info(
-                f"Se actualizaron {len(registros_a_actualizar)} registros a estado 'activa'"
+                f"Se actualizaron {len(registros_a_actualizar)} registros a "
+                f"estado 'activa'"
             )
 
     @api.model
@@ -524,8 +559,6 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
         """Actualiza campos relacionados cuando cambia el cliente_id"""
         for record in self:
             if record.cliente_id:
-                # record.fechaNacimiento = record.cliente_id.fechaNacimiento
-                # Assign the recordset directly to the Many2one field
                 record.cliente_contacto = record.cliente_id
 
             else:
@@ -535,8 +568,84 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
 
     @api.model_create_multi
     def create(self, vals_list):
-        records = super().create(vals_list)
-        for record in records:
-            if record.suscripcion_id:
-                record.suscripcion_id.sudo().write({"integrante_id": record.id})
+        new_vals_list = []
+        for vals in vals_list:
+            # Si no se proporciona una suscripción, crear una nueva
+            if not vals.get("suscripcion_id"):
+                print(vals)
+                # Obtener cliente_id: si está en vals y es True usarlo, si no,
+                # intentar desde socio_id
+                cliente_id = vals.get("cliente_id")
+                socio_id = vals.get("socio_id")
+                # Si cliente_id no está en vals o es False y socio_id está, obtenerlo
+                if not cliente_id and socio_id:
+                    socio = self.env["res_partner.socio"].browse(socio_id)
+                    if socio and socio.partner_id:
+                        cliente_id = socio.partner_id.id
+
+                actividad_id = vals.get("actividad_id")
+                fecha_comienzo = vals.get("fecha_comienzo") or fields.Date.today()
+                suscripcion_plan_id = vals.get("suscripcion_plan_id")
+
+                # Si cliente_contacto no viene en vals, usar cliente_id como contacto
+                cliente_contacto_id = vals.get("cliente_contacto", cliente_id)
+                estado_integrante = vals.get("estado", self.estado)
+                es_debito_automatico = vals.get(
+                    "es_debito_automatico", self.es_debito_automatico
+                )
+                payment_adhesion_id = vals.get("payment_adhesion_id") or (
+                    self.payment_adhesion_id.id if self.payment_adhesion_id else False
+                )
+
+                # Actualizar el vals con el cliente_id obtenido
+                vals["cliente_id"] = cliente_id
+
+                # Obtener la categoría de la actividad si existe
+                categoria_id = False
+                if actividad_id:
+                    actividad = self.env["softer.actividades"].browse(actividad_id)
+                    # Asegurarse de que el campo existe
+                    if actividad and hasattr(actividad, "categoria_id"):
+                        categoria_id = actividad.categoria_id.id
+
+                if not cliente_id:
+                    raise ValidationError(
+                        _("Debe seleccionar un cliente para crear la suscripción.")
+                    )
+
+                suscripcion_vals = {
+                    "cliente_id": cliente_id,
+                    "fecha_inicio": fecha_comienzo,
+                    "cliente_facturacion": cliente_contacto_id,
+                    "estado": estado_integrante,
+                    "usoSuscripcion": True,  # Inicializar usoSuscripcion a True por
+                    # defecto
+                    "categoria_id": categoria_id,
+                    "paga_debito_automatico": es_debito_automatico,
+                    "payment_adhesion_id": payment_adhesion_id,
+                }
+
+                # Si hay un plan asociado, asignarlo a la suscripción
+                if suscripcion_plan_id:
+                    suscripcion_vals["suscripcion_plan_id"] = suscripcion_plan_id
+
+                nueva_suscripcion = (
+                    self.env["softer.suscripcion"].sudo().create(suscripcion_vals)
+                )
+
+                # Si se asignó un plan, aplicar los ítems del plan
+                if suscripcion_plan_id:
+                    nueva_suscripcion.action_aplicar_plan()
+
+                # Asignar la suscripción creada al vals del integrante
+                vals["suscripcion_id"] = nueva_suscripcion.id
+
+            new_vals_list.append(vals)
+
+        records = super().create(new_vals_list)
+        # La parte de actualizar integrante_id en la suscripción ya la hace el write
+        # de suscripcion
+        # for record in records:
+        #     if record.suscripcion_id:
+        #         record.suscripcion_id.sudo().write({"integrante_id": record.id})
         return records

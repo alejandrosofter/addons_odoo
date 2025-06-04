@@ -26,9 +26,11 @@
                                 <group string="Facturacion">
                                     <field name="actividad_id" readonly="1"/>
                                     <field name="cliente_contacto"/>
-                                    <field name="suscripcion_id" context="{'default_cliente_id': cliente_id}"/>
-                                    <!-- <field name="es_debito_automatico"/>
-                                    <field name="payment_adhesion_id" invisible="not es_debito_automatico" required="es_debito_automatico" domain="[('state', '=', 'confirmed')]"/> -->
+                                    <field name="suscripcion_plan_id"/>
+                                    <field name="es_debito_automatico"/>
+                                    <field name="payment_adhesion_id" invisible="not es_debito_automatico" required="es_debito_automatico" domain="[('state', '=', 'confirmed')]"/>
+                                    <field name="suscripcion_id" readonly="1"/>
+                                    <field name="fecha_comienzo"/>
 
                                     <!-- <field name="excluir_socio"/>
                                     <field name="tieneBeneficio"/>
