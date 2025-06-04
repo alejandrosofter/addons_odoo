@@ -526,10 +526,45 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
         for record in self:
             if record.cliente_id:
                 record.fechaNacimiento = record.cliente_id.fechaNacimiento
-                record.cliente_contacto = record.cliente_id.id
-            # else:
-            #     record.fechaNacimiento = False # Considerar limpiar los campos si cliente_id se vacía
-            #     record.cliente_contacto = False
+                # Assign the recordset directly to the Many2one field
+                record.cliente_contacto = record.cliente_id
+                # Add extensive debug prints for related fields
+                _logger.info(
+                    f"DEBUG ONCHANGE: cliente_id selected: {record.cliente_id.id}"
+                )
+                _logger.info(
+                    f"DEBUG ONCHANGE: cliente_contacto: {record.cliente_contacto.id if record.cliente_contacto else 'False'}"
+                )
+                _logger.info(
+                    f"DEBUG ONCHANGE: suscripcion_id: {record.suscripcion_id.id if record.suscripcion_id else 'False'}"
+                )
+                _logger.info(
+                    f"DEBUG ONCHANGE: socio_id: {record.socio_id.id if record.socio_id else 'False'}"
+                )
+                _logger.info(
+                    f"DEBUG ONCHANGE: actividad_id: {record.actividad_id.id if record.actividad_id else 'False'}"
+                )
+                _logger.info(
+                    f"DEBUG ONCHANGE: suscripcion_plan_id: {record.suscripcion_plan_id.id if record.suscripcion_plan_id else 'False'}"
+                )
+                _logger.info(
+                    f"DEBUG ONCHANGE: payment_adhesion_id: {record.payment_adhesion_id.id if record.payment_adhesion_id else 'False'}"
+                )
+                _logger.info(
+                    f"DEBUG ONCHANGE: telefono_whatsapp: {record.telefono_whatsapp}"
+                )
+                _logger.info(
+                    f"DEBUG ONCHANGE: numero_documento: {record.numero_documento}"
+                )
+
+            else:
+                record.fechaNacimiento = (
+                    False  # Considerar limpiar los campos si cliente_id se vacía
+                )
+                record.cliente_contacto = False
+                record.suscripcion_id = False  # Explicitly set suscripcion_id to False
+                # Log when cliente_id is cleared
+                _logger.info("DEBUG ONCHANGE: cliente_id cleared.")
 
     @api.model_create_multi
     def create(self, vals_list):
