@@ -35,7 +35,7 @@
                                     <field name="product_id"/>
                                     <field name="cantidad"/>
                                     <field name="tipo_temporalidad"/>
-
+                                    <field name="tiene_ajuste"/>
                                     <field name="en_activo"/>
 
                                     <field name="en_suspension"/>
@@ -62,9 +62,9 @@
                                         <group string="Ajustes">
                                             <field name="tiene_ajuste"/>
 
-                                            <field name="tipo_ajuste" invisible="not tiene_ajuste"/>
-
-                                            <field name="porcentaje" invisible="not tiene_ajuste" />
+                                            <field name="tipo_ajuste" invisible="not tiene_ajuste" attrs="{'required': [('tiene_ajuste', '=', True)]}"/>
+                                            <field name="importe" invisible="not tiene_ajuste" attrs="{'required': [('tiene_ajuste', '=', True)]}"/>
+                                            <field name="porcentaje" invisible="not tiene_ajuste" attrs="{'required': [('tiene_ajuste', '=', True), ('tipo_ajuste', '=', 'descuento_porcentual')]}"/>
                                         </group>
                                     </sheet>
                                 </form>

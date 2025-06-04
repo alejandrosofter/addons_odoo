@@ -61,6 +61,7 @@
                                     <field name="product_id"/>
                                     <field name="cantidad"/>
                                     <field name="periodicidad"/>
+                                    <field name="tiene_ajuste"/>
                                     <field name="tipo_ajuste"/>
                                     <field name="meses_excluir" />
                                     <field name="dia_facturacion"/>
@@ -72,15 +73,12 @@
                                             <field name="product_id"/>
                                             <field name="cantidad"/>
                                             <field name="esta_suspendida"/>
-
-
-
+                                            <field name="tiene_ajuste"/>
                                         </group>
                                         <group string="Descuento o Interes">
-                                            <field name="ajuste" />
-                                            <field name="tipo_ajuste" invisible="not ajuste"/>
-                                            <field name="porcentaje" invisible="not ajuste"/>
-
+                                            <field name="tipo_ajuste" invisible="not tiene_ajuste" attrs="{'required': [('tiene_ajuste', '=', True)]}"/>
+                                            <field name="importe" invisible="not tiene_ajuste" attrs="{'required': [('tiene_ajuste', '=', True)]}"/>
+                                            <field name="porcentaje" invisible="not tiene_ajuste" attrs="{'required': [('tiene_ajuste', '=', True), ('tipo_ajuste', '=', 'descuento_porcentual')]}"/>
                                         </group>
 
                                         <group string="Fechas">

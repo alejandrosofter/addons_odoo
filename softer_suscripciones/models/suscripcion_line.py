@@ -127,6 +127,11 @@ class SuscripcionLine(models.Model):
         help="Porcentaje para descuentos porcentuales",
         default=0.0,
     )
+    tiene_ajuste = fields.Boolean(
+        string="Tiene Ajuste",
+        help=("Indica si este ítem del plan tiene un cargo o descuento aplicado"),
+        default=False,
+    )
     ajuste = fields.Boolean(
         string="Aplicar Ajustes",
         help="Indica si esta línea corresponde a un ajuste especial.",
