@@ -75,15 +75,7 @@
 
                             </group>
                         </page>
-                        <page string="Actividades">
-                            <field name="integrantes_facturacion_ids">
-                                <tree>
-                                    <!-- <field name="actividad_id"/> -->
-                                    <field name="cliente_id"/>
-                                    <field name="estado"/>
-                                </tree>
-                            </field>
-                        </page>
+
 
                         <page string="Facturación">
                             <field name="suscripciones_facturacion_ids">
