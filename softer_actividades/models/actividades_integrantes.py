@@ -565,6 +565,7 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
                 record.suscripcion_id = False  # Explicitly set suscripcion_id to False
                 # Log when cliente_id is cleared
                 _logger.info("DEBUG ONCHANGE: cliente_id cleared.")
+                return {}
 
     @api.model_create_multi
     def create(self, vals_list):
