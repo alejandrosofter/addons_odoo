@@ -63,7 +63,7 @@ class Integrantes(models.Model):
         string="Integrante",
         required=True,
         tracking=True,
-        # compute="_compute_cliente_id",
+        compute="_compute_cliente_id",
         store=True,
         readonly=False,  # Allow manual override if needed
     )
@@ -169,8 +169,8 @@ class Integrantes(models.Model):
         for record in self:
             if record.socio_id:
                 record.cliente_id = record.socio_id.partner_id
-            # else:
-            #     record.cliente_id = False # Decide if cliente_id should be cleared when socio_id is cleared
+            else:
+                record.cliente_id = False  # Decide if cliente_id should be cleared when socio_id is cleared
 
     @api.depends("cliente_id.name", "apodo")
     def _compute_name(self):
@@ -528,34 +528,6 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
                 record.fechaNacimiento = record.cliente_id.fechaNacimiento
                 # Assign the recordset directly to the Many2one field
                 record.cliente_contacto = record.cliente_id
-                # Add extensive debug prints for related fields
-                _logger.info(
-                    f"DEBUG ONCHANGE: cliente_id selected: {record.cliente_id.id}"
-                )
-                _logger.info(
-                    f"DEBUG ONCHANGE: cliente_contacto: {record.cliente_contacto.id if record.cliente_contacto else 'False'}"
-                )
-                _logger.info(
-                    f"DEBUG ONCHANGE: suscripcion_id: {record.suscripcion_id.id if record.suscripcion_id else 'False'}"
-                )
-                _logger.info(
-                    f"DEBUG ONCHANGE: socio_id: {record.socio_id.id if record.socio_id else 'False'}"
-                )
-                _logger.info(
-                    f"DEBUG ONCHANGE: actividad_id: {record.actividad_id.id if record.actividad_id else 'False'}"
-                )
-                _logger.info(
-                    f"DEBUG ONCHANGE: suscripcion_plan_id: {record.suscripcion_plan_id.id if record.suscripcion_plan_id else 'False'}"
-                )
-                _logger.info(
-                    f"DEBUG ONCHANGE: payment_adhesion_id: {record.payment_adhesion_id.id if record.payment_adhesion_id else 'False'}"
-                )
-                _logger.info(
-                    f"DEBUG ONCHANGE: telefono_whatsapp: {record.telefono_whatsapp}"
-                )
-                _logger.info(
-                    f"DEBUG ONCHANGE: numero_documento: {record.numero_documento}"
-                )
 
             else:
                 record.fechaNacimiento = (
