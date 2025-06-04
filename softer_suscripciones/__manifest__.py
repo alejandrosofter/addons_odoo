@@ -20,7 +20,6 @@
         "softer_payment_siro",
         "sale_management",
         "contacts",
-        "softer_socios",
     ],
     "data": [
         "security/ir.model.access.csv",
