@@ -529,13 +529,8 @@ Ya tenías un usuario en el sistema y te hemos enviado nuevas credenciales:
                 record.cliente_contacto = record.cliente_id
 
             else:
-                record.fechaNacimiento = (
-                    False  # Considerar limpiar los campos si cliente_id se vacía
-                )
                 record.cliente_contacto = False
-                record.suscripcion_id = False  # Explicitly set suscripcion_id to False
-                # Log when cliente_id is cleared
-                _logger.info("DEBUG ONCHANGE: cliente_id cleared.")
+                record.suscripcion_id = False
                 return {}
 
     @api.model_create_multi
