@@ -380,25 +380,85 @@ class Suscripcion(models.Model):
                 }
             )
 
+            # Agregar línea de ajuste si `tiene_ajuste` es True en la línea de suscripción
+            if line.tiene_ajuste:
+                adjustment_price = 0.0
+                adjustment_name = ""
+
+                if line.tipo_ajuste == "cargo":
+                    adjustment_price = line.importe
+                    adjustment_name = f"Cargo recurrente: {line.name or line.product_id.name} ({line.importe:.2f})"
+                elif line.tipo_ajuste == "descuento_porcentual":
+                    # Calcular el importe del descuento basado en el precio total de la línea de producto
+                    total_line_price = line.product_id.list_price * line.cantidad
+                    adjustment_amount = total_line_price * (line.porcentaje / 100.0)
+                    adjustment_price = (
+                        -adjustment_amount
+                    )  # Aplicar como un precio negativo
+                    adjustment_name = f"Bonificación recurrente: {line.name or line.product_id.name} ({line.porcentaje:.2f}%)"
+
+                if adjustment_price != 0.0:
+                    lines.append(
+                        {
+                            # Usar el product_id de la línea de suscripción para el ajuste recurrente.
+                            "product_id": line.product_id.id,
+                            "name": adjustment_name,
+                            "product_uom_qty": 1,
+                            "price_unit": adjustment_price,
+                        }
+                    )
+
         current_date = fields.Date.today()
         current_month = str(current_date.month)
         current_year = current_date.year
 
-        ajustes_activos = self.ajuste_ids.filtered(
-            lambda x: x.activo and x.mes == current_month and x.anio == current_year
+        # Calcular el total de las líneas de producto base (sin ajustes recurrentes o ocasionales ni notas)
+        total_productos = sum(
+            l["price_unit"] * l["product_uom_qty"]
+            for l in lines
+            if l.get("display_type") is None  # Excluir notas
+            and l.get("product_id") is not None  # Asegurar que tiene producto
+            # No necesitamos filtrar los ajustes recurrentes aquí si usamos el mismo product_id que la línea base
         )
 
-        for ajuste in ajustes_activos:
-            if ajuste.tipo == "descuento_porcentaje":
-                continue
+        # Procesar ajustes ocasionales (ajustes_ids)
+        ajustes_ocasionales_activos = self.ajuste_ids.filtered(
+            lambda x: x.activo
+            and x.mes == current_month
+            and x.anio == current_year
+            and not x.aplicado
+        )
+
+        for ajuste in ajustes_ocasionales_activos:
             description = f"{ajuste.name} ({dict(ajuste._fields['mes'].selection).get(ajuste.mes)}/{ajuste.anio})"
-            lines.append(
-                {
-                    "name": description,
-                    "product_uom_qty": 1,
-                    "price_unit": ajuste.importe,
-                }
-            )
+            if ajuste.tipo == "cargo":
+                lines.append(
+                    {
+                        "product_id": ajuste.producto_id.id,  # Usar el producto del ajuste ocasional
+                        "name": f"Cargo ocasional: {description}",
+                        "product_uom_qty": 1,
+                        "price_unit": ajuste.importe,
+                    }
+                )
+            elif ajuste.tipo == "descuento_porcentual":
+                # Para ajustes ocasionales de descuento porcentual, aplicar sobre el total de productos base
+                descuento_importe = 0.0  # Inicializar descuento_importe
+                if total_productos > 0 and ajuste.porcentaje > 0:
+                    descuento_importe = total_productos * (ajuste.porcentaje / 100.0)
+
+                # Añadir la línea de descuento solo si el importe calculado es diferente de cero
+                if descuento_importe != 0.0:
+                    lines.append(
+                        {
+                            "product_id": ajuste.producto_id.id,  # Usar el producto del ajuste ocasional
+                            "name": f"Descuento ocasional: {description} ({ajuste.porcentaje}%)",
+                            "product_uom_qty": 1,
+                            "price_unit": -descuento_importe,  # Aplicar como un precio negativo
+                        }
+                    )
+            # Marcar ajuste ocasional como aplicado después de procesarlo
+            ajuste.aplicado = True
+
         return lines
 
     def create_sale_order(self, forzar_generacion=False):
@@ -650,6 +710,7 @@ class Suscripcion(models.Model):
                     "mes_facturacion": item.mes_facturacion,
                     "meses_excluir": item.meses_excluir,
                     "tiene_ajuste": item.tiene_ajuste,
+                    "tipo_ajuste": item.tipo_ajuste,
                     "importe": item.importe,
                     "porcentaje": item.porcentaje,
                 }

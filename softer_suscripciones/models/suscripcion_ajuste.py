@@ -84,6 +84,7 @@ class SuscripcionAjusteOcasional(models.Model):
 
     producto_id = fields.Many2one(
         "product.product",
+        required=True,
         string="Producto relacionado",
         help="Producto asociado a este ajuste (opcional)",
     )
