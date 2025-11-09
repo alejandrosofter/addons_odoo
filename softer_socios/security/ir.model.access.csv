@@ -9,3 +9,5 @@ access_socios_pendientes_actividad_user,socios.pendientes.actividad.user,softer_
 access_socios_pendientes_actividad_manager,socios.pendientes.actividad.manager,softer_socios.model_socios_pendientes_actividad,base.group_system,1,1,1,1
 access_socios_pendientes_actividad_wizard_user,socios.pendientes.actividad.wizard.user,softer_socios.model_socios_pendientes_actividad_wizard,base.group_user,1,1,1,1
 access_socios_pendientes_actividad_wizard_manager,socios.pendientes.actividad.wizard.manager,softer_socios.model_socios_pendientes_actividad_wizard,base.group_system,1,1,1,1
+access_tipo_documento_user,tipo_documento.user,softer_socios.model_softer_tipo_documento,base.group_user,1,1,1,1
+access_socios_documentacion_user,socios_documentacion.user,softer_socios.model_softer_socios_documentacion,base.group_user,1,1,1,1

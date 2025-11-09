@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="pos_order_view_form_inherit_softer_wsap" model="ir.ui.view">
+            <field name="name">pos.order.form.inherit.softer.wsap</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="x_phone_number"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

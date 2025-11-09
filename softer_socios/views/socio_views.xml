@@ -107,6 +107,27 @@
                             <field name="estado_ids" readonly="1"/>
                         </page>
 
+                        <page string="Documentación">
+                            <field name="documentos">
+                                <tree string="Documentos">
+                                    <field name="tipo_documento_id"/>
+                                    <field name="fecha"/>
+                                    <field name="fecha_vto"/>
+                                    <field name="archivo_filename"/>
+                                </tree>
+                                <form string="Documento">
+                                    <sheet>
+                                        <group>
+                                            <field name="tipo_documento_id"/>
+                                            <field name="fecha"/>
+                                            <field name="fecha_vto"/>
+                                            <field name="archivo" filename="archivo_filename"/>
+                                            <field name="archivo_filename" invisible="1"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
 
                     </notebook>
                 </sheet>

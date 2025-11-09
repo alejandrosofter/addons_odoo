@@ -1,0 +1,51 @@
+<odoo>
+    <data>
+        <!-- Vistas para el modelo ia.query -->
+        <record id="ia_query_view_tree" model="ir.ui.view">
+            <field name="name">ia.query.tree</field>
+            <field name="model">ia.query</field>
+            <field name="arch" type="xml">
+                <tree string="Consultas de IA">
+                    <field name="fecha"/>
+                    <field name="agent_id"/>
+                    <field name="partner_id"/>
+                    <field name="query"/>
+                    <field name="result"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ia_query_view_form" model="ir.ui.view">
+            <field name="name">ia.query.form</field>
+            <field name="model">ia.query</field>
+            <field name="arch" type="xml">
+                <form string="Consulta de IA">
+                    <header>
+                        <button name="action_process_query" string="Procesar" type="object" class="oe_highlight" />
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="fecha"/>
+                            <field name="agent_id"/>
+                            <field name="partner_id"/>
+                            <field name="procesado"/>
+                            <field name="time" readonly="True"/>
+                        </group>
+                        <group>
+                            <field name="query"/>
+                            <field name="result" readonly="procesado"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acciones de ventana -->
+        <record id="ia_query_action" model="ir.actions.act_window">
+            <field name="name">Consultas de IA</field>
+            <field name="res_model">ia.query</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

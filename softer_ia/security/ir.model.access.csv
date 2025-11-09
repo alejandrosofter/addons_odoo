@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ia_agente_user,ia.agente.user,model_ia_agente,base.group_user,1,1,1,1
+access_ia_query_user,ia.query.user,model_ia_query,base.group_user,1,1,1,1

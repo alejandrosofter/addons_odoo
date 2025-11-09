@@ -80,7 +80,7 @@ class ClubMember(models.Model):
     product_id = fields.Many2one(
         "product.product",
         string="Producto por Defecto (Generación)",
-        help="Producto que se asignará a la suscripcion " "generadas si no hay plan",
+        help=("Producto que se asignará a la suscripcion " "generadas si no hay plan"),
     )
     name = fields.Char(
         related="partner_id.name",
@@ -251,6 +251,10 @@ class ClubMember(models.Model):
         string="Motivos de Cambio de Productos",
     )
 
+    documentos = fields.One2many(
+        "softer.socios_documentacion", "socio_id", string="Documentación", tracking=True
+    )
+
     _sql_constraints = [
         (
             "member_number_categoria_uniq",
@@ -311,7 +315,8 @@ class ClubMember(models.Model):
             if partner:
                 # Si existe, actualizar los campos seleccionados
                 self.partner_id = partner.id
-                # No sincronizamos todos los campos aquí, solo los que se supone que _sync_partner_fields maneja.
+                # No sincronizamos todos los campos aquí, solo los que se supone
+                # que _sync_partner_fields maneja.
                 # Los onchange no deben modificar campos relacionados
                 # que se supone que otro método sincroniza.
                 # self.name = partner.name
@@ -352,7 +357,8 @@ class ClubMember(models.Model):
                         valor = vals[field_socio]
                         # Manejar campos Many2one específicamente
                         if field_socio == "payment_adhesion_id" and valor is not False:
-                            # Si el valor es un ID, úsalo. Si es un recordset, usa su ID.
+                            # Si el valor es un ID, úsalo. Si es un recordset,
+                            # usa su ID.
                             partner_vals[field_partner] = (
                                 valor.id
                                 if isinstance(valor, models.BaseModel)
@@ -390,12 +396,14 @@ class ClubMember(models.Model):
             _logger.info("Creando nuevo partner para el socio")
             partner_vals = {
                 "name": vals.get("name", "Nuevo Socio"),
-                # Sincronizar solo los campos especificados en _sync_partner_fields
+                # Sincronizar solo los campos especificados en
+                # _sync_partner_fields
                 "vat": vals.get("dni"),
                 "fecha_nacimiento": vals.get("fecha_nacimiento"),
                 "genero": vals.get("genero"),
                 "payment_adhesion_id": vals.get("payment_adhesion_id"),
-                # otros campos del partner necesarios para la creación inicial si aplica
+                # otros campos del partner necesarios para la creación
+                # inicial si aplica
                 "socio_id": False,
             }
             # Limpiar valores False o None antes de crear para evitar errores
@@ -424,20 +432,25 @@ class ClubMember(models.Model):
             self.env["socios.estado"].create(
                 {
                     "socio_id": nuevosocio.id,
-                    "fecha": fields.Datetime.now(),  # Usar Datetime.now() como en el modelo
-                    "estado": "activa",  # Usar el campo 'estado' con valor 'activa'
-                    "motivo": "Alta inicial del socio",  # Opcional: añadir un motivo
-                    # 'usuario_id': self.env.user.id # Ya es el valor por defecto si no se especifica
+                    "fecha": fields.Datetime.now(),  # Usar Datetime.now()
+                    # como en el modelo
+                    "estado": "activa",  # Usar el campo 'estado' con
+                    # valor 'activa'
+                    "motivo": "Alta inicial del socio",  # Opcional:
+                    # añadir un motivo
+                    # 'usuario_id': self.env.user.id # Ya es el valor
+                    # por defecto si no se especifica
                 }
             )
             _logger.info(
-                f"Estado inicial 'Alta Inicial' creado para socio {nuevosocio.id}"
+                f"Estado inicial 'Alta Inicial' creado para socio " f"{nuevosocio.id}"
             )
         except Exception as e:
             _logger.error(
-                f"Error al crear estado inicial para socio {nuevosocio.id}: {e}"
+                f"Error al crear estado inicial para socio " f"{nuevosocio.id}: {e}"
             )
-            # Considerar si se debe revertir la creación del socio o solo registrar el error
+            # Considerar si se debe revertir la creación del socio o solo
+            # registrar el error
 
         # Sincronizar socio_id en el partner si el partner fue creado aquí
         if nuevosocio.partner_id and not vals.get(
@@ -445,7 +458,8 @@ class ClubMember(models.Model):
         ):  # Solo si se creó un nuevo partner
             nuevosocio.partner_id.sudo().write({"socio_id": nuevosocio.id})
 
-        # Sincronizar los datos básicos seleccionados al partner después de la creación
+        # Sincronizar los datos básicos seleccionados al partner después
+        # de la creación
         nuevosocio._sync_partner_fields()
         _logger.info(f"Socio creado: {nuevosocio.id}")
         nuevosocio.subscription_upsert()
@@ -567,7 +581,8 @@ class ClubMember(models.Model):
             if vals.get("partner_id") and old_partner and old_partner != new_partner:
                 old_partner.sudo().write({"socio_id": False})
             # Asegurar que el nuevo partner apunte al socio
-            # Solo si el partner_id fue cambiado en este write o si antes no tenia partner_id
+            # Solo si el partner_id fue cambiado en este write o si antes no
+            # tenia partner_id
             if (
                 new_partner
                 and (vals.get("partner_id") or not old_partner)
@@ -575,7 +590,8 @@ class ClubMember(models.Model):
             ):
                 new_partner.sudo().write({"socio_id": rec.id})
 
-            # Sincronizar datos básicos seleccionados al partner después de la escritura principal
+            # Sincronizar datos básicos seleccionados al partner después
+            # de la escritura principal
             rec._sync_partner_fields(vals)
 
             # Chequear si suscripcion_plan_id cambió y sincronizar suscripción
@@ -689,13 +705,15 @@ class ClubMember(models.Model):
 
         # 2. Buscar o crear la línea principal de la suscripción
         # Asumo que hay una única línea principal para el producto del socio.
-        # Podrías necesitar ajustar la lógica si un socio puede tener múltiples líneas
+        # Podrías necesitar ajustar la lógica si un socio puede tener
+        # múltiples líneas
         # asociadas a los campos del modelo socio.
         # linea_suscripcion = suscripcion.line_ids.filtered(
         #     lambda l: l.product_id.id == self.suscripcion_product_id.id
         # )
 
-        # Si hay múltiples líneas con el mismo producto, tomamos la primera o podrías borrarlas y crear una nueva
+        # Si hay múltiples líneas con el mismo producto, tomamos la primera
+        # o podrías borrarlas y crear una nueva
         # if len(linea_suscripcion) > 1:
         #     _logger.warning(
         #         f"Múltiples líneas con el mismo producto "
@@ -715,12 +733,15 @@ class ClubMember(models.Model):
                 f"Socio {self.id} no tiene un plan de suscripción "
                 "asignado. No se creará/actualizará línea de suscripción."
             )
-            # Si no hay plan, y hay una suscripción, quizás deberíamos limpiar las líneas existentes?
+            # Si no hay plan, y hay una suscripción, quizás deberíamos limpiar
+            # las líneas existentes?
             # Por ahora, simplemente salimos.
             return  # No se puede crear línea sin un plan
 
-        # Eliminar líneas existentes si el plan cambió o es la primera vez que se aplica un plan
-        # Podríamos ser más inteligentes y solo actualizar si el item del plan existe en las líneas
+        # Eliminar líneas existentes si el plan cambió o es la primera vez
+        # que se aplica un plan
+        # Podríamos ser más inteligentes y solo actualizar si el item del
+        # plan existe en las líneas
         # Pero para simplificar, borramos y creamos.
         if suscripcion.line_ids:
             _logger.info(
@@ -730,7 +751,8 @@ class ClubMember(models.Model):
             )
             suscripcion.line_ids.unlink()
 
-        # Llamar al método action_aplicar_plan de la suscripción para crear las líneas
+        # Llamar al método action_aplicar_plan de la suscripción para
+        # crear las líneas
         try:
             _logger.info(
                 f"Llamando action_aplicar_plan para suscripción "
@@ -744,8 +766,10 @@ class ClubMember(models.Model):
             )
             # Manejar error si la aplicación del plan falla
 
-        # Después de crear/actualizar las líneas, marcar la suscripción como pendiente de aplicar plan a False si aplica
-        # self.pendiente_cambio_plan = False # Esto podría hacerse si la lógica es que subscription_upsert 'aplica' el plan
+        # Después de crear/actualizar las líneas, marcar la suscripción como
+        # pendiente de aplicar plan a False si aplica
+        # self.pendiente_cambio_plan = False # Esto podría hacerse si la
+        # lógica es que subscription_upsert 'aplica' el plan
 
     def _actualizar_estados_por_defecto(self):
         """Actualiza los registros existentes con estados incorrectos"""

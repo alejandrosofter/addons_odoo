@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="evolution_api_qr_wizard_form_view" model="ir.ui.view">
+        <field name="name">evolution_api.qr.wizard.form</field>
+        <field name="model">evolution_api.qr.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Código QR">
+                <sheet>
+                    <div style="text-align: center;">
+                        <field name="qr_code_image" widget="image"/>
+                    </div>
+                </sheet>
+                <footer>
+                    <button string="Cerrar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

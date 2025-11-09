@@ -11,11 +11,13 @@
     "installable": True,
     "auto_install": False,
     # any module necessary for this one to work correctly
-    "depends": ["base", "mail", "contacts", "web"],
+    "depends": ["base", "mail", "contacts", "web", "point_of_sale"],
     "assets": {
         "web.assets_backend": [
             "softer_wsap/static/src/js/systray_icon.js",
             "softer_wsap/static/src/xml/systray_icon.xml",
+            "softer_wsap/static/src/xml/pos_order_templates.xml",
+            "softer_wsap/static/src/js/pos_order_fields.js",
         ],
     },
     # always loaded
@@ -30,6 +32,7 @@
         "views/message_wizard.xml",
         "views/mail_message_view.xml",
         "views/messages.xml",
+        "views/pos_order_view.xml",
     ],
     # "data": ["security/ir.model.access.csv", "views/importer.xml"],
     # "images": ["static/description/icon.png"],

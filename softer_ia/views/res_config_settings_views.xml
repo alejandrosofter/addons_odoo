@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Hereda la vista del formulario de configuración general -->
+        <record id="view_res_config_settings_inherit" model="ir.ui.view">
+            <field name="name">res.config.settings.inherit</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form[@class='oe_form_configuration']" position="inside">
+                    <app data-string="Configuración IA" string="Configuración IA" name="softer_ia_settings" logo="/softer_ia/static/description/icon.png">
+                        <div id="softer_ia_settings_container">
+                            <block title="Configuración de Claves API de IA" name="ia_api_keys_configuration">
+                                <group>
+                                    <field name="enabled_openai"/>
+                                    <field name="softer_ia_openai_api_key" invisible="not enabled_openai" placeholder="Clave de API de OpenAI"/>
+                                    <field name="enabled_gemini"/>
+                                    <field name="softer_ia_gemini_api_key" invisible="not enabled_gemini" placeholder="Clave de API de Gemini"/>
+                                    <field name="enabled_deepseek"/>
+                                    <field name="softer_ia_deepseek_api_key" invisible="not enabled_deepseek" placeholder="Clave de API de DeepSeek"/>
+                                </group>
+                            </block>
+                        </div>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

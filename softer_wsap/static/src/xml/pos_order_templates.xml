@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-inherit="point_of_sale.PaymentScreen" t-name="PaymentScreenInherit" owl="1">
+        <xpath expr="//div[hasclass('payment-numpad')]" position="before">
+            <div class="o-pos-total-row">
+                <div class="pos-receipt-container">
+                    <div class="order-selector">
+                        <div class="entry-single">
+                            <input class="phone-number-input" t-on-change="onChangePhoneNumber" placeholder="Número de Teléfono"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </t>
+
+    <t t-inherit="point_of_sale.OrderReceipt" t-name="OrderReceiptInherit" owl="1">
+        <xpath expr="//div[hasclass('pos-receipt-contact')]" position="inside">
+            <t t-if="order.get_phone_number()">
+                <div class="pos-receipt-contact">
+                    <i class="fa fa-phone"/>
+                    <t t-esc="order.get_phone_number()"/>
+                </div>
+            </t>
+        </xpath>
+    </t>
+
+</templates>

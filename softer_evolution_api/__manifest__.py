@@ -4,7 +4,7 @@
     "category": "Sales",
     "summary": "Integración con Evolution API para WhatsApp",
     "description": """
-        This module integrates Odoo with Evolution API for WhatsApp 
+        This module integrates Odoo with Evolution API for WhatsApp
         communication.
         Features include:
         - WhatsApp number management
@@ -17,6 +17,7 @@
     "depends": [
         "base",
         "sale",
+        "queue_job",
     ],
     "data": [
         "security/ir.model.access.csv",
@@ -25,6 +26,7 @@
         "views/message_views.xml",
         "views/res_config_settings_views.xml",
         "views/sale_order_inherit_views.xml",
+        "views/evolution_api_qr_wizard_views.xml",
         "views/menus.xml",
     ],
     "installable": True,

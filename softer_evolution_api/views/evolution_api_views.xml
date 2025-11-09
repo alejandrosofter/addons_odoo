@@ -20,16 +20,23 @@
         <field name="model">evolution.api.numbers</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_get_qr_code" type="object" string="Obtener Código QR" invisible="esta_creada == False" class="oe_highlight"/>
+                    <button name="action_sync_contacts" type="object" string="Sincronizar Contactos" invisible="esta_creada == False" class="oe_highlight"/>
+                </header>
                 <sheet>
                     <group>
                         <group>
                             <field name="name"/>
                             <field name="channel"/>
+                            <field name="webhook_url"/>
+                            <field name="instance_id"/>
                         </group>
                         <group>
                             <field name="number"/>
                             <field name="token"/>
-                            <field name="estado"/>
+                            <field name="estado" readonly="1"/>
+                            <field name="esta_creada" readonly="1"/>
                         </group>
                     </group>
                 </sheet>
@@ -43,4 +50,4 @@
         <field name="res_model">evolution.api.numbers</field>
         <field name="view_mode">tree,form</field>
     </record>
-</odoo> 
+</odoo>

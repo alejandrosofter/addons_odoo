@@ -1,0 +1,8 @@
+<odoo>
+    <data>
+        <!-- Menú principal -->
+        <menuitem id="ia_agente_menu_root" name="IA" web_icon="softer_ia,static/description/icon.png" sequence="10"/>
+        <menuitem id="ia_agente_menu_children" name="Agentes de IA" parent="ia_agente_menu_root" action="ia_agente_action" sequence="10"/>
+        <menuitem id="ia_query_menu_children" name="Consultas de IA" parent="ia_agente_menu_root" action="ia_query_action" sequence="20"/>
+    </data>
+</odoo>

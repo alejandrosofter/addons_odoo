@@ -3,3 +3,4 @@ from . import res_config_settings_inherit
 from . import message
 from . import evolution_api_webhook
 from . import sale_order_inherit
+from . import evolution_api_qr_wizard_model
