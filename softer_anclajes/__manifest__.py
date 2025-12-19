@@ -20,6 +20,7 @@
         "views/res_config_settings_view.xml",
         "views/user.xml",
         "views/equipos.xml",
+        "data/mail_template.xml",
         "security/ir.model.access.csv",
     ],
     # "data": ["security/ir.model.access.csv", "views/importer.xml"],

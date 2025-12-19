@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="email_template_new_anclaje" model="mail.template">
+            <field name="name">Anclajes: Nuevo Anclaje</field>
+            <field name="model_id" ref="model_anclajes_anclajes"/>
+            <field name="subject">Nuevo Anclaje Cargado: {{ object.name }}</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="partner_to">{{ object.user_id.partner_id.id }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hola <t t-out="object.user_id.name or ''">Usuario</t>,
+                        <br/><br/>
+                        Se ha cargado un nuevo anclaje en el sistema con los siguientes datos:
+                        <br/><br/>
+                        <table border="1" style="border-collapse: collapse; width: 100%;">
+                            <tr>
+                                <th style="padding: 5px; background-color: #f2f2f2;">Nombre</th>
+                                <td style="padding: 5px;"><t t-out="object.name or ''">Nombre</t></td>
+                            </tr>
+                            <tr>
+                                <th style="padding: 5px; background-color: #f2f2f2;">Referencia</th>
+                                <td style="padding: 5px;"><t t-out="object.ref or ''">Referencia</t></td>
+                            </tr>
+                            <tr>
+                                <th style="padding: 5px; background-color: #f2f2f2;">Nro Certificado</th>
+                                <td style="padding: 5px;"><t t-out="object.nroCertificado or ''">Certificado</t></td>
+                            </tr>
+                            <tr>
+                                <th style="padding: 5px; background-color: #f2f2f2;">Fecha Ensayo</th>
+                                <td style="padding: 5px;"><t t-out="object.fechaEnsayo or ''">Fecha</t></td>
+                            </tr>
+                            <tr>
+                                <th style="padding: 5px; background-color: #f2f2f2;">Pozo</th>
+                                <td style="padding: 5px;"><t t-out="object.pozo or ''">Pozo</t></td>
+                            </tr>
+                            <tr>
+                                <th style="padding: 5px; background-color: #f2f2f2;">Zona</th>
+                                <td style="padding: 5px;"><t t-out="object.zona_id.name or ''">Zona</t></td>
+                            </tr>
+                        </table>
+                        <br/><br/>
+                        Puede acceder al registro haciendo click en el siguiente botón:
+                        <br/><br/>
+                        <div style="text-align: center;">
+                            <a t-att-href="object.get_base_url() + '/web#id=' + str(object.id) + '&amp;model=anclajes.anclajes&amp;view_type=form'"
+                               style="background-color: #875A7B; padding: 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;">
+                                Ver Anclaje
+                            </a>
+                        </div>
+                        <br/><br/>
+                        Saludos,
+                        <br/>
+                        El Equipo de Softer
+                    </p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -90,3 +90,12 @@ class Anclajes(models.Model):
                 record.fechaVencimiento = (
                     False  # Si no hay fecha de ensayo, el campo queda vacío
                 )
+
+    @api.model
+    def create(self, vals):
+        record = super(Anclajes, self).create(vals)
+        if record.user_id:
+            template = self.env.ref("softer_anclajes.email_template_new_anclaje")
+            if template:
+                template.send_mail(record.id, force_send=True)
+        return record
